@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+/* Base (light) */
+@theme {
+  /* keep defaults, then override selectively */
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+
+  /* Garden neutrals */
+  --color-soil-50: oklch(0.98 0 0);
+  --color-soil-900: oklch(0.22 0.02 275);
+
+  /* Garden primaries (frequency-first blues/teals) */
+  --color-river-400: oklch(0.78 0.12 220);
+  --color-river-500: oklch(0.72 0.14 221);
+  --color-river-600: oklch(0.64 0.15 222);
+
+  /* Accent (growth) */
+  --color-sprout-400: oklch(0.84 0.17 128);
+  --color-sprout-500: oklch(0.79 0.20 130);
+
+  /* Surface & text (light) */
+  --color-surface: #ffffff;
+  --color-elev: oklch(0.97 0 0);
+  --color-border: oklch(0.88 0 0);
+  --color-text: oklch(0.27 0.02 275);
+  --radius-xl: 1rem;
+}
+
+/* Dark theme via data attribute (no JS required) */
+:root[data-theme="dark"] {
+  --color-surface: oklch(0.15 0.02 270);
+  --color-elev: oklch(0.18 0.02 270);
+  --color-border: oklch(0.28 0.01 270);
+  --color-text: oklch(0.92 0.02 270);
+
+  /* slightly cooler river in dark */
+  --color-river-500: oklch(0.75 0.13 222);
+}
+
+/* Convenience CSS custom props (optional, nice for raw CSS) */
+:root {
+  --surface: var(--color-surface);
+  --elev: var(--color-elev);
+  --border: var(--color-border);
+  --text: var(--color-text);
+  --accent: var(--color-river-500);
+}

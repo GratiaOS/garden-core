@@ -1,0 +1,32 @@
+{
+  "name": "@garden/tokens",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": [
+    "./theme.css",
+    "./index.css"
+  ],
+  "files": [
+    "theme.css",
+    "index.css",
+    "README.md",
+    "index.d.ts"
+  ],
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.css",
+      "style": "./index.css"
+    },
+    "./theme.css": "./theme.css",
+    "./index.css": "./index.css"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "tailwindcss": "^4.0.0"
+  },
+  "types": "./index.d.ts",
+  "peerDependencies": {
+    "tailwindcss": "^4.0.0"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "garden-core",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.17.1",
+  "scripts": {
+    "dev": "pnpm -C playground dev",
+    "build": "pnpm -r build",
+    "lint": "echo 'lint TBA' && exit 0",
+    "changeset": "changeset",
+    "release": "changeset version && pnpm -r build && pnpm -r publish --access public"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.7",
+    "typescript": "^5.9.2"
+  }
+}
