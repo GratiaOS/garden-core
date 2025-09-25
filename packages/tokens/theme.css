@@ -1,40 +1,138 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Base (light) */
 @theme {
-  /* keep defaults, then override selectively */
+  /* === Forest Mystic palette (OKLCH) === */
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
 
-  /* Garden neutrals */
+  /* Core forest neutrals */
   --color-soil-50: oklch(0.98 0 0);
-  --color-soil-900: oklch(0.22 0.02 275);
+  --color-soil-200: oklch(0.92 0.01 150);
+  --color-soil-700: oklch(0.36 0.02 150);
+  --color-soil-900: oklch(0.22 0.02 150);
 
-  /* Garden primaries (frequency-first blues/teals) */
-  --color-river-400: oklch(0.78 0.12 220);
-  --color-river-500: oklch(0.72 0.14 221);
-  --color-river-600: oklch(0.64 0.15 222);
+  /* Forest Mystic */
+  --theme-forest-mystic-background: oklch(0.18 0.02307 180.335);
+  --theme-forest-mystic-foreground: oklch(0.97 0.01 180); /* was #f3f7f5 */
+  --theme-forest-mystic-leaf: oklch(0.55 0.08 150); /* was #3b6343 */
+  --theme-forest-mystic-leaf-light: oklch(0.75 0.09 150); /* was #6fa37c */
+  --theme-forest-mystic-glow-blue: oklch(0.88 0.14 201); /* was #7ae1e4 */
+  --theme-forest-mystic-mushroom: oklch(0.82 0.12 184); /* was #6bd0c6 */
+  --theme-forest-mystic-amber: oklch(0.8 0.14 80); /* was #d9a766 */
+  --theme-forest-mystic-fruit-gold: oklch(0.83 0.14 95); /* was #d5b75a */
+  --theme-forest-mystic-background-light: oklch(0.97 0.01 180); /* was #f3f7f5 */
+  --theme-forest-mystic-foreground-light: oklch(0.27 0.02 275); /* was #2d2d2d */
+  --theme-forest-mystic-accent-leaf: oklch(0.62 0.09 150); /* was #4d7f5f */
+  --theme-forest-mystic-glow-accent: oklch(0.78 0.12 190); /* was #4acbcc */
+  --theme-forest-mystic-flower-warm: oklch(0.74 0.15 70); /* was #c68b4d */
+  --theme-forest-mystic-berry-gold: oklch(0.86 0.1 92); /* was #d5c379 */
 
-  /* Accent (growth) */
-  --color-sprout-400: oklch(0.84 0.17 128);
-  --color-sprout-500: oklch(0.79 0.20 130);
+  /* Surface & text map (light by default) */
+  --color-surface: var(--theme-forest-mystic-background-light);
+  --color-elev: oklch(0.96 0.005 180);
+  --color-border: oklch(0.9 0.02 155); /* was #d5e0d7 */
+  --color-text: var(--theme-forest-mystic-foreground-light);
+  --color-fg: var(--theme-forest-mystic-foreground-light);
 
-  /* Surface & text (light) */
-  --color-surface: #ffffff;
-  --color-elev: oklch(0.97 0 0);
-  --color-border: oklch(0.88 0 0);
-  --color-text: oklch(0.27 0.02 275);
+  /* Accent (light) */
+  --color-accent-400: var(--theme-forest-mystic-leaf-light);
+  --color-accent-500: var(--theme-forest-mystic-accent-leaf);
+  --color-accent-600: oklch(0.52 0.1 150);
+  --color-accent: var(--color-accent-500);
+  --color-on-accent: oklch(0.15 0.01 180);
+  --color-subtle: var(--color-soil-700);
+
+  /* Semantic statuses */
+  --color-positive: var(--theme-forest-mystic-leaf);
+  --color-warning: var(--theme-forest-mystic-amber);
+  --color-danger: oklch(0.6 0.18 27);
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.05), 0 6px 18px -6px rgb(0 0 0 / 0.12);
+  --shadow-pop: 0 14px 32px -12px rgb(0 0 0 / 0.28);
+
+  /* Radii */
   --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.75rem;
+  --radius-pill: 9999px;
+
+  /* Type scale */
+  --text-label: 0.8125rem;
+  --text-label--line-height: calc(1.4 / 0.8125);
+  --text-body: 1rem;
+  --text-body--line-height: calc(1.5 / 1);
+  --text-title: 1.25rem;
+  --text-title--line-height: calc(1.6 / 1.25);
+
+  /* Astral glows */
+  --shadow-aurora: 0 0 0 1px rgb(0 0 0 / 0.04), 0 12px 36px -12px color-mix(in oklab, var(--theme-forest-mystic-leaf) 60%, transparent),
+    0 0 50px -12px color-mix(in oklab, var(--theme-forest-mystic-glow-accent) 32%, transparent);
+  --shadow-moon: 0 0 0 1px rgb(255 255 255 / 0.04), 0 8px 24px -8px color-mix(in oklab, var(--theme-forest-mystic-glow-blue) 50%, transparent);
+
+  /* Animations */
+  --animate-breathe: breathe 4s ease-in-out infinite;
+  --animate-twinkle: twinkle 3.2s ease-in-out infinite;
+  --animate-orbit: orbit 12s linear infinite;
+
+  @keyframes breathe {
+    0%,
+    100% {
+      filter: brightness(100%);
+      transform: translateY(0);
+    }
+    50% {
+      filter: brightness(115%);
+      transform: translateY(-1px);
+    }
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes orbit {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 }
 
 /* Dark theme via data attribute (no JS required) */
-:root[data-theme="dark"] {
-  --color-surface: oklch(0.15 0.02 270);
-  --color-elev: oklch(0.18 0.02 270);
-  --color-border: oklch(0.28 0.01 270);
-  --color-text: oklch(0.92 0.02 270);
+:root[data-theme='dark'] {
+  --color-surface: var(--theme-forest-mystic-background);
+  --color-elev: oklch(0.18 0.01 200);
+  --color-border: oklch(0.38 0.03 180); /* was #34524a */
+  --color-text: var(--theme-forest-mystic-foreground);
+  --color-fg: var(--theme-forest-mystic-foreground);
 
-  /* slightly cooler river in dark */
-  --color-river-500: oklch(0.75 0.13 222);
+  /* Accents run cooler/brighter at night */
+  --color-accent-400: var(--theme-forest-mystic-mushroom);
+  --color-accent-500: var(--theme-forest-mystic-glow-accent);
+  --color-accent-600: oklch(0.72 0.14 196);
+  --color-accent: var(--color-accent-500);
+  --color-on-accent: oklch(0.16 0.02 200);
+  --color-subtle: var(--color-soil-700);
+
+  /* Semantic in dark */
+  --color-positive: var(--theme-forest-mystic-leaf-light);
+  --color-warning: var(--theme-forest-mystic-amber);
+  --color-danger: oklch(0.68 0.16 27);
+
+  /* Shadow tweaks */
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.25), 0 6px 14px -6px rgb(0 0 0 / 0.35);
+  --shadow-pop: 0 12px 28px -12px rgb(0 0 0 / 0.45);
+
+  --shadow-aurora: 0 0 0 1px rgb(255 255 255 / 0.03), 0 12px 32px -12px color-mix(in oklab, var(--theme-forest-mystic-leaf-light) 64%, transparent),
+    0 0 48px -10px color-mix(in oklab, var(--theme-forest-mystic-glow-blue) 42%, transparent);
+  --shadow-moon: 0 0 0 1px rgb(255 255 255 / 0.05), 0 10px 30px -12px color-mix(in oklab, var(--theme-forest-mystic-foreground) 40%, transparent);
 }
 
 /* Convenience CSS custom props (optional, nice for raw CSS) */
@@ -43,5 +141,19 @@
   --elev: var(--color-elev);
   --border: var(--color-border);
   --text: var(--color-text);
-  --accent: var(--color-river-500);
+  --accent: var(--color-accent);
+  --accent-500: var(--color-accent-500);
+  --on-accent: var(--color-on-accent);
+  --subtle: var(--color-subtle);
+
+  /* convenience: focus ring + sheet radius */
+  --ring-accent: color-mix(in oklab, var(--color-accent-500) 88%, white);
+  --sheet-radius: var(--radius-2xl);
+
+  /* Astral gradients for backgrounds (plain CSS props; use in arbitrary values) */
+  --bg-cosmos: radial-gradient(1200px 800px at 15% 15%, color-mix(in oklab, var(--color-fern-500) 18%, transparent), transparent 60%),
+    radial-gradient(900px 600px at 85% 30%, color-mix(in oklab, var(--color-moss-500) 16%, transparent), transparent 62%),
+    radial-gradient(650px 520px at 50% 85%, color-mix(in oklab, var(--color-starlight-500) 12%, transparent), transparent 72%), var(--color-void-950);
+  --bg-aurora: radial-gradient(60% 60% at 50% 20%, color-mix(in oklab, var(--color-fern-500) 26%, transparent), transparent 60%),
+    radial-gradient(40% 40% at 70% 80%, color-mix(in oklab, var(--color-bloom-500) 18%, transparent), transparent 70%), var(--surface);
 }

@@ -7,6 +7,11 @@
     "module": "ESNext",
     "types": ["vite/client"],
     "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@garden/ui": ["../packages/ui/src/index.ts"],
+      "@garden/ui/*": ["../packages/ui/src/*"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",
