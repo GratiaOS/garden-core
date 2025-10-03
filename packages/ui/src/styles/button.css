@@ -1,0 +1,163 @@
+/* Button skin (opt-in) — uses global tokens from @garden/tokens
+   Selector-only styling so primitives remain headless. */
+
+@layer components {
+  /* Base */
+  [data-ui='button'] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    font-weight: 500;
+    line-height: 1;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Density */
+  [data-ui='button'][data-density='snug'] {
+    padding: 0.375rem 0.75rem;
+    font-size: var(--text-sm);
+  }
+  [data-ui='button'][data-density='cozy'] {
+    padding: 0.5rem 0.875rem;
+    font-size: var(--text-sm);
+  }
+
+  /* Parts */
+  [data-ui='button'] [data-slot~='icon'] {
+    display: inline-flex;
+  }
+  [data-ui='button'] [data-slot='icon leading'] {
+    margin-inline-end: 0.25rem;
+  }
+  [data-ui='button'] [data-slot='icon trailing'] {
+    margin-inline-start: 0.25rem;
+  }
+
+  /* Variants — SOLID */
+  [data-ui='button'][data-variant='solid'] {
+    border-color: transparent;
+    color: var(--color-on-accent);
+  }
+  [data-ui='button'][data-variant='solid'][data-tone='default'] {
+    background: var(--color-elev);
+    color: var(--color-text);
+    border-color: var(--color-border);
+  }
+  [data-ui='button'][data-variant='solid'][data-tone='accent'] {
+    background: var(--color-accent);
+  }
+  [data-ui='button'][data-variant='solid'][data-tone='positive'] {
+    background: var(--color-positive);
+  }
+  [data-ui='button'][data-variant='solid'][data-tone='warning'] {
+    background: var(--color-warning);
+    color: var(--color-on-accent);
+  }
+  [data-ui='button'][data-variant='solid'][data-tone='danger'] {
+    background: var(--color-danger);
+  }
+
+  /* Variants — OUTLINE */
+  [data-ui='button'][data-variant='outline'] {
+    background: transparent;
+  }
+  [data-ui='button'][data-variant='outline'][data-tone='default'] {
+    color: var(--color-text);
+  }
+  [data-ui='button'][data-variant='outline'][data-tone='accent'] {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  [data-ui='button'][data-variant='outline'][data-tone='positive'] {
+    color: var(--color-positive);
+    border-color: var(--color-positive);
+  }
+  [data-ui='button'][data-variant='outline'][data-tone='warning'] {
+    color: var(--color-warning);
+    border-color: var(--color-warning);
+  }
+  [data-ui='button'][data-variant='outline'][data-tone='danger'] {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+  }
+
+  /* Variants — GHOST */
+  [data-ui='button'][data-variant='ghost'] {
+    background: transparent;
+    border-color: transparent;
+  }
+  [data-ui='button'][data-variant='ghost'][data-tone='default'] {
+    color: var(--color-text);
+  }
+  [data-ui='button'][data-variant='ghost'][data-tone='accent'] {
+    color: var(--color-accent);
+  }
+  [data-ui='button'][data-variant='ghost'][data-tone='positive'] {
+    color: var(--color-positive);
+  }
+  [data-ui='button'][data-variant='ghost'][data-tone='warning'] {
+    color: var(--color-warning);
+  }
+  [data-ui='button'][data-variant='ghost'][data-tone='danger'] {
+    color: var(--color-danger);
+  }
+
+  /* Variants — SUBTLE */
+  [data-ui='button'][data-variant='subtle'] {
+    background: var(--color-fill-subtle);
+    color: var(--color-text);
+    border-color: color-mix(in oklab, var(--color-text) 12%, transparent);
+  }
+
+  /* Hover (slight lift + color wash) */
+  @media (hover: hover) {
+    [data-ui='button']:not([disabled])[data-state='idle']:hover {
+      transform: translateY(-0.5px);
+    }
+    [data-ui='button'][data-variant='outline'][data-tone='accent']:hover {
+      background: color-mix(in oklab, var(--color-accent) 12%, transparent);
+    }
+    [data-ui='button'][data-variant='outline'][data-tone='positive']:hover {
+      background: color-mix(in oklab, var(--color-positive) 12%, transparent);
+    }
+    [data-ui='button'][data-variant='outline'][data-tone='warning']:hover {
+      background: color-mix(in oklab, var(--color-warning) 12%, transparent);
+    }
+    [data-ui='button'][data-variant='outline'][data-tone='danger']:hover {
+      background: color-mix(in oklab, var(--color-danger) 12%, transparent);
+    }
+    [data-ui='button'][data-variant='ghost'][data-tone='accent']:hover {
+      background: color-mix(in oklab, var(--color-accent) 10%, transparent);
+    }
+    [data-ui='button'][data-variant='ghost'][data-tone='positive']:hover {
+      background: color-mix(in oklab, var(--color-positive) 10%, transparent);
+    }
+    [data-ui='button'][data-variant='ghost'][data-tone='warning']:hover {
+      background: color-mix(in oklab, var(--color-warning) 10%, transparent);
+    }
+    [data-ui='button'][data-variant='ghost'][data-tone='danger']:hover {
+      background: color-mix(in oklab, var(--color-danger) 10%, transparent);
+    }
+  }
+
+  /* Focus ring (uses global --ring-accent fallback) */
+  [data-ui='button']:focus-visible {
+    outline: 2px solid var(--ring-accent, color-mix(in oklab, var(--color-accent) 85%, white 15%));
+    outline-offset: 2px;
+  }
+
+  /* States */
+  [data-ui='button'][data-state='loading'] {
+    cursor: progress;
+  }
+  [data-ui='button'][data-state='disabled'],
+  [data-ui='button'][disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
