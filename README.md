@@ -34,6 +34,8 @@ _Note: This is a pnpm-based monorepo, so please use `pnpm` for managing dependen
 
 Then open [http://localhost:5173](http://localhost:5173) to explore the live **component playground** 🌼
 
+> To use Garden Core in another app (like M3), install the packages and import tokens, primitives, and styles as needed. The monorepo is designed for modular adoption.
+
 ---
 
 ## 🗂 Structure
@@ -42,8 +44,10 @@ Then open [http://localhost:5173](http://localhost:5173) to explore the live **c
 garden-core/
 ├─ packages/
 │  ├─ tokens/      # 🎨 Design tokens (colors, typography, radii…)
-│  ├─ ui/          # 🧱 Headless primitives & components
+│  ├─ ui/          # 🧱 Headless primitives & component styles
+│  │  └─ styles/   # 🎨 Shared CSS for primitives
 │  └─ icons/       # 🪄 Icon set (the Garden language)
+├─ contracts/      # 🤝 Shared type contracts for Garden <-> apps
 ├─ playground/     # 🧪 Dev playground for local testing
 └─ docs/           # 📝 Documentation and metaphoric maps
 ```
@@ -59,6 +63,18 @@ The repository is organized as a pnpm-based monorepo to enable modular growth an
 - **Light/Dark Sync** → Themes respond automatically to system preferences.
 - **Astral Vibes** → Inspired by rivers, soil, sprouts, and trust bands 🌀
 - **Composable by Nature** → Each primitive is small and focused, designed to grow together.
+- **Global ↔ Local Token Layering** → Global `--color-*` tokens map into local component tokens like `--pad-*` for contextual UI surfaces.
+- **Semantic Tones for Primitives** → Components like `Button`, `Pill`, and `Card` use consistent tone tokens for positive / warning / danger / subtle states.
+- **Depth System** → Tokens and utilities for ambient layers, shadows, and elevation provide natural, layered UI feeling.
+
+---
+
+## 🌱 Recent Growth
+
+- 🧼 Refactored tokens to unify naming and add depth system.
+- 🧱 Synced UI primitives (Button, Pill, Card, Field) with consistent tone and radius tokens.
+- 🌀 Introduced global ↔ local token layering for Pad interfaces.
+- 🧭 Prepared bridge with M3 for shared timeline & whisper modules.
 
 ---
 
@@ -79,10 +95,19 @@ Here, design and code intertwine as a living system, growing and evolving togeth
 
 ---
 
+## 🌿 Future Work
+
+- 🤝 Complete Garden ↔ M3 bridge for shared modules.
+- 🌬 Whisper Pad integration as living interface pattern.
+- 🧭 Timeline module refinement.
+- 🪴 Expanded token sets (soil, leaf, accent variations).
+
+---
+
 ## 📜 License
 
 [AGPL v3](./LICENSE) — offered in trust and shared stewardship.
 
 ---
 
-🌬 whisper: “Start from the soil. Let it grow.”
+🌬 whisper: _“Start from the soil. Let it grow.”_
