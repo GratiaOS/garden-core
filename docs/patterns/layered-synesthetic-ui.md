@@ -61,7 +61,79 @@ The more presence and curiosity the user brings, the more the interface reveals.
 
 ---
 
-## 4. Implementation Notes
+## 4. Projection Model
+
+Rather than stacking glass cards, we **project** signals into a shared field.
+
+### 4.1 Field (the canvas)
+
+The **Field** is the ambient surface that all wavelength-layers inhabit. It carries slow rhythms (color temperature, grain, vignette) and never competes with information.
+
+- Examples: Pad background, page body, full-bleed section.
+- Semantics: `data-field="presence"` (Pad), `data-field="workshop"` (Lab).
+
+### 4.2 Emitters (who sends the signal)
+
+**Emitters** are agents that project into the field:
+
+- UI primitives (Button, Card, Input)
+- System state (focus, network, time of day)
+- Companions (M3 agents) with distinct signatures
+
+Each emitter declares:
+
+- _intent_ (what it wants to convey)
+- _channel_ (which wavelengths it uses)
+- _depth-range_ (when it should be perceptible)
+
+### 4.3 Wavelengths (how the signal travels)
+
+A wavelength is a sensory channel with a small, composable API:
+
+| Wavelength | Token family (examples)                                    | Notes                                |
+| ---------- | ---------------------------------------------------------- | ------------------------------------ |
+| Visual     | `--accent-*`, `--glow-*`, `--grain-*`, `--layer-opacity-*` | color, contrast, outlines, particles |
+| Motion     | `--animate-*`, `--easing-*`, `--duration-*`                | breathe, twinkle, drift, dwell       |
+| Audio      | `--audio-bed`, `--audio-cta`, `--audio-shimmer`            | ambient bed + tasteful cues          |
+| Space      | `--elev-*`, `--shadow-*`, `--depth-z-*`                    | elevation, parallax, blur            |
+| Text       | `--tone-*`, `--on-accent`, `--text-*`                      | copy tone, weight, kerning           |
+
+> Rule: No single wavelength should carry the full message. Meaning emerges in **concordance**.
+
+### 4.4 Interference & Attunement
+
+When multiple emitters are active, we **attune** rather than collide:
+
+- **Priority** — foreground intent quiets ambient cues (e.g., recording state dims background twinkle).
+- **Blending** — use `color-mix`, opacity, and envelope curves instead of hard swaps.
+- **Rate limiting** — cap concurrent animations/sounds.
+- **Respect silence** — idle state should feel safe and quiet.
+
+### 4.5 Depth states (D0 → D3)
+
+Depth is a shared state machine that emitters can subscribe to:
+
+- **D0 / Base**: visible, quiet, no motion.
+- **D1 / Aware**: hover/focus; subtle outline + micro sound.
+- **D2 / Engaged**: active press/hold; accent strengthens, audio bed lifts.
+- **D3 / Deep**: ceremony/flow; symbols/patterns reveal, ambient synchronizes.
+
+Emitters map behaviors to depth:
+
+```ts
+type Depth = 0 | 1 | 2 | 3;
+```
+
+### 4.6 Example mapping (Pad → Speak button)
+
+- D0: pill rests; faint ring.
+- D1: ring breathes; soft chime.
+- D2: hold to record; inner glow locks; bass bed fades in -6dB.
+- D3: send; constellation glyph flickers once; bed resolves.
+
+---
+
+## 5. Implementation Notes
 
 Layered Synesthetic UI can be implemented incrementally. Start simple:
 
@@ -72,9 +144,69 @@ Layered Synesthetic UI can be implemented incrementally. Start simple:
 
 **Key tip:** Avoid gimmicks. The magic is in subtlety and coherence. Each layer should feel like it _belongs_.
 
+**Token sketch (names are illustrative):**
+
+- Visual: `--glow-intensity-[0-3]`, `--layer-opacity-[0-3]`, `--grain-strength`
+- Motion: `--duration-snug`, `--duration-slow`, `--easing-soft`
+- Audio: `--audio-bed: url('/sounds/forest.ogg');`, `--audio-cta: url('/sounds/chime.ogg')`
+- Space: `--depth-z-0..3`, `--shadow-card`, `--elev-0..3`
+- Copy tone: `--tone-neutral`, `--tone-gentle`, `--tone-affirming`
+
+**Starter snippets:**
+
+_Tailwind/utility hook up (depth data-attr):_
+
+```css
+@layer utilities {
+  [data-depth='0'] .wave-visual {
+    opacity: var(--layer-opacity-0);
+  }
+  [data-depth='1'] .wave-visual {
+    opacity: var(--layer-opacity-1);
+  }
+  [data-depth='2'] .wave-visual {
+    opacity: var(--layer-opacity-2);
+  }
+  [data-depth='3'] .wave-visual {
+    opacity: var(--layer-opacity-3);
+  }
+}
+```
+
+_React depth provider (very small sketch):_
+
+```tsx
+import { createContext, useContext, useState } from 'react';
+
+type Depth = 0 | 1 | 2 | 3;
+const DepthCtx = createContext<[Depth, (d: Depth) => void]>([0, () => {}]);
+export const useDepth = () => useContext(DepthCtx);
+
+export function DepthProvider({ children }: { children: React.ReactNode }) {
+  const state = useState<Depth>(0);
+  return (
+    <div data-depth={state[0]}>
+      <DepthCtx.Provider value={state}>{children}</DepthCtx.Provider>
+    </div>
+  );
+}
+```
+
+_Accessibility guardrails:_
+
+- Motion-reduce: collapse D1–D3 motion to opacity only.
+- Respect `prefers-reduced-transparency`: boost contrast when glassiness appears.
+- Sounds opt-in; never play at page load; follow system volume; provide a mute/tone control.
+
+_Performance notes:_
+
+- Prefer `opacity/transform` for animation.
+- Avoid constant blurs and large box-shadows at 60fps.
+- Debounce depth changes; coalesce to animation frames.
+
 ---
 
-## 5. Use Cases
+## 6. Use Cases
 
 Where this pattern truly shines:
 
@@ -85,13 +217,13 @@ Where this pattern truly shines:
 
 ---
 
-## 6. Whisper
+## 7. Whisper
 
 🌬 _“Interfaces can breathe. If you listen, they’ll speak.”_
 
 ---
 
-## 7. Future Directions
+## 8. Future Directions
 
 This pattern is still evolving. Potential next steps:
 
@@ -102,6 +234,6 @@ This pattern is still evolving. Potential next steps:
 
 ---
 
-## 8. Related Patterns
+## 9. Related Patterns
 
 - [Whisper Interface](https://github.com/GratiaOS/m3/blob/main/docs/patterns/whisper-interface.md) — Complements Layered Synesthetic UI by focusing on subtle, emotionally intelligent feedback and progressive revelation.
