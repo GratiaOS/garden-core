@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-type Tone = 'accent' | 'positive' | 'warning' | 'danger' | 'subtle';
-type Variant = 'soft' | 'solid' | 'outline';
+type Tone = 'accent' | 'positive' | 'warning' | 'danger';
+type Variant = 'soft' | 'solid' | 'outline' | 'subtle';
 type Density = 'cozy' | 'snug';
 
 type AsElement = 'span' | 'button' | 'a';
@@ -49,26 +49,24 @@ const PillInner = <TAs extends AsElement = 'span'>(props: PillProps<TAs>, ref: R
       className={cx(baseClasses, className)}
       {...buttonDefaults}
       {...(rest as Record<string, unknown>)}>
-      {leading ? (
+      {leading && (
         <span aria-hidden="true" className="shrink-0">
           {leading}
         </span>
-      ) : null}
+      )}
       {children}
-      {trailing ? (
+      {trailing && (
         <span aria-hidden="true" className="shrink-0">
           {trailing}
         </span>
-      ) : null}
+      )}
     </Comp>
   );
 };
 
-const ForwardedPill = React.forwardRef(PillInner);
-ForwardedPill.displayName = 'Pill';
+const _Pill = React.forwardRef(PillInner);
+_Pill.displayName = 'Pill';
 
-export const Pill = ForwardedPill as <TAs extends AsElement = 'span'>(
-  props: PillProps<TAs> & { ref?: React.Ref<HTMLElement> }
-) => React.ReactElement | null;
+export const Pill = _Pill as <TAs extends AsElement = 'span'>(props: PillProps<TAs> & { ref?: React.Ref<HTMLElement> }) => React.ReactElement | null;
 
 export default Pill;

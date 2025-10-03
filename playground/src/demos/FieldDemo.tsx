@@ -1,59 +1,70 @@
 import * as React from 'react';
 import { Field } from '@garden/ui';
 
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-3">
+      <h3 className="text-sm font-medium text-[var(--color-subtle)]">{title}</h3>
+      <div className="flex flex-col gap-3 [&>*]:grow">{children}</div>
+    </section>
+  );
+}
+
 export function FieldDemo() {
   const [name, setName] = React.useState('');
-  const [nameError, setNameError] = React.useState<string | null>(null);
-
-  const [email, setEmail] = React.useState('');
-  const [emailError, setEmailError] = React.useState<string | null>(null);
-
-  const [password, setPassword] = React.useState('');
-  const [passwordState, setPasswordState] = React.useState<'success' | 'warning' | null>(null);
-  const [passwordHint, setPasswordHint] = React.useState<string | null>(null);
-
-  function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const v = e.target.value;
-    setName(v);
-    setNameError(v.length < 3 ? 'Must be at least 3 characters.' : null);
-  }
-
-  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const v = e.target.value;
-    setEmail(v);
-    // Simple email validation for demo purposes
-    const emailValid = /\S+@\S+\.\S+/.test(v);
-    setEmailError(v.length > 0 && !emailValid ? 'Please enter a valid email address.' : null);
-  }
-
-  function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const v = e.target.value;
-    setPassword(v);
-    if (v.length === 0) {
-      setPasswordState(null);
-      setPasswordHint(null);
-    } else if (v.length < 6) {
-      setPasswordState('warning');
-      setPasswordHint('Password is too short.');
-    } else {
-      setPasswordState('success');
-      setPasswordHint('Password looks good.');
-    }
-  }
+  const [note, setNote] = React.useState('');
 
   return (
-    <div className="space-y-6">
-      <Field label="Your name" description="Please enter at least 3 characters." error={nameError}>
-        <input value={name} onChange={handleNameChange} className="input-base" placeholder="Type here…" />
-      </Field>
+    <div className="space-y-8">
+      <header className="space-y-1">
+        <h2 className="text-lg font-semibold">Field</h2>
+        <p className="text-sm text-muted">Accessible label, hint, description, and error wiring.</p>
+      </header>
 
-      <Field label="Email" description="We won’t share it with anyone." required hint="We’ll send a confirmation email." error={emailError}>
-        <input type="email" value={email} onChange={handleEmailChange} className="input-base" placeholder="example@email.com" />
-      </Field>
+      <Section title="Default">
+        <Field label="Signal name" description="Describe the moment or marker that just arrived." required>
+          {(aria) => (
+            <input {...aria} className="input-base w-full" placeholder="Morning river pulse" value={name} onChange={(e) => setName(e.target.value)} />
+          )}
+        </Field>
+        <div className="mt-2">
+          <div className="space-y-2 mb-3">
+            <h3 className="text-sm font-medium text-subtle">Usage</h3>
+            <p className="text-xs text-muted">Ideal for simple required inputs with accessible labelling.</p>
+          </div>
+          <pre className="bg-elev border border-border text-xs p-3 rounded-md overflow-x-auto">
+            <code>{`<Field label="Label" description="Description"></Field>`}</code>
+          </pre>
+        </div>
+      </Section>
 
-      <Field label="Password" hint={passwordHint || undefined} data-state={passwordState || undefined}>
-        <input type="password" value={password} onChange={handlePasswordChange} className="input-base" placeholder="Enter your password" />
-      </Field>
+      {/* With error */}
+      <Section title="With error">
+        <Field
+          label="Signal note"
+          description="A short note that will help future-you remember."
+          error={note.trim().length < 3 ? 'Add a touch more detail.' : undefined}
+          required>
+          {(aria) => (
+            <input
+              {...aria}
+              className="input-base w-full"
+              placeholder="E.g. after tea, calmer breath"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+          )}
+        </Field>
+        <div className="mt-2">
+          <div className="space-y-2 mb-3">
+            <h3 className="text-sm font-medium text-subtle">Usage</h3>
+            <p className="text-xs text-subtle">Demonstrates error state wiring and validation feedback.</p>
+          </div>
+          <pre className="bg-elev border border-border text-xs p-3 rounded-md overflow-x-auto">
+            <code>{`<Field label="Label" description="Description" error="Error"></Field>`}</code>
+          </pre>
+        </div>
+      </Section>
     </div>
   );
 }

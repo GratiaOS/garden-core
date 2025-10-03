@@ -9,8 +9,8 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@garden/ui": ["../packages/ui/src/index.ts"],
-      "@garden/ui/*": ["../packages/ui/src/*"]
+      "@garden/ui": ["../packages/ui/dist/index.d.ts", "../packages/ui/dist/index.js"],
+      "@garden/ui/*": ["../packages/ui/dist/*"]
     },
 
     /* Bundler mode */
