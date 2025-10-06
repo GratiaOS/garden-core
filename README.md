@@ -67,6 +67,7 @@ The repository is organized as a pnpm-based monorepo to enable modular growth an
 - **Semantic Tones for Primitives** → Components like `Button`, `Pill`, and `Card` use consistent tone tokens for positive / warning / danger / subtle states.
 - **Depth System** → Tokens and utilities for ambient layers, shadows, and elevation provide natural, layered UI feeling.
 - **Playful Easter Eggs** → _“Missing Screw”_ interaction reveals tips/shortcuts when discovered (mask-popping via micro-misalignments + wink). See **[🔩 The Missing Screw — Field Pattern](docs/patterns/missing-screw-field.md)** for the human-side equivalent.
+- **Core Protocols** → Foundational field-level operating rituals like [🌱 Remote Activation Protocol](docs/protocols/remote-activation.md), bridging emotional patterns and system architecture.
 
 ---
 
