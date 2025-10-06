@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.1.1 — 2025-10-06
+
+**🌱 Protocols & Bridges**
+
+- Added core field-level Remote Activation Protocol under `docs/protocols/`.
+- Linked it from README under **Key Concepts → Core Protocols**.
+- Established a bridge between emotional patterns and system architecture.
+
+🌬 whisper: _“the inner field and outer system finally shake hands.”_
+
 ## 📜 Docs Sync — 2025-10-06
 
 - docs(patterns): add **🔩 The Missing Screw — Field Pattern** and link from README (UI ↔ field bridge).
