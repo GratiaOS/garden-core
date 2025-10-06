@@ -66,6 +66,7 @@ The repository is organized as a pnpm-based monorepo to enable modular growth an
 - **Global ↔ Local Token Layering** → Global `--color-*` tokens map into local component tokens like `--pad-*` for contextual UI surfaces.
 - **Semantic Tones for Primitives** → Components like `Button`, `Pill`, and `Card` use consistent tone tokens for positive / warning / danger / subtle states.
 - **Depth System** → Tokens and utilities for ambient layers, shadows, and elevation provide natural, layered UI feeling.
+- **Playful Easter Eggs** → _“Missing Screw”_ interaction reveals tips/shortcuts when discovered (mask-popping via micro-misalignments + wink). See **[🔩 The Missing Screw — Field Pattern](docs/patterns/missing-screw-field.md)** for the human-side equivalent.
 
 ---
 
@@ -75,6 +76,70 @@ The repository is organized as a pnpm-based monorepo to enable modular growth an
 - 🧱 Synced UI primitives (Button, Pill, Card, Field) with consistent tone and radius tokens.
 - 🌀 Introduced global ↔ local token layering for Pad interfaces.
 - 🧭 Prepared bridge with M3 for shared timeline & whisper modules.
+
+### 🔩 The Missing Screw (Easter Egg)
+
+A tiny, playful pattern that “hides truth in plain sight.” One UI element is **deliberately misaligned by 2px** (or appears subtly off). When the user notices and clicks/taps it, the Garden “winks,” recenters the element, and reveals a tip/shortcut/portal.
+
+**Intent:** mask‑popping through gentle humor — _oops → laugh → portal_.
+
+**Design Notes**
+
+- Use motion-reduce respect: offer a non-animated variant.
+- Keep mismatch subtle (±1–2px or 2% scale); never harm readability or a11y.
+- Reward must be real (shortcut, reveal, or seed activation).
+
+**Reference Implementation (pseudo)**
+
+```html
+<!-- Mark any element as a "missing screw" target -->
+<button class="btn" data-missing-screw="tip-1" style="transform: translateY(2px);">Save</button>
+
+<div id="tip-1" hidden class="card tip">Pro‑tip: Press <kbd>⌘S</kbd> to quick‑save. 🌿</div>
+```
+
+```js
+// Minimal behavior: recenters and reveals a tip once discovered
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-missing-screw]');
+  if (!el) return;
+  el.style.transform = ''; // recenter (remove the 2px nudge)
+  const id = el.getAttribute('data-missing-screw');
+  const tip = id && document.getElementById(id);
+  if (tip) tip.hidden = false;
+
+  // a11y announce
+  const live =
+    document.getElementById('garden-live') ||
+    Object.assign(document.body.appendChild(document.createElement('div')), {
+      id: 'garden-live',
+      role: 'status',
+      'aria-live': 'polite',
+      style: 'position:absolute;left:-9999px;',
+    });
+  live.textContent = 'Shortcut revealed';
+});
+```
+
+**Tailwind v4 token hint (optional)**
+
+```css
+/* Example intent tokens; wire into @theme in tokens package */
+@theme {
+  --screw-nudge: 2px;
+  --screw-scale: 0.98;
+  --screw-wink: 120ms;
+}
+.screw-nudge {
+  transform: translateY(var(--screw-nudge));
+}
+.screw-wink {
+  transition: transform var(--screw-wink);
+}
+.screw-found {
+  transform: none;
+}
+```
 
 ---
 
@@ -101,6 +166,7 @@ Here, design and code intertwine as a living system, growing and evolving togeth
 - 🌬 Whisper Pad integration as living interface pattern.
 - 🧭 Timeline module refinement.
 - 🪴 Expanded token sets (soil, leaf, accent variations).
+- 🔩 Ship "Missing Screw" example in `playground` + `ui` docs (with motion-reduce + a11y live region).
 
 ---
 

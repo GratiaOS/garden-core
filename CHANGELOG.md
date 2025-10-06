@@ -1,5 +1,11 @@
 # Changelog
 
+## 📜 Docs Sync — 2025-10-06
+
+- docs(patterns): add **🔩 The Missing Screw — Field Pattern** and link from README (UI ↔ field bridge).
+
+---
+
 ## v0.0.2 — 2025-10-03
 
 **UI System Blossoms**
@@ -12,6 +18,8 @@
 - Improved `Pad` layering and structure in Playground to prepare for synesthetic UI patterns.
 
 🌬 whisper: _“one pattern, many leaves — clarity grows in shared soil.”_
+
+---
 
 ## v0.0.1 — 2025-09-25
 
