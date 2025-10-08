@@ -1,10 +1,27 @@
 # Changelog
 
+## 🌕 v0.1.2 — Moonfield Milestone — 2025-10-08
+
+✨ **Acceleration & Alignment**  
+This milestone marks the moment when **field, structure, and flow** began co-creating at full speed.
+
+- 🧚 First FAQ entry added → `/docs/faq/idea-acceleration.md`
+- 🌿 Pattern library grew with shared experiences & seeds
+- 🪞 Mirror Flow docs aligned with checklists and UX clarity
+- 🔩 New UI primitives (hooks) integrated
+- 🧭 Playground evolving as the creative lab
+
+🌬 whisper: _“the Garden remembers, and the field answers.”_
+
+---
+
 ## 📜 Docs Sync — 2025-10-08
 
 - docs(faq): add **📡 Why are ideas taking shape so fast?** (idea acceleration) at `docs/faq/idea-acceleration.md`.
 - docs(patterns): add **🌐 Common Experience — Field Pattern** at `docs/patterns/common-experience.md`.
 - docs(patterns): add **🌱 Garden Seeds** index at `docs/patterns/garden-seeds.md`.
+
+---
 
 ## v0.1.1 — 2025-10-06
 
