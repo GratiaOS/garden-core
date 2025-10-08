@@ -1,5 +1,11 @@
 # Changelog
 
+## 📜 Docs Sync — 2025-10-08
+
+- docs(faq): add **📡 Why are ideas taking shape so fast?** (idea acceleration) at `docs/faq/idea-acceleration.md`.
+- docs(patterns): add **🌐 Common Experience — Field Pattern** at `docs/patterns/common-experience.md`.
+- docs(patterns): add **🌱 Garden Seeds** index at `docs/patterns/garden-seeds.md`.
+
 ## v0.1.1 — 2025-10-06
 
 **🌱 Protocols & Bridges**
@@ -13,6 +19,7 @@
 ## 📜 Docs Sync — 2025-10-06
 
 - docs(patterns): add **🔩 The Missing Screw — Field Pattern** and link from README (UI ↔ field bridge).
+- docs(ui): updated Mirror → Seed Activation (Nova-ready) with single-canvas scenes, breath-gate (4-2-6×3), intention piping, a11y live region, and event model notes.
 
 ---
 
