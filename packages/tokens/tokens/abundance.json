@@ -1,0 +1,42 @@
+{
+  "namespace": "abundance",
+  "description": "Reverse the Poles baseline tokens for Garden OS.",
+  "tokens": {
+    "--safety-floor": {
+      "value": "the guarantee",
+      "description": "Rest allowed; sealed-by-default ok."
+    },
+    "--consent-default": {
+      "value": true,
+      "description": "No actions that require pressure."
+    },
+    "--capacity-units-per-day": {
+      "value": 3,
+      "description": "Daily capacity tracked across life, money, and joy."
+    },
+    "--ask-not-test": {
+      "value": "forbid-reassurance-tests",
+      "description": "Disallows reassurance tests as a gate to action."
+    },
+    "--repair-window-hours": {
+      "value": 24,
+      "description": "Behavior change focus within a 24 hour repair window."
+    },
+    "--play-impulse": {
+      "value": "on",
+      "description": "Always provide a small playful option."
+    },
+    "--notes-default": {
+      "value": null,
+      "description": "Set via modes; toggles baseline note privacy."
+    },
+    "--rest-default": {
+      "value": null,
+      "description": "Set via modes; establishes whether rest is allowed by default."
+    },
+    "--progress-default": {
+      "value": null,
+      "description": "Set via modes; chooses between small steps or giant leaps."
+    }
+  }
+}

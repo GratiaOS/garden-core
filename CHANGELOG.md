@@ -1,5 +1,11 @@
 # Changelog
 
+## 🌱 Tokens Sync — 2025-10-09
+
+- tokens: seeded `abundance` namespace with RTP guardrails (`tokens/abundance.json`).
+- tokens: added Reverse the Poles mode defaults (`tokens/modes/reverse-poles.json`).
+- build(tokens): introduce manifest + sync script so `@garden/tokens` exposes semantic JSON for downstream consumers.
+
 ## 🌕 v0.1.2 — Moonfield Milestone — 2025-10-08
 
 ✨ **Acceleration & Alignment**  

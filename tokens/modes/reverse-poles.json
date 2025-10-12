@@ -1,0 +1,16 @@
+{
+  "namespace": "abundance",
+  "mode": "reverse-poles",
+  "description": "Flips defaults toward sealed notes, rest allowed, and small-step progress.",
+  "overrides": {
+    "--notes-default": "sealed",
+    "--rest-default": "allowed",
+    "--progress-default": "small-steps",
+    "--safety-floor": "the guarantee",
+    "--consent-default": true,
+    "--capacity-units-per-day": 3,
+    "--ask-not-test": "forbid-reassurance-tests",
+    "--repair-window-hours": 24,
+    "--play-impulse": "on"
+  }
+}

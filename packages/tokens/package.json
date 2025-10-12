@@ -10,7 +10,8 @@
     "theme.css",
     "index.css",
     "README.md",
-    "index.d.ts"
+    "index.d.ts",
+    "tokens/**"
   ],
   "exports": {
     ".": {
@@ -19,7 +20,12 @@
       "style": "./index.css"
     },
     "./theme.css": "./theme.css",
-    "./index.css": "./index.css"
+    "./index.css": "./index.css",
+    "./tokens": "./tokens/manifest.json",
+    "./tokens/*": "./tokens/*"
+  },
+  "scripts": {
+    "build": "node ./scripts/sync-tokens.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.2",

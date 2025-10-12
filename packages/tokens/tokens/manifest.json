@@ -1,0 +1,20 @@
+{
+  "namespaces": {
+    "abundance": {
+      "semantics": [
+        {
+          "name": "abundance",
+          "path": "./abundance.json",
+          "description": "Reverse the Poles baseline tokens for Garden OS."
+        }
+      ],
+      "modes": {
+        "reverse-poles": {
+          "name": "reverse-poles",
+          "path": "./modes/reverse-poles.json",
+          "description": "Flips defaults toward sealed notes, rest allowed, and small-step progress."
+        }
+      }
+    }
+  }
+}
