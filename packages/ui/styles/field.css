@@ -1,0 +1,61 @@
+@layer components {
+  [data-ui='field'] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    color: var(--text);
+  }
+
+  /* parts */
+  [data-ui='field'] [data-part='label'] {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  [data-ui='field'] [data-part='hint'] {
+    font-size: 0.75rem;
+    color: var(--text-faint);
+  }
+  [data-ui='field'] [data-part='description'] {
+    font-size: 0.875rem;
+    color: var(--text-subtle);
+  }
+  [data-ui='field'] [data-part='error'] {
+    font-size: 0.875rem;
+    color: var(--color-danger);
+  }
+
+  /* input shell (when you wrap a native input inside) */
+  [data-ui='field'] [data-part='control'] {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--text);
+    border-radius: var(--radius-md, 0.375rem);
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  [data-ui='field'] [data-part='control']:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--ring-accent, color-mix(in oklab, var(--color-accent) 85%, white 15%));
+  }
+
+  /* states */
+  [data-ui='field'][data-state='error'] [data-part='control'] {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-danger) 60%, transparent);
+  }
+  [data-ui='field'][data-state='disabled'] [data-part='control'] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* calm required marker (dot) */
+  [data-ui='field'] [data-part='label'][data-required]::after {
+    content: '•';
+    margin-left: 0.25rem;
+    opacity: 0.55;
+  }
+}

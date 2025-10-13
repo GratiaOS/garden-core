@@ -1,0 +1,47 @@
+/* 1) Pad runtime mappings — inherit from global theme */
+@layer base {
+  :root {
+    /* Surfaces & text */
+    --pad-surface: var(--color-surface);
+    --pad-elev: var(--color-elev);
+    --pad-border: var(--color-border);
+    --pad-text: var(--color-text);
+    --pad-text-muted: var(--color-muted);
+    --pad-text-subtle: var(--color-subtle);
+    --pad-text-faint: var(--color-faint);
+
+    /* Accent system */
+    --pad-accent: var(--color-accent);
+    --pad-onaccent: var(--color-on-accent);
+
+    /* Shape & depth */
+    --pad-radius: var(--sheet-radius, var(--radius-2xl));
+    --pad-shadow: var(--shadow-card, 0 6px 18px -6px rgb(0 0 0 / 0.2));
+    --pad-ring: var(--ring-accent, color-mix(in oklab, var(--pad-accent) 85%, white 15%));
+  }
+}
+
+/* 2) Pad-scoped utilities */
+@layer components {
+  .pad-surface {
+    background: var(--pad-surface);
+    color: var(--pad-text);
+  }
+
+  .pad-card {
+    background: var(--pad-elev);
+    color: var(--pad-text);
+    border: 1px solid var(--pad-border);
+    border-radius: var(--pad-radius);
+    box-shadow: var(--pad-shadow);
+  }
+
+  .pad-accent {
+    background: var(--pad-accent);
+    color: var(--pad-onaccent);
+  }
+
+  .pad-ring {
+    box-shadow: 0 0 0 3px var(--pad-ring);
+  }
+}

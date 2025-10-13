@@ -1,0 +1,88 @@
+@layer components {
+  [data-ui='pill'] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: var(--radius-pill, 9999px);
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+
+  /* density */
+  [data-ui='pill'][data-density='cozy'] {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+  }
+  [data-ui='pill'][data-density='snug'] {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  /* variants — default tone uses accent */
+  [data-ui='pill'][data-variant='solid'] {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  [data-ui='pill'][data-variant='soft'] {
+    background: color-mix(in oklab, var(--color-accent) 16%, transparent);
+    color: var(--color-accent);
+    border-color: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  }
+  [data-ui='pill'][data-variant='outline'] {
+    background: transparent;
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  /* tones override accent */
+  [data-ui='pill'][data-tone='positive'][data-variant='solid'] {
+    background: var(--color-positive);
+    color: var(--color-on-accent);
+  }
+  [data-ui='pill'][data-tone='warning'][data-variant='solid'] {
+    background: var(--color-warning);
+    color: var(--color-on-accent);
+  }
+  [data-ui='pill'][data-tone='danger'][data-variant='solid'] {
+    background: var(--color-danger);
+    color: var(--color-on-accent);
+  }
+
+  [data-ui='pill'][data-tone='positive'][data-variant='soft'] {
+    background: color-mix(in oklab, var(--color-positive) 16%, transparent);
+    color: var(--color-positive);
+    border-color: color-mix(in oklab, var(--color-positive) 35%, transparent);
+  }
+  [data-ui='pill'][data-tone='warning'][data-variant='soft'] {
+    background: color-mix(in oklab, var(--color-warning) 16%, transparent);
+    color: var(--color-warning);
+    border-color: color-mix(in oklab, var(--color-warning) 35%, transparent);
+  }
+  [data-ui='pill'][data-tone='danger'][data-variant='soft'] {
+    background: color-mix(in oklab, var(--color-danger) 16%, transparent);
+    color: var(--color-danger);
+    border-color: color-mix(in oklab, var(--color-danger) 35%, transparent);
+  }
+
+  [data-ui='pill'][data-tone='positive'][data-variant='outline'] {
+    color: var(--color-positive);
+    border-color: var(--color-positive);
+  }
+  [data-ui='pill'][data-tone='warning'][data-variant='outline'] {
+    color: var(--color-warning);
+    border-color: var(--color-warning);
+  }
+  [data-ui='pill'][data-tone='danger'][data-variant='outline'] {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+  }
+
+  /* Subtle pill (neutral, gentle surface) */
+  [data-ui='pill'][data-variant='subtle'] {
+    background: var(--color-fill-subtle);
+    color: var(--color-text);
+    border-color: color-mix(in oklab, var(--color-text) 12%, transparent);
+  }
+}

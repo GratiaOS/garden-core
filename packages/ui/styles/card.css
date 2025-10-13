@@ -1,0 +1,39 @@
+@layer components {
+  /* base */
+  [data-ui='card'] {
+    border-radius: var(--sheet-radius, var(--radius-2xl));
+    border: 1px solid var(--color-border);
+    background: var(--color-elev);
+    box-shadow: var(--shadow-depth-2, 0 6px 18px -6px rgb(0 0 0 / 0.2));
+    color: var(--text);
+  }
+
+  /* variants */
+  [data-ui='card'][data-variant='plain'] {
+    background: var(--color-surface);
+    box-shadow: none;
+  }
+
+  [data-ui='card'][data-variant='elev'] {
+    /* same as base; kept for clarity */
+  }
+
+  [data-ui='card'][data-variant='glow'] {
+    outline: 2px solid var(--ring-accent, color-mix(in oklab, var(--color-accent) 85%, white 15%));
+    outline-offset: 0;
+  }
+
+  /* padding */
+  [data-ui='card'][data-padding='none'] {
+    padding: 0;
+  }
+  [data-ui='card'][data-padding='sm'] {
+    padding: 0.75rem;
+  }
+  [data-ui='card'][data-padding='md'] {
+    padding: 1rem;
+  }
+  [data-ui='card'][data-padding='lg'] {
+    padding: 1.5rem;
+  }
+}
