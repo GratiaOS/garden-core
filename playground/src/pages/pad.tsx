@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Card, Pill, Field, useMissingScrew } from '@garden/ui';
+import { Button, Card, Pill, Field, useMissingScrew, Toaster, showToast } from '@garden/ui';
 
 type Scene = 'writing' | 'mirror' | 'archive';
 
@@ -73,6 +73,12 @@ export default function PadPage() {
       setBreathCycle((c) => {
         const next = c + 1;
         if (next >= targetCycles) {
+          showToast({
+            icon: '🫁',
+            title: 'Breath gate complete',
+            desc: 'Compass unlocked — try “Activate Compass 🧭”.',
+            variant: 'positive',
+          });
           clearInterval(interval);
           setBreathRunning(false);
           setBreathPhase(null);
@@ -117,11 +123,13 @@ export default function PadPage() {
     if (t) {
       setOneTrueNext(t);
       setPillFading(false);
+      showToast({ icon: '📌', title: 'Pinned', desc: t, variant: 'positive' });
     }
   };
   const unpin = () => {
     if (oneTrueNext) {
       setPillFading(true);
+      showToast('Unpinned');
       setTimeout(() => {
         setOneTrueNext(null);
         setPillFading(false);
@@ -149,8 +157,10 @@ export default function PadPage() {
       if (suggestion) {
         setOneTrueNext(suggestion);
         setArchive((a) => [...a, { id: uid(), text: `${label} seed activated → OTN: ${suggestion}`, ts: Date.now() }]);
+        showToast({ icon: '🧭', title: 'Compass active', desc: suggestion, variant: 'positive' });
       } else {
         setArchive((a) => [...a, { id: uid(), text: `${label} seed activated`, ts: Date.now() }]);
+        showToast({ icon: '🧭', title: 'Compass active', desc: 'Seed activated', variant: 'positive' });
       }
       setActivatedSeed(label);
       setScene('archive');
@@ -160,6 +170,7 @@ export default function PadPage() {
     // default Bloom path
     setActivatedSeed(label);
     setArchive((a) => [...a, { id: uid(), text: `${label} seed activated`, ts: Date.now() }]);
+    showToast({ icon: '🌸', title: 'Bloom active', desc: 'Seed activated', variant: 'positive' });
     setScene('archive');
   }
 
@@ -552,6 +563,7 @@ export default function PadPage() {
           </Card>
         </div>
       </FadeScene>
+      <Toaster position="bottom-center" />
     </div>
   );
 }

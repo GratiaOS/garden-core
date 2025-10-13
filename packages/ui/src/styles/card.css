@@ -1,5 +1,23 @@
+/* ─────────────────────────────────────────────────────────────
+   Garden UI — Card skin (opt‑in)
+   Whisper: "surfaces should invite, not insist." 🌬️
+
+   Purpose
+     • Selector-only skin for the headless Card primitive.
+     • Driven by Garden tokens; no hardcoded hex.
+
+   Data API
+     • [data-ui='card']                        — root
+     • [data-variant='plain|elev|glow']        — depth/outline semantics
+     • [data-padding='none|sm|md|lg']          — inner spacing
+
+   Notes
+     • Base uses --color-elev with border + depth token; 'plain' swaps to --color-surface.
+     • 'glow' draws an accent outline using --ring-accent (with safe fallback).
+     • Keep motion subtle; any reveal/hover effects belong in the app layer.
+   ──────────────────────────────────────────────────────────── */
 @layer components {
-  /* base */
+  /* Base — tokenized surface, border, and depth */
   [data-ui='card'] {
     border-radius: var(--sheet-radius, var(--radius-2xl));
     border: 1px solid var(--color-border);
@@ -8,7 +26,7 @@
     color: var(--text);
   }
 
-  /* variants */
+  /* Variants — plain/elev/glow semantics */
   [data-ui='card'][data-variant='plain'] {
     background: var(--color-surface);
     box-shadow: none;
@@ -23,7 +41,7 @@
     outline-offset: 0;
   }
 
-  /* padding */
+  /* Padding scale — none | sm | md | lg */
   [data-ui='card'][data-padding='none'] {
     padding: 0;
   }

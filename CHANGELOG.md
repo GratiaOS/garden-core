@@ -1,5 +1,16 @@
 # Changelog
 
+## 🌸 Toast Primitive & A11y — 2025-10-13
+
+- ui(primitives): add headless **Toast** primitive with `showToast(...)` event API and `<Toaster/>` renderer (`packages/ui/src/primitives/toast.tsx`).
+- styles(primitives): new skin at `packages/ui/src/styles/toast.css` — positions (bottom-center/top-right), rich content (title/desc), optional icon slot, token-driven colors & shape.
+- a11y: toast items are `role="status"` with `aria-atomic="true"`; keyboard-focusable by default (pause on focus/hover, resume on blur/leave); Enter/Space dismiss (when clickable), Escape always dismisses; reduced-motion respected.
+- timing: prefers `--dur-toast` token, otherwise derives from `--dur-pulse` with a longer hold.
+- playground(demo): add **ToastDemo** with controls, rich content, and icon showcase (`playground/src/demos/ToastDemo.tsx`).
+- playground(pad): wire toast feedback for pin/unpin, breath-gate complete, and seed activations (`playground/src/pages/pad.tsx`).
+
+🌬 whisper: _“news should land softly, then move on.”_
+
 ## 🌱 Garden Link-Up — 2025-10-12
 
 - ui: linked garden-core workspace packages (`@garden/ui`, `@garden/tokens`) and pulled theme CSS into the Pad.

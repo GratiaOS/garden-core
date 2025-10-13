@@ -2,6 +2,7 @@ import { CardDemo } from '../demos/CardDemo';
 import { PillDemo } from '../demos/PillDemo';
 import { FieldDemo } from '../demos/FieldDemo';
 import { ButtonDemo } from '../demos/ButtonDemo';
+import { ToastDemo } from '../demos/ToastDemo';
 
 export default function LabPage() {
   return (
@@ -17,6 +18,7 @@ export default function LabPage() {
         <CardDemo />
         <PillDemo />
         <FieldDemo />
+        <ToastDemo />
       </div>
     </main>
   );

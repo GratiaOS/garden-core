@@ -224,6 +224,7 @@
 
   /* Motion — durations */
   --dur-pulse: 700ms; /* UI chip pulse duration */
+  --dur-toast: 5s; /* or 4800ms */
 }
 
 @layer utilities {

@@ -1,15 +1,30 @@
 import * as React from 'react';
 
 /**
- * Card
- * — primitives/card
+ * Garden UI — Card primitive (headless)
+ * -------------------------------------
+ * Whisper: "surfaces should invite, not insist." 🌬️
  *
- * Variants map to our depth tokens and global semantics:
- *  - plain: surface level, minimal depth
- *  - elev:  raised sheet using shadow-depth-2 (default)
- *  - glow:  raised + soft outline using --ring-accent
+ * Purpose
+ *   • Lightweight surface wrapper for grouping content.
+ *   • Headless by design — visuals come from tokens & optional skins.
  *
- * Padding sizes are intentionally small; use composition for complex layouts.
+ * Data API (for skins)
+ *   • [data-ui="card"]
+ *   • [data-variant="plain|elev|glow"]   — depth/outline semantics
+ *   • [data-padding="none|sm|md|lg"]     — inner spacing
+ *
+ * A11y
+ *   • Card is purely presentational; pass semantics via props (e.g., role="region", aria-labelledby).
+ *   • No tabIndex by default; avoid using Card as an interactive control.
+ *
+ * Theming
+ *   • Uses tokens: --color-surface, --color-elev, --color-border, --sheet-radius, --ring-accent.
+ *   • Depth via utility `shadow-depth-*` (theme-controlled); glow uses an accent outline.
+ *
+ * When to use
+ *   • As a neutral container in dashboards, pads, and panels.
+ *   • Keep padding modest; compose layout with Stack/Grid instead of adding layout logic here.
  */
 
 type Variant = 'plain' | 'elev' | 'glow';
@@ -23,6 +38,7 @@ export type CardProps<T extends React.ElementType = 'div'> = {
   children?: React.ReactNode;
 } & Omit<React.ComponentPropsWithoutRef<T>, 'as' | 'children' | 'className'>;
 
+// Tiny class join helper (no runtime deps).
 function cx(...parts: Array<string | undefined | false>) {
   return parts.filter(Boolean).join(' ');
 }
@@ -34,6 +50,7 @@ const _Card = React.forwardRef(
   ) => {
     const Comp = (as || 'div') as React.ElementType;
 
+    // Variant → tokenized surface recipe (no hardcoded hex; follows theme).
     const variantClasses: Record<Variant, string> = {
       plain: cx('bg-[var(--color-surface)]', 'border border-[var(--color-border)]', 'shadow-none'),
       elev: cx('bg-[var(--color-elev)]', 'border border-[var(--color-border)]', 'shadow-depth-2'),
@@ -45,6 +62,7 @@ const _Card = React.forwardRef(
       ),
     };
 
+    // Padding scale — intentionally small; compose for complex layouts.
     const paddingClasses: Record<Padding, string> = {
       none: 'p-0',
       sm: 'p-3',

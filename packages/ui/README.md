@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/license-Garden%20Public%20License-blue.svg)](../../LICENSE)
 
 **Garden UI** is the shared component library that gives shape and soul to the Garden.  
-It’s where primitives meet design tokens, growing together into a living interface system.
+It’s where headless primitives meet design tokens, growing together into a living interface system.
 
 ---
 
@@ -13,65 +13,113 @@ It’s where primitives meet design tokens, growing together into a living inter
 
 Garden UI isn’t just a set of buttons and cards — it’s a language.  
 A language built on trust, depth, and play.  
-Every primitive is **semantic** (not ornamental), **composable**, and **theme-aware**.
+Every primitive is **semantic** (not ornamental), **composable**, and **theme‑aware**.
 
-- 🧠 **Headless at the core** — logic lives cleanly in primitives
-- 🪴 **Styled with intention** — using tokens, not one-off hacks
-- 🌓 **Theme-adaptive** — light, dark, or future modes flow seamlessly
-- 🧰 **Built for scale** — from playful playgrounds to full apps
+- 🧠 **Headless at the core** — logic and a11y in primitives
+- 🪴 **Styled with intention** — tokens over hardcoded colors
+- 🌓 **Theme‑adaptive** — light, dark, or future palettes
+- 🧰 **Built to scale** — from playful labs to full apps
 
 ---
 
 ## 📦 Installation
 
-Garden UI lives inside the Garden monorepo.  
-From the root, install dependencies and build once:
+Garden UI lives inside the Garden monorepo. From the repo root:
 
 ```bash
 pnpm install
 pnpm build
 ```
 
-Then, in your app:
+In your app entry:
 
 ```tsx
 import { Button, Card, Pill, Field } from '@garden/ui';
-import '@garden/ui/base.css';
+import { Toaster, showToast } from '@garden/ui';
+import '@garden/ui/base.css'; // pulls tokens + component skins
 ```
+
+> Minimal CSS footprint: components are headless and opt‑in styled via `base.css` (tokens + skins). You may ship your own skins.
 
 ---
 
 ## 🧱 Primitives
 
-| Component | Purpose                 | Notes                                                             |
-| --------- | ----------------------- | ----------------------------------------------------------------- |
-| `Button`  | Call to action          | Variant: solid, subtle. Tones: accent, positive, warning, danger. |
-| `Card`    | Container surface       | Variants: plain, elev, glow.                                      |
-| `Pill`    | Tag / filter / soft CTA | Variants: solid, subtle. Soft tones available.                    |
-| `Field`   | Input wrapper           | Styled with consistent focus rings and spacing.                   |
+Short purpose notes (see Playground for full demos):
 
-Each primitive maps directly to **global design tokens**, so themes and local contexts stay in sync.
+| Component | Purpose                 | Notes                                                                                                                                        |
+| --------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Button`  | Call to action          | Variants: solid, outline, ghost, subtle. Tones: default, accent, positive, warning, danger. Loading: `inline` spinner or `blocking` overlay. |
+| `Card`    | Container surface       | Variants: plain, elev, glow. Padding: none, sm, md, lg.                                                                                      |
+| `Pill`    | Tag / filter / soft CTA | Variants: soft, solid, outline, subtle. Tones: subtle, accent, positive, warning, danger.                                                    |
+| `Field`   | Input wrapper           | Consistent label/description/error wiring; calm focus rings.                                                                                 |
+| `Toast`   | Ephemeral notice        | Headless event‑driven toasts with hover/focus pause & a11y. Use `<Toaster/>` + `showToast(...)`.                                             |
+
+Each primitive maps to **global design tokens**, so themes and local contexts stay in sync.
 
 ---
 
-## 🪄 Theming & Tokens
+## 🔔 Toasts (quick start)
 
-UI components don’t carry hardcoded colors.  
-Instead, they rely on the `@garden/tokens` package:
+Render one Toaster near the root:
+
+```tsx
+// App.tsx
+export function App() {
+  return (
+    <>
+      {/* ...routes... */}
+      <Toaster position="bottom-center" />
+    </>
+  );
+}
+```
+
+Fire a toast from anywhere:
+
+```ts
+showToast('Saved ✓', { variant: 'positive', icon: '🌈' });
+// or
+showToast({ title: 'Saved', desc: 'Your note is in the timeline.', variant: 'positive', icon: '🌈' });
+```
+
+Conventions the Toaster understands:
+
+- `variant`: `neutral | positive | warning | danger`
+- Optional `title`, `desc`, or simple `message`
+- Optional `icon` (emoji or node)
+- `durationMs`: overrides default hold (reads `--dur-toast`, falls back to `--dur-pulse`)
+- **Hover/focus pause**; **Enter/Space** dismiss (if clickable); **Esc** dismisses
+
+---
+
+## 🧭 Button loading modes
+
+```tsx
+<Button loading>Saving…</Button>                         // inline spinner
+<Button loading loadingMode="blocking">Saving…</Button>  // overlay + dim
+```
+
+Both modes set `aria-busy`, emit data‑attrs for skins, and block clicks while loading.
+
+---
+
+## 🎨 Theming & Tokens
+
+No hardcoded hex. Components read tokens from `@garden/tokens`:
 
 ```css
 @theme {
   --color-surface: oklch(97% 0.01 180);
+  --color-elev: oklch(99% 0.005 180);
   --color-accent: oklch(62% 0.09 150);
   --color-on-accent: oklch(15% 0.01 180);
+  --color-border: color-mix(in oklab, var(--color-text) 16%, transparent);
   --radius-2xl: 1.25rem;
+  --dur-pulse: 1200ms; /* rhythm token used by Toast fallback */
+  --dur-toast: 4200ms; /* optional toast hold override */
 }
-```
 
-You can extend or override these tokens per app or surface.  
-For example, to make a darker theme:
-
-```css
 :root[data-theme='dark'] {
   --color-surface: oklch(21% 0.07 241);
 }
@@ -81,26 +129,35 @@ For example, to make a darker theme:
 
 ## 🧪 Playground
 
-To explore components interactively:
+Explore components interactively:
 
 ```bash
 cd playground
 pnpm dev
 ```
 
-Visit [http://localhost:5173](http://localhost:5173) and play in the **Lab** tab 🌿
+Visit <http://localhost:5173> and open the **Lab** tab 🌿
+
+---
+
+## ♿ A11y (high‑level)
+
+- Primitives handle roles/labels and emit calm, navigable markup.
+- Buttons support keyboard activation even when rendered `asChild`.
+- Toast items are `role="status"` + `aria-atomic="true"`; hover/focus pause; reduced‑motion respected.
+- Field wires `label`, `description`, and `error` with merged `aria-describedby`.
 
 ---
 
 ## 📝 Contributing
 
-We keep the UI package **light**, **clear**, and **deeply documented**.  
-If you’re adding a new primitive:
+We keep the UI package **light**, **clear**, and **deeply documented**.
 
 1. **Start with tokens** — extend `@garden/tokens` if needed
 2. **Write the primitive** in `src/primitives`
-3. **Add a demo** to the Playground
-4. **Update this README** 🫶
+3. **Add a skin** in `src/styles` (optional; primitives are headless)
+4. **Add a demo** to the Playground
+5. **Update this README** 🫶
 
 ---
 

@@ -12,6 +12,17 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export function ButtonDemo() {
+  const [loadingInline, setLoadingInline] = React.useState(false);
+  const [loadingBlocking, setLoadingBlocking] = React.useState(false);
+
+  const demoLoadInline = () => {
+    setLoadingInline(true);
+    window.setTimeout(() => setLoadingInline(false), 2000);
+  };
+  const demoLoadBlocking = () => {
+    setLoadingBlocking(true);
+    window.setTimeout(() => setLoadingBlocking(false), 2000);
+  };
   return (
     <div className="space-y-8">
       <header className="space-y-1">
@@ -86,11 +97,22 @@ export function ButtonDemo() {
         <Button disabled>Disabled</Button>
       </Section>
 
+      <Section title="Loading modes">
+        <Button tone="accent" loading={loadingInline} onClick={demoLoadInline}>
+          Inline loading (2s)
+        </Button>
+        <Button tone="accent" loading={loadingBlocking} loadingMode="blocking" onClick={demoLoadBlocking}>
+          Blocking loading (2s)
+        </Button>
+      </Section>
+
       {/* Usage example */}
       <footer>
         <h3 className="text-sm font-medium text-subtle mb-2">Usage</h3>
         <pre className="bg-elev border border-border text-xs p-3 rounded-md overflow-x-auto">
-          <code className="whitespace-pre">{`<Button tone="accent">Label</Button>`}</code>
+          <code className="whitespace-pre">{`<Button tone="accent">Label</Button>
+<Button loading>Saving…</Button>
+<Button loading loadingMode="blocking">Saving…</Button>`}</code>
         </pre>
       </footer>
     </div>

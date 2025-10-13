@@ -1,0 +1,119 @@
+@layer components {
+  /* ─────────────────────────────────────────────────────────────
+     Garden UI — Toast skin (headless primitive)
+     Whisper: "news should land softly, then move on" 🌬️
+     Notes:
+       • HTML is driven by data-attrs from the primitive; this file only styles.
+       • Back-compat: single-line <span data-role="message"> still works.
+       • Optional multiline: support <span data-role="title"> + <span data-role="desc">.
+       • Variant colors come from tokens; no hardcoded hex.
+       • A11y: items are role="status" with aria-atomic="true" so screen readers announce the whole toast as one unit; focus/hover pause timers.
+     ──────────────────────────────────────────────────────────── */
+
+  /* Container positions */
+  [data-ui='toast'][data-position='bottom-center'] {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 16px;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 50;
+  }
+  [data-ui='toast'][data-position='top-right'] {
+    position: fixed;
+    right: 16px;
+    top: 16px;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  /* Stack layout */
+  [data-ui='toast'] [data-role='stack'] {
+    display: grid;
+    gap: 8px;
+  }
+
+  /* Item skin */
+  [data-ui='toast-item'] {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--elev);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--bar, var(--color-accent));
+    border-radius: var(--radius-pill);
+    padding: 8px 12px;
+    box-shadow: var(--shadow-card-ambient);
+    max-width: 520px;
+    margin: 0 auto;
+    animation: var(--animate-breathe);
+    transition: opacity var(--duration-snug) var(--ease-soft), transform var(--duration-snug) var(--ease-soft);
+  }
+
+  /* Leading icon (optional) — keeps emoji/glyphs neatly aligned */
+  [data-ui='toast-item'] [data-role='icon'] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto; /* do not shrink */
+    width: 18px;
+    height: 18px;
+    font-size: 14px; /* emoji size */
+    line-height: 1;
+    opacity: 0.95;
+  }
+
+  /* Content layout — single line by default; becomes vertical when title/desc present */
+  [data-ui='toast-item'] [data-role='content'] {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-width: 0; /* allow text wrap */
+  }
+
+  /* Typography */
+  [data-ui='toast-item'] [data-role='title'] {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text);
+  }
+  [data-ui='toast-item'] [data-role='desc'],
+  [data-ui='toast-item'] [data-role='message'] {
+    font-size: 13px;
+    line-height: 1.25;
+    color: var(--text-subtle);
+  }
+
+  /* Back-compat: when only [data-role='message'] exists (no content wrapper) */
+  [data-ui='toast-item'] > [data-role='message'] {
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  /* Variants set the accent bar color */
+  [data-ui='toast-item'][data-variant='neutral'] {
+    --bar: var(--color-accent);
+  }
+  [data-ui='toast-item'][data-variant='positive'] {
+    --bar: var(--color-positive);
+  }
+  [data-ui='toast-item'][data-variant='warning'] {
+    --bar: var(--color-warning);
+  }
+  [data-ui='toast-item'][data-variant='danger'] {
+    --bar: var(--color-danger);
+  }
+
+  /* Motion accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    [data-ui='toast-item'] {
+      animation: none;
+    }
+  }
+}

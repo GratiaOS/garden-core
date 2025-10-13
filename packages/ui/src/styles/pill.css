@@ -1,3 +1,22 @@
+/* ─────────────────────────────────────────────────────────────
+   Garden UI — Pill skin (opt‑in)
+   Whisper: "labels should sit light, but speak clearly." 🌬️
+
+   Purpose
+     • Selector-only skin for the headless Pill primitive.
+     • Driven entirely by Garden tokens; no hardcoded hex.
+
+   Data API
+     • [data-ui='pill']                             — root
+     • [data-variant='soft|solid|outline|subtle']   — visual weight
+     • [data-tone='subtle|accent|positive|warning|danger']
+     • [data-density='cozy|snug']                   — vertical rhythm
+
+   Notes
+     • Subtle variant uses neutral surface tokens (good for low-stakes tags).
+     • Variants map tone to color tokens; tones override the default accent.
+     • Keep animations out; density & colors should feel calm by default.
+   ──────────────────────────────────────────────────────────── */
 @layer components {
   [data-ui='pill'] {
     display: inline-flex;
@@ -10,7 +29,7 @@
     border: 1px solid transparent;
   }
 
-  /* density */
+  /* Density — cozy (default) and snug (compact) */
   [data-ui='pill'][data-density='cozy'] {
     padding: 0.375rem 0.625rem;
     font-size: 0.8125rem;
@@ -20,7 +39,7 @@
     font-size: 0.75rem;
   }
 
-  /* variants — default tone uses accent */
+  /* Variants — default tone maps to accent palette */
   [data-ui='pill'][data-variant='solid'] {
     background: var(--color-accent);
     color: var(--color-on-accent);
@@ -36,7 +55,7 @@
     border-color: var(--color-accent);
   }
 
-  /* tones override accent */
+  /* Tones — override accent mapping for positive|warning|danger */
   [data-ui='pill'][data-tone='positive'][data-variant='solid'] {
     background: var(--color-positive);
     color: var(--color-on-accent);
@@ -79,7 +98,7 @@
     border-color: var(--color-danger);
   }
 
-  /* Subtle pill (neutral, gentle surface) */
+  /* Subtle — neutral surface, gentle border; text uses neutral color token */
   [data-ui='pill'][data-variant='subtle'] {
     background: var(--color-fill-subtle);
     color: var(--color-text);

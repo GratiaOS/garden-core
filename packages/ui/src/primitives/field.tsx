@@ -1,15 +1,34 @@
-/****
- * TODO(Field - a11y): Drop wrapper aria-live; keep role="alert" on error OR use aria-live="polite" on error only. Pick one and document why in a comment.
- * TODO(Field - docs): Add JSDoc above Field explaining id strategy (useId + child id) and the children API (element vs render function).
- * TODO(Field - dev warning): In dev builds, console.warn if `children` is neither a function nor a valid element.
- * TODO(Field - tests): Add tests for:
- *   - merges aria-describedby (description + hint + error)
- *   - required + aria-required wiring
- *   - error toggling flips data-state and aria-invalid
- *   - cloning preserves child-provided aria props
- * TODO(Field - story): Add Storybook/Playground stories:
- *   - Basic, WithHint, WithDescription, WithError, RenderProp, Required
- * DECISION(Field - required vs optional): Default UX hides "Optional"; style required calmly via label[data-required].
+/**
+ * Garden UI — Field primitive (headless)
+ * -------------------------------------
+ * Whisper: "clarity first; comfort follows." 🌬️
+ *
+ * Purpose
+ *   • A tiny accessibility wrapper that wires one control to its label & helper text.
+ *   • Headless by design — visuals live in the skin (styles/field.css) via data‑attrs.
+ *
+ * Data API (for skins)
+ *   • [data-ui="field"]                — root wrapper
+ *   • [data-state="valid|invalid"]     — validation state
+ *   • [data-tone="subtle|accent|positive|warning|danger"] — hint for skins
+ *   • [data-part="label|control|error|description|hint|optional"]
+ *   • [data-required] on label when `required` is true (skins style this calmly)
+ *
+ * A11y decisions
+ *   • IDs: stable `controlId` from (prop.id || child.id || useId()).
+ *   • `aria-describedby`: merges description + hint + error ids.
+ *   • Errors: `role="alert"` only on the error node — no wrapper `aria-live` to avoid double reads.
+ *   • Required: sets `aria-required` on control; we avoid noisy "(Optional)" by default.
+ *
+ * Children API
+ *   • Element:  <Field><input /></Field> — cloned with merged aria/id props.
+ *   • Render fn: <Field>{(a) => <input {...a} />}</Field> — you render; we pass wiring.
+ *
+ * Dev notes / next
+ *   • Docs: add README/Storybook examples (Basic, WithHint, WithError, RenderProp, Required).
+ *   • Tests: describedby merge; required wiring; error flips data-state + aria-invalid; cloning preserves aria props.
+ *   • DX: warn in dev when `children` is neither a function nor a valid element (implemented below).
+ *   • Optional UX: default keeps "Optional" hidden; style required via label[data-required].
  */
 import * as React from 'react';
 
@@ -53,14 +72,17 @@ export interface FieldProps {
 
 const defaultOptionalText: React.ReactNode | null = null; // default: do not show optional text; mark required via CSS using [data-required]
 
+// Join non-empty id parts into a single space-separated string for aria-describedby.
 function joinIds(...parts: Array<string | undefined>) {
   return parts.filter(Boolean).join(' ') || undefined;
 }
 
+// Narrow unknown to a string (safely) when reading potential child props.
 function toString(value: unknown) {
   return typeof value === 'string' ? value : undefined;
 }
 
+// Detect dev mode without importing Node types (works in browser ESM).
 function isDevEnvironment() {
   const globalProcess = (globalThis as { process?: { env?: Record<string, unknown> } }).process;
   const env = globalProcess && typeof globalProcess === 'object' ? globalProcess.env : undefined;
@@ -68,6 +90,7 @@ function isDevEnvironment() {
   return mode !== 'production';
 }
 
+// Tiny class join helper (no runtime deps).
 function cx(...parts: Array<string | undefined | false>) {
   return parts.filter(Boolean).join(' ');
 }
@@ -91,6 +114,13 @@ function cx(...parts: Array<string | undefined | false>) {
  *   merged `id`, `aria-describedby`, `aria-invalid`, and `aria-required`.
  * - **Render function**: `<Field>{(aria) => <input {...aria} />}</Field>` — You render
  *   the control yourself with the provided ARIA wiring (`id`, `aria-describedby`, etc.).
+ *
+ * ### Data attributes for skins
+ * - `data-ui="field"`, `data-state`, `data-tone`, and `data-part` markers on internal nodes.
+ *
+ * ### A11y rationale
+ * - Error messages use `role="alert"` for assertive announcements.
+ * - Wrapper does NOT set `aria-live` to avoid duplicate SR reads.
  */
 export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field(
   { id: idProp, label, description, hint, error, required, optionalText = defaultOptionalText, tone, children, labelProps, className },
@@ -124,6 +154,7 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
     const isFn = typeof children === 'function';
     const isElement = !!childElement;
     if (!isFn && !isElement) {
+      // Intentionally gentle — helps catch misuse without throwing.
       // eslint-disable-next-line no-console
       console.warn('[Field] `children` should be a React element or a render function. Received:', children);
     }
@@ -167,7 +198,8 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
       {/* Label: we intentionally do not render an "Optional" badge by default.
           Required fields are marked with data-required and should be styled calmly in CSS, e.g.:
           [data-ui="field"] [data-part="label"][data-required]::after { content: '•'; opacity: 0.6; margin-left: 0.25rem; }
-          Teams that want an explicit optional indicator can pass `optionalText` manually.
+          This keeps AT output clean; teams needing explicit copy can pass \
+          	`optionalText` (e.g. "Optional").
       */}
       {label ? (
         <label

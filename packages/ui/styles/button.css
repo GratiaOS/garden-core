@@ -1,5 +1,33 @@
-/* Button skin (opt-in) — uses global tokens from @garden/tokens
-   Selector-only styling so primitives remain headless. */
+/* ─────────────────────────────────────────────────────────────
+   Garden UI — Button skin (opt‑in)
+   Whisper: "press should feel like choosing, not forcing." 🌬️
+
+   Purpose
+     • Selector-only skin for the headless Button primitive.
+     • Uses Garden tokens; no hardcoded hex.
+
+   Data API
+     • [data-ui='button']              — root
+     • [data-variant='solid|outline|ghost|subtle']
+     • [data-tone='default|accent|positive|warning|danger']
+     • [data-density='snug|cozy']      — spacing/size
+     • [data-state='idle|loading|disabled'] (plus [disabled])
+     • [data-loading-mode='inline|blocking'] when loading
+     • [data-slot='icon leading|icon trailing|spinner|overlay'] for adornments, progress & blocking
+
+   A11y & Motion
+     • Focus-visible ring uses --ring-accent (fallback mixes accent against white).
+     • Hover lift is tiny (0.5px); no animations here, so reduced motion is implicit.
+     • Controls remain tabbable and legible across light/dark themes.
+
+   Theming notes
+     • Surface/background: --color-elev; text: --color-text; borders: --color-border.
+     • Accents: --color-accent|positive|warning|danger; on-accent: --color-on-accent.
+     • Radius uses --radius-pill.
+
+   Future ideas
+     • Roomy density; progress stripe for loading; pressed-depth tokens.
+   ──────────────────────────────────────────────────────────── */
 
 @layer components {
   /* Base */
@@ -37,7 +65,56 @@
     margin-inline-start: 0.25rem;
   }
 
-  /* Variants — SOLID */
+  /* Spinner — inline, token-aware, respects reduced motion */
+  [data-ui='button'] [data-slot='spinner'] {
+    display: inline-block;
+    width: 0.875rem; /* 14px */
+    height: 0.875rem; /* 14px */
+    margin-inline-start: 0.25rem;
+    border-radius: 9999px;
+    border: 2px solid currentColor;
+    border-top-color: transparent; /* creates the arc */
+    animation: ui-spin var(--duration-snug, 0.9s) linear infinite;
+  }
+
+  @keyframes ui-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-ui='button'] [data-slot='spinner'] {
+      animation: none;
+      /* show a static dot when motion is reduced */
+      border-color: currentColor;
+      border-top-color: currentColor;
+      opacity: 0.8;
+    }
+  }
+
+  /* Blocking overlay — covers the button and centers a spinner */
+  [data-ui='button'][data-loading-mode='blocking'] {
+    position: relative; /* create containing block for overlay */
+  }
+  [data-ui='button'][data-loading-mode='blocking'] [data-slot='overlay'] {
+    position: absolute;
+    inset: -1px; /* cover border too */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+    pointer-events: none; /* overlay does not steal clicks */
+    /* Gentle dim across variants (token-mixed) */
+    background: color-mix(in oklab, var(--color-elev) 82%, var(--color-text) 18%);
+  }
+  [data-ui='button'][data-loading-mode='blocking'] [data-slot='overlay'] [data-slot='spinner'] {
+    width: 1rem; /* 16px */
+    height: 1rem; /* 16px */
+    margin: 0; /* centered, no extra gap */
+  }
+
+  /* Variants — SOLID (filled surface, on-accent text for non-default tones) */
   [data-ui='button'][data-variant='solid'] {
     border-color: transparent;
     color: var(--color-on-accent);
@@ -61,7 +138,7 @@
     background: var(--color-danger);
   }
 
-  /* Variants — OUTLINE */
+  /* Variants — OUTLINE (transparent fill, colored border/text) */
   [data-ui='button'][data-variant='outline'] {
     background: transparent;
   }
@@ -85,7 +162,7 @@
     border-color: var(--color-danger);
   }
 
-  /* Variants — GHOST */
+  /* Variants — GHOST (no border, transparent fill; subtle hover wash on tone) */
   [data-ui='button'][data-variant='ghost'] {
     background: transparent;
     border-color: transparent;
@@ -106,14 +183,14 @@
     color: var(--color-danger);
   }
 
-  /* Variants — SUBTLE */
+  /* Variants — SUBTLE (neutral surface, gentle border; good for low-stakes actions) */
   [data-ui='button'][data-variant='subtle'] {
     background: var(--color-fill-subtle);
     color: var(--color-text);
     border-color: color-mix(in oklab, var(--color-text) 12%, transparent);
   }
 
-  /* Hover (slight lift + color wash) */
+  /* Hover — slight lift + color wash (whisper: "make intent feel light") */
   @media (hover: hover) {
     [data-ui='button']:not([disabled])[data-state='idle']:hover {
       transform: translateY(-0.5px);
@@ -144,13 +221,13 @@
     }
   }
 
-  /* Focus ring (uses global --ring-accent fallback) */
+  /* Focus — :focus-visible ring uses --ring-accent (fallback blends accent for contrast) */
   [data-ui='button']:focus-visible {
     outline: 2px solid var(--ring-accent, color-mix(in oklab, var(--color-accent) 85%, white 15%));
     outline-offset: 2px;
   }
 
-  /* States */
+  /* States — loading (progress), disabled (no pointer events to avoid double submits) */
   [data-ui='button'][data-state='loading'] {
     cursor: progress;
   }

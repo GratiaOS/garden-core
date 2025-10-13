@@ -1,3 +1,22 @@
+/* ─────────────────────────────────────────────────────────────
+   Garden UI — Field skin (opt‑in)
+   Whisper: "clarity first; comfort follows." 🌬️
+
+   Purpose
+     • Selector-only skin for the headless Field primitive.
+     • Driven by Garden tokens; no hardcoded hex.
+
+   Data API
+     • [data-ui='field']                          — root
+     • [data-part='label|hint|description|error|control|optional']
+     • [data-state='error|disabled']              — this skin handles these; 'invalid' may map to 'error' upstream
+     • [data-required] on label — calm bullet (•) suffix
+
+   Notes
+     • Focus ring uses --ring-accent (falls back to accent mix).
+     • Control shell is optional; override per project as needed.
+     • Keep motion subtle; avoid intrusive animations in forms.
+   ──────────────────────────────────────────────────────────── */
 @layer components {
   [data-ui='field'] {
     display: flex;
