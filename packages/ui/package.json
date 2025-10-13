@@ -25,6 +25,10 @@
       "types": "./dist/primitives/field.d.ts",
       "import": "./dist/primitives/field.js"
     },
+    "./primitives/Toast": {
+      "types": "./dist/primitives/toast.d.ts",
+      "import": "./dist/primitives/toast.js"
+    },
     "./styles/base.css": {
       "default": "./styles/base.css"
     },
