@@ -1,5 +1,14 @@
 # Changelog
 
+## 🌱 Garden Link-Up — 2025-10-12
+
+- ui: linked garden-core workspace packages (`@garden/ui`, `@garden/tokens`) and pulled theme CSS into the Pad.
+- ui: Dashboard + StatusBar now use Garden primitives and abundance tokens for RTP styling.
+- build: pnpm workspace includes `../garden-core/packages/*` so local Garden builds are consumed directly.
+- styles: synced stylesheet imports to expose `--radius-pill`, `--color-surface`, and related abundance tokens across the Pad.
+
+🌬 whisper: _“link the gardens, let the radius remember.”_
+
 ## 🌱 Tokens Sync — 2025-10-09
 
 - tokens: seeded `abundance` namespace with RTP guardrails (`tokens/abundance.json`).

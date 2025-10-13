@@ -1,3 +1,8 @@
+/* ─────────────────────────────────────────────────────────────
+   Garden Core — Theme (gratia)
+   Purpose: semantic tokens + depth/motion for Pad & scenes
+   Whisper: “rest is repair; motion is gentle.”
+   ──────────────────────────────────────────────────────────── */
 @import 'tailwindcss';
 
 @theme {
@@ -182,6 +187,14 @@
     --depth-shadow: var(--shadow-depth-3);
     --depth-opacity: var(--layer-opacity-3);
   }
+
+  /* Reverse‑the‑Poles (RTP) — abundance mode
+     why: security is a floor, not a leash | what: flip safe defaults | how: dataset flag */
+  :root[data-mode='rtp'] {
+    --composer-privacy-default: sealed; /* start private; sharing is opt‑in */
+    --rest-is-repair: 1; /* surfaces gentle hints in UI */
+    /* capacity stays at 3 by design (small honest wins) */
+  }
 }
 
 /* === Aliases for custom CSS & calc() ===
@@ -202,6 +215,15 @@
 
   --sheet-radius: var(--radius-2xl);
   --shadow-card-ambient: var(--shadow-card);
+
+  /* Covenant & RTP-friendly defaults (read by UI; override via [data-mode]) */
+  --composer-privacy-default: public; /* flipped to `sealed` in RTP */
+  --capacity-units-per-day: 3; /* UI renders three capacity dots */
+  --rtp-hint-default: "ask, don't test"; /* language-interrupt default hint */
+  --rest-is-repair: 0; /* 1 when RTP mode is active */
+
+  /* Motion — durations */
+  --dur-pulse: 700ms; /* UI chip pulse duration */
 }
 
 @layer utilities {
@@ -234,5 +256,21 @@
   .ambient-flow {
     opacity: var(--timeline-flow-ambient);
     transition: opacity var(--duration-snug) var(--ease-deep);
+  }
+
+  /* Animation utilities — apply tokenized keyframes with one class */
+  .animate-breathe {
+    animation: var(--animate-breathe);
+  }
+  .animate-twinkle {
+    animation: var(--animate-twinkle);
+  }
+
+  /* Respect reduced motion: disable ambient animations */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-breathe,
+    .animate-twinkle {
+      animation: none !important;
+    }
   }
 }
