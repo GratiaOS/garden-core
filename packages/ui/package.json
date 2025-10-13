@@ -37,6 +37,9 @@
     "./styles/field.css": {
       "default": "./styles/field.css"
     },
+    "./styles/toast.css": {
+      "default": "./styles/toast.css"
+    },
     "./styles/pad.css": {
       "default": "./styles/pad.css"
     },
