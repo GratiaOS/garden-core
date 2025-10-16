@@ -38,11 +38,6 @@ export type CardProps<T extends React.ElementType = 'div'> = {
   children?: React.ReactNode;
 } & Omit<React.ComponentPropsWithoutRef<T>, 'as' | 'children' | 'className'>;
 
-// Tiny class join helper (no runtime deps).
-function cx(...parts: Array<string | undefined | false>) {
-  return parts.filter(Boolean).join(' ');
-}
-
 const _Card = React.forwardRef(
   <T extends React.ElementType = 'div'>(
     { as, variant = 'elev', padding = 'md', className, children, ...rest }: CardProps<T>,
@@ -50,39 +45,13 @@ const _Card = React.forwardRef(
   ) => {
     const Comp = (as || 'div') as React.ElementType;
 
-    // Variant → tokenized surface recipe (no hardcoded hex; follows theme).
-    const variantClasses: Record<Variant, string> = {
-      plain: cx('bg-[var(--color-surface)]', 'border border-[var(--color-border)]', 'shadow-none'),
-      elev: cx('bg-[var(--color-elev)]', 'border border-[var(--color-border)]', 'shadow-depth-2'),
-      glow: cx(
-        'bg-[var(--color-elev)]',
-        'border border-[var(--color-border)]',
-        // soft accent outline; outline works consistently in TW v4
-        'shadow-depth-2 outline outline-2 outline-[var(--ring-accent)]'
-      ),
-    };
-
-    // Padding scale — intentionally small; compose for complex layouts.
-    const paddingClasses: Record<Padding, string> = {
-      none: 'p-0',
-      sm: 'p-3',
-      md: 'p-4',
-      lg: 'p-6',
-    };
-
     return (
       <Comp
         ref={ref}
         data-ui="card"
         data-variant={variant}
         data-padding={padding}
-        className={cx(
-          // shape follows theme token; falls back gracefully
-          'rounded-[var(--sheet-radius)]',
-          variantClasses[variant],
-          paddingClasses[padding],
-          className
-        )}
+        className={className}
         {...rest}>
         {children}
       </Comp>

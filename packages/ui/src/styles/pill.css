@@ -39,6 +39,12 @@
     font-size: 0.75rem;
   }
 
+  [data-ui='pill'] [data-slot~='icon'] {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
   /* Variants — default tone maps to accent palette */
   [data-ui='pill'][data-variant='solid'] {
     background: var(--color-accent);

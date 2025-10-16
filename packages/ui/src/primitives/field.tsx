@@ -91,10 +91,6 @@ function isDevEnvironment() {
 }
 
 // Tiny class join helper (no runtime deps).
-function cx(...parts: Array<string | undefined | false>) {
-  return parts.filter(Boolean).join(' ');
-}
-
 /**
  * Field
  *
@@ -177,6 +173,8 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
 
   const state: State = error ? 'invalid' : 'valid';
 
+  const { className: labelClassName, ...restLabelProps } = labelProps ?? ({} as React.LabelHTMLAttributes<HTMLLabelElement>);
+
   const optionalIndicator =
     !required && optionalText != null ? (
       <span data-part="optional" aria-hidden="true">
@@ -190,11 +188,7 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
       data-ui="field"
       data-state={state}
       data-tone={computedTone}
-      className={cx(
-        // wrapper layout & default text color follow global tokens
-        'flex flex-col gap-1.5 text-[var(--text)]',
-        className
-      )}>
+      className={className}>
       {/* Label: we intentionally do not render an "Optional" badge by default.
           Required fields are marked with data-required and should be styled calmly in CSS, e.g.:
           [data-ui="field"] [data-part="label"][data-required]::after { content: '•'; opacity: 0.6; margin-left: 0.25rem; }
@@ -206,8 +200,8 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
           htmlFor={controlId}
           data-part="label"
           data-required={required ? '' : undefined}
-          className={cx('text-sm font-medium text-[var(--text)]', labelProps?.className)}
-          {...labelProps}>
+          className={labelClassName}
+          {...restLabelProps}>
           <span>{label}</span>
           {optionalIndicator}
         </label>
@@ -218,19 +212,19 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
       {error ? (
         // a11y: We use role="alert" on the error message for assertive announcement and
         // do not set aria-live on the wrapper to avoid duplicate reads by screen readers.
-        <div id={errorId} data-part="error" role="alert" className="text-sm text-[var(--color-danger)]">
+        <div id={errorId} data-part="error" role="alert">
           {error}
         </div>
       ) : null}
 
       {description ? (
-        <div id={descriptionId} data-part="description" className="text-sm text-[var(--text-subtle)]">
+        <div id={descriptionId} data-part="description">
           {description}
         </div>
       ) : null}
 
       {hint ? (
-        <div id={hintId} data-part="hint" className="text-xs text-[var(--text-faint)]">
+        <div id={hintId} data-part="hint">
           {hint}
         </div>
       ) : null}

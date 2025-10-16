@@ -64,11 +64,6 @@ function cx(...parts: Array<string | undefined | false | null>) {
 }
 
 // Base utility classes — the skin (CSS) handles colors/borders via data-attrs.
-const baseClasses =
-  'inline-flex items-center gap-1 rounded-full border text-xs font-medium select-none ' +
-  'px-2 py-1 ' +
-  "[&[data-density='snug']]:px-1.5 [&[data-density='snug']]:py-0.5";
-
 /**
  * Headless Pill
  * - Emits `data-ui`, `data-variant`, `data-tone`, `data-density`.
@@ -88,18 +83,18 @@ const PillInner = <TAs extends AsElement = 'span'>(props: PillProps<TAs>, ref: R
       data-variant={variant}
       data-tone={tone}
       data-density={density}
-      className={cx(baseClasses, className)}
+      className={cx(className) || undefined}
       {...buttonDefaults}
       {...(rest as Record<string, unknown>)}>
       {leading && (
         // Presentational — hidden from AT since the text already conveys the label
-        <span aria-hidden="true" className="shrink-0">
+        <span aria-hidden="true" data-slot="icon leading">
           {leading}
         </span>
       )}
       {children}
       {trailing && (
-        <span aria-hidden="true" className="shrink-0">
+        <span aria-hidden="true" data-slot="icon trailing">
           {trailing}
         </span>
       )}

@@ -62,7 +62,7 @@
   }
 
   /* states */
-  [data-ui='field'][data-state='error'] [data-part='control'] {
+  [data-ui='field'][data-state='invalid'] [data-part='control'] {
     border-color: var(--color-danger);
     box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-danger) 60%, transparent);
   }

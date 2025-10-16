@@ -29,6 +29,10 @@
       "types": "./dist/primitives/toast.d.ts",
       "import": "./dist/primitives/toast.js"
     },
+    "./primitives/Badge": {
+      "types": "./dist/primitives/badge.d.ts",
+      "import": "./dist/primitives/badge.js"
+    },
     "./styles/base.css": {
       "default": "./styles/base.css"
     },
@@ -49,6 +53,9 @@
     },
     "./styles/pill.css": {
       "default": "./styles/pill.css"
+    },
+    "./styles/badge.css": {
+      "default": "./styles/badge.css"
     }
   },
   "files": [

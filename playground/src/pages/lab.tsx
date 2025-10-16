@@ -3,6 +3,7 @@ import { PillDemo } from '../demos/PillDemo';
 import { FieldDemo } from '../demos/FieldDemo';
 import { ButtonDemo } from '../demos/ButtonDemo';
 import { ToastDemo } from '../demos/ToastDemo';
+import { BadgeDemo } from '../demos/BadgeDemo';
 
 export default function LabPage() {
   return (
@@ -19,6 +20,7 @@ export default function LabPage() {
         <PillDemo />
         <FieldDemo />
         <ToastDemo />
+        <BadgeDemo />
       </div>
     </main>
   );

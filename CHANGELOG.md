@@ -1,5 +1,14 @@
 # Changelog
 
+## 🏷️ Badge Primitive + Micro Type — 2025-10-16
+
+- ui(primitives): add headless **Badge** primitive (`packages/ui/src/primitives/badge.tsx`).
+- styles(primitives): new **badge** skin at `packages/ui/src/styles/badge.css` — variants: solid/soft/outline/subtle; tones: subtle/accent/positive/warning/danger; sizes: sm|md.
+- playground(demo): add **BadgeDemo** showcasing variants, tones, sizes, and adornments (`playground/src/demos/BadgeDemo.tsx`).
+- tokens(type): add `--text-2xs` (11px) and `--text-xs` (12px); Tailwind utilities `text-2xs` / `text-xs` exposed for micro labels (Badge/meta) (`packages/tokens/theme.css`).
+
+🌬 whisper: _"small truths, softly visible."_
+
 ## 🌸 Toast Primitive & A11y — 2025-10-13
 
 - ui(primitives): add headless **Toast** primitive with `showToast(...)` event API and `<Toaster/>` renderer (`packages/ui/src/primitives/toast.tsx`).

@@ -1,0 +1,115 @@
+/* ─────────────────────────────────────────────────────────────
+   Garden UI — Badge skin (opt‑in)
+   Whisper: "small truths, softly visible." 🌬️
+
+   Purpose
+     • Selector-only skin for the headless Badge primitive.
+     • Driven entirely by Garden tokens; no hardcoded hex.
+
+   Data API
+     • [data-ui='badge']                             — root
+     • [data-variant='soft|solid|outline|subtle']    — visual weight
+     • [data-tone='subtle|accent|positive|warning|danger']
+     • [data-size='sm|md']                           — size (spacing handled in TS via baseClasses)
+
+   Notes
+     • Keep motion calm; no default hover animations here.
+     • Subtle uses neutral surface tokens for low-stakes metadata.
+     • Variants map tone to token palettes; tones override accent.
+   ──────────────────────────────────────────────────────────── */
+@layer components {
+  [data-ui='badge'] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem; /* tighter than pill */
+    border-radius: 0.375rem; /* squarer than pill; tokenizable later */
+    line-height: 1;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    font-weight: 500;
+    user-select: none;
+    font-size: var(--text-2xs);
+    padding: 0.125rem 0.375rem;
+  }
+
+  /* Size hooks (spacing is mostly in TS baseClasses; expose here for skins) */
+  [data-ui='badge'][data-size='sm'] {
+    /* defaults already set above */
+  }
+  [data-ui='badge'][data-size='md'] {
+    font-size: var(--text-xs);
+    padding: 0.25rem 0.5rem;
+  }
+
+  [data-ui='badge'] [data-slot~='icon'] {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  /* Variants — default tone maps to accent */
+  [data-ui='badge'][data-variant='solid'] {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  [data-ui='badge'][data-variant='soft'] {
+    background: color-mix(in oklab, var(--color-accent) 18%, transparent);
+    color: var(--color-accent);
+    border-color: color-mix(in oklab, var(--color-accent) 38%, transparent);
+  }
+  [data-ui='badge'][data-variant='outline'] {
+    background: transparent;
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  /* Tones — override accent mapping */
+  [data-ui='badge'][data-tone='positive'][data-variant='solid'] {
+    background: var(--color-positive);
+    color: var(--color-on-accent);
+  }
+  [data-ui='badge'][data-tone='warning'][data-variant='solid'] {
+    background: var(--color-warning);
+    color: var(--color-on-accent);
+  }
+  [data-ui='badge'][data-tone='danger'][data-variant='solid'] {
+    background: var(--color-danger);
+    color: var(--color-on-accent);
+  }
+
+  [data-ui='badge'][data-tone='positive'][data-variant='soft'] {
+    background: color-mix(in oklab, var(--color-positive) 18%, transparent);
+    color: var(--color-positive);
+    border-color: color-mix(in oklab, var(--color-positive) 38%, transparent);
+  }
+  [data-ui='badge'][data-tone='warning'][data-variant='soft'] {
+    background: color-mix(in oklab, var(--color-warning) 18%, transparent);
+    color: var(--color-warning);
+    border-color: color-mix(in oklab, var(--color-warning) 38%, transparent);
+  }
+  [data-ui='badge'][data-tone='danger'][data-variant='soft'] {
+    background: color-mix(in oklab, var(--color-danger) 18%, transparent);
+    color: var(--color-danger);
+    border-color: color-mix(in oklab, var(--color-danger) 38%, transparent);
+  }
+
+  [data-ui='badge'][data-tone='positive'][data-variant='outline'] {
+    color: var(--color-positive);
+    border-color: var(--color-positive);
+  }
+  [data-ui='badge'][data-tone='warning'][data-variant='outline'] {
+    color: var(--color-warning);
+    border-color: var(--color-warning);
+  }
+  [data-ui='badge'][data-tone='danger'][data-variant='outline'] {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+  }
+
+  /* Subtle — neutral surface, gentle border; text uses neutral color token */
+  [data-ui='badge'][data-variant='subtle'] {
+    background: var(--color-fill-subtle);
+    color: var(--color-text);
+    border-color: color-mix(in oklab, var(--color-text) 12%, transparent);
+  }
+}
