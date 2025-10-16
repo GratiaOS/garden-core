@@ -27,81 +27,96 @@ import * as React from 'react';
  *  • Use Pill when you want a rounder / more prominent chip.
  */
 
-/** Visual tone (mapped by skin). */
 export type BadgeTone = 'subtle' | 'accent' | 'positive' | 'warning' | 'danger' | (string & {});
-/** Visual weight (see skin for exact rendering). */
 export type BadgeVariant = 'soft' | 'solid' | 'outline' | 'subtle' | (string & {});
-/** Size scale for padding & font. */
 export type BadgeSize = 'sm' | 'md' | (string & {});
 
-/** Element to render as. */
-type AsElement = 'span' | 'button' | 'a';
-
-export type BadgeOwnProps = {
-  /** Render as a different element (span | button | a). Defaults to span. */
-  as?: AsElement;
-  /** Visual weight. Defaults to "soft". */
+type BaseProps = {
   variant?: BadgeVariant;
-  /** Color tone. Defaults to "subtle". */
   tone?: BadgeTone;
-  /** Size. Defaults to "sm". */
   size?: BadgeSize;
-  /** Optional leading adornment (icon, dot, avatar). */
   leading?: React.ReactNode;
-  /** Optional trailing adornment (icon, counter, close). */
   trailing?: React.ReactNode;
+  className?: string;
+  children?: React.ReactNode;
 };
 
-export type BadgeProps<TAs extends AsElement = 'span'> = BadgeOwnProps & Omit<React.ComponentPropsWithoutRef<TAs>, 'color'>;
+type BadgeSpanProps = BaseProps & React.ComponentPropsWithoutRef<'span'> & { as?: 'span' };
+type BadgeButtonProps = BaseProps & React.ComponentPropsWithoutRef<'button'> & { as: 'button' };
+type BadgeAnchorProps = BaseProps & React.ComponentPropsWithoutRef<'a'> & { as: 'a' };
 
-/** Simple class join helper (no runtime deps). */
-function cx(...parts: Array<string | undefined | false | null>) {
-  return parts.filter(Boolean).join(' ');
-}
+export type BadgeProps = BadgeSpanProps | BadgeButtonProps | BadgeAnchorProps;
 
-/**
- * Headless Badge
- * - Emits `data-ui`, `data-variant`, `data-tone`, `data-size`.
- * - No fixed colors here; styles/badge.css is the single source of truth.
- */
-const BadgeInner = <TAs extends AsElement = 'span'>(props: BadgeProps<TAs>, ref: React.ForwardedRef<HTMLElement>) => {
-  const { as, variant = 'soft', tone = 'subtle', size = 'sm', leading, trailing, className, children, ...rest } = props;
+type BadgeElement = HTMLElement;
 
-  const Comp: any = as ?? 'span';
-  // If rendered as a button, default to type=button to avoid form submission.
-  const buttonDefaults = Comp === 'button' && !(rest as { type?: string }).type ? { type: 'button' } : null;
-
+function renderContent(leading: React.ReactNode, trailing: React.ReactNode, children: React.ReactNode) {
   return (
-    <Comp
-      ref={ref as any}
-      data-ui="badge"
-      data-variant={variant}
-      data-tone={tone}
-      data-size={size}
-      className={cx(className) || undefined}
-      {...buttonDefaults}
-      {...(rest as Record<string, unknown>)}>
-      {leading && (
+    <>
+      {leading ? (
         // Presentational — hidden from AT since the text already conveys the label
         <span aria-hidden="true" data-slot="icon leading">
           {leading}
         </span>
-      )}
+      ) : null}
       {children}
-      {trailing && (
+      {trailing ? (
         <span aria-hidden="true" data-slot="icon trailing">
           {trailing}
         </span>
-      )}
-    </Comp>
+      ) : null}
+    </>
   );
-};
+}
 
-const _Badge = React.forwardRef(BadgeInner);
-_Badge.displayName = 'Badge';
+export const Badge = React.forwardRef<BadgeElement, BadgeProps>((props, ref) => {
+  if (props.as === 'button') {
+    const { as, variant = 'soft', tone = 'subtle', size = 'sm', leading, trailing, className, type, children, ...rest } = props;
+    return (
+      <button
+        ref={ref as React.Ref<HTMLButtonElement>}
+        data-ui="badge"
+        data-variant={variant}
+        data-tone={tone}
+        data-size={size}
+        className={className}
+        type={type ?? 'button'}
+        {...rest}>
+        {renderContent(leading, trailing, children)}
+      </button>
+    );
+  }
 
-export const Badge = _Badge as <TAs extends AsElement = 'span'>(
-  props: BadgeProps<TAs> & { ref?: React.Ref<HTMLElement> }
-) => React.ReactElement | null;
+  if (props.as === 'a') {
+    const { as, variant = 'soft', tone = 'subtle', size = 'sm', leading, trailing, className, children, ...rest } = props;
+    return (
+      <a
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        data-ui="badge"
+        data-variant={variant}
+        data-tone={tone}
+        data-size={size}
+        className={className}
+        {...rest}>
+        {renderContent(leading, trailing, children)}
+      </a>
+    );
+  }
+
+  const { as, variant = 'soft', tone = 'subtle', size = 'sm', leading, trailing, className, children, ...rest } = props;
+  return (
+    <span
+      ref={ref as React.Ref<HTMLSpanElement>}
+      data-ui="badge"
+      data-variant={variant}
+      data-tone={tone}
+      data-size={size}
+      className={className}
+      {...rest}>
+      {renderContent(leading, trailing, children)}
+    </span>
+  );
+});
+
+Badge.displayName = 'Badge';
 
 export default Badge;
