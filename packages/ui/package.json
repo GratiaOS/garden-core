@@ -1,6 +1,6 @@
 {
   "name": "@garden/ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -51,6 +51,9 @@
     "./styles/pad.css": {
       "default": "./styles/pad.css"
     },
+    "./styles/theme.css": {
+      "default": "./styles/theme.css"
+    },
     "./styles/pill.css": {
       "default": "./styles/pill.css"
     },
@@ -69,7 +72,9 @@
     "styles/*.css"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node ./scripts/copy-styles.mjs"
+    "build": "tsc -p tsconfig.build.json && node ./scripts/copy-styles.mjs",
+    "check:headers": "node ./scripts/check-headers.mjs",
+    "prepublishOnly": "pnpm run build"
   },
   "peerDependencies": {
     "react": "^18 || ^19"

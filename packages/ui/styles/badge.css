@@ -11,6 +11,11 @@
      • [data-variant='soft|solid|outline|subtle']    — visual weight
      • [data-tone='subtle|accent|positive|warning|danger']
      • [data-size='sm|md']                           — size (spacing handled in TS via baseClasses)
+     • [data-depth='inherit|0|1|2|3']         — shadow depth passthrough (optional)
+
+   A11y
+     • Icon slots are presentational; TS hides them with `aria-hidden`.
+     • The text content is the accessible name (no duplicate announcements).
 
    Notes
      • Keep motion calm; no default hover animations here.
@@ -28,7 +33,7 @@
     border: 1px solid transparent;
     font-weight: 500;
     user-select: none;
-    font-size: var(--text-2xs);
+    font-size: var(--text-2xs, 0.6875rem); /* 11px fallback */
     padding: 0.125rem 0.375rem;
   }
 
@@ -41,10 +46,32 @@
     padding: 0.25rem 0.5rem;
   }
 
+  /* Depth passthrough — opt‑in shadow (badges are usually flat) */
+  [data-ui='badge'][data-depth='inherit'] {
+    box-shadow: var(--depth-shadow, var(--shadow-depth-1));
+  }
+  [data-ui='badge'][data-depth='0'] { box-shadow: var(--shadow-depth-0); }
+  [data-ui='badge'][data-depth='1'] { box-shadow: var(--shadow-depth-1); }
+  [data-ui='badge'][data-depth='2'] { box-shadow: var(--shadow-depth-2); }
+  [data-ui='badge'][data-depth='3'] { box-shadow: var(--shadow-depth-3); }
+
   [data-ui='badge'] [data-slot~='icon'] {
     display: inline-flex;
     align-items: center;
     flex-shrink: 0;
+  }
+
+  /* Tone → focus ring color variable (used by :focus-visible) */
+  [data-ui='badge'][data-tone='subtle']  { --ring-accent: color-mix(in oklab, var(--color-text) 80%, white 20%); }
+  [data-ui='badge'][data-tone='accent']  { --ring-accent: color-mix(in oklab, var(--color-accent) 85%, white 15%); }
+  [data-ui='badge'][data-tone='positive']{ --ring-accent: color-mix(in oklab, var(--color-positive) 85%, white 15%); }
+  [data-ui='badge'][data-tone='warning'] { --ring-accent: color-mix(in oklab, var(--color-warning) 85%, white 15%); }
+  [data-ui='badge'][data-tone='danger']  { --ring-accent: color-mix(in oklab, var(--color-danger) 85%, white 15%); }
+
+  /* Focus-visible — gentle tokenized outline for interactive/focusable badges */
+  [data-ui='badge']:focus-visible {
+    outline: 2px solid var(--ring-accent, color-mix(in oklab, var(--color-accent) 85%, white 15%));
+    outline-offset: 2px;
   }
 
   /* Variants — default tone maps to accent */
@@ -111,5 +138,38 @@
     background: var(--color-fill-subtle);
     color: var(--color-text);
     border-color: color-mix(in oklab, var(--color-text) 12%, transparent);
+  }
+  /* Optional: interactive hover/active soften (opt‑in or semantic elements) */
+  [data-ui='badge'][data-interactive='true'],
+  button[data-ui='badge'],
+  a[data-ui='badge'] {
+    transition: filter var(--duration-snug, 160ms) var(--ease-soft, ease);
+  }
+  [data-ui='badge'][data-interactive='true']:hover,
+  button[data-ui='badge']:hover,
+  a[data-ui='badge']:hover {
+    filter: brightness(1.01);
+  }
+  [data-ui='badge'][data-interactive='true']:active,
+  button[data-ui='badge']:active,
+  a[data-ui='badge']:active {
+    filter: brightness(0.99);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-ui='badge'][data-interactive='true'],
+    button[data-ui='badge'],
+    a[data-ui='badge'] {
+      transition: none;
+    }
+  }
+  /* Disabled state — dim + no soften; supports native and ARIA patterns */
+  [data-ui='badge'][aria-disabled='true'],
+  button[data-ui='badge'][disabled],
+  a[data-ui='badge'][aria-disabled='true'] {
+    opacity: 0.55;
+    filter: none !important;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 }

@@ -1,5 +1,24 @@
 # Changelog
 
+## 🌬 Toast Undo & Flow — 2025-10-18
+
+**Description** — A light‑gate for small news. Toasts arrive like notes on the wind: brief by default (**3.5s**), undoable on a clock, sliding from where they belong and never stealing your scroll. Fields breathe on focus, and the Pad glows quietly when something ships.
+
+- ui(primitives/toast): added optional `onClick` for action toasts and built‑in **Undo** affordance (click or ⌘Z / Ctrl+Z) with a 3.5s window; default hold reduced to **3.5s** (configurable via `--dur-toast`).
+- ui(primitives/toast): **burst protection** with edge‑pinned auto‑scroll (never steals scroll), hover/focus pause, and per‑position enter/leave vectors; exit now sets `data-state="leaving"` for a gentle fade.
+- styles(toast.css): `info` alias maps to **accent** tone; tidy line‑clamp so normal messages don’t scroll (desc clamped to ~3 lines).
+- dev: new `useToasterTest()` hook (Alt+T demo, Alt+Y clear, `startAuto()` / `stopAuto()`), plus **ToastDemo** polish.
+
+- ui(primitives/field): container‑first wiring, softer focus (breath‑like) and tokens‑based input/textarea polish; a11y wiring preserved.
+- playground(FieldDemo): reverted to standard Field component showcase (like other demos); the “LightGate + orb” exploration now lives in Pad.
+
+- styles: badge/button/card/field/pill skins aligned (radius/weights/tones); small polish passes.
+- build(ui): copy tokens **theme.css** from `packages/tokens/` into `@garden/ui/styles/theme.css` (updated `copy-styles.mjs`).
+- scripts: add `scripts/check-headers.mjs` utility for style/header sanity checks.
+- playground(Pad): integrate Garden friend scene + second shimmer and a subtle success tint for “shipped!” vibes.
+
+🌬 whisper: _“Ship, then breathe — news should forgive and fade on its own.”_
+
 ## 🏷️ Badge Primitive + Micro Type — 2025-10-16
 
 - ui(primitives): add headless **Badge** primitive (`packages/ui/src/primitives/badge.tsx`).

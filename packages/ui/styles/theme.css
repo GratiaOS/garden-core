@@ -1,0 +1,282 @@
+/* ─────────────────────────────────────────────────────────────
+   Garden Core — Theme (gratia)
+   Purpose: semantic tokens + depth/motion for Pad & scenes
+   Whisper: “rest is repair; motion is gentle.”
+   ──────────────────────────────────────────────────────────── */
+@import 'tailwindcss';
+
+@theme {
+  /* === Type & scale === */
+  --font-sans: 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xs: 0.75rem; /* 12px */
+  --text-2xs: 0.6875rem; /* 11px — micro labels (Badge, meta) */
+
+  /* === Global semantics (light defaults) === */
+  --color-surface: oklch(97% 0.01 180);
+  --color-elev: oklch(96% 0.005 180);
+  --color-text: oklch(27% 0.02 275);
+
+  /* Accent & on-accent */
+  --color-accent: oklch(62% 0.09 150);
+  --color-on-accent: oklch(15% 0.01 180);
+
+  /* === Tone scale (semantic feedback colors) === */
+  --color-positive: oklch(62% 0.09 150); /* leaf / growth */
+  --color-warning: oklch(80% 0.14 80); /* amber / alert */
+  --color-danger: oklch(60% 0.18 27); /* red / stop */
+
+  /* Borders */
+  --color-border: oklch(90% 0.02 155);
+
+  /* Text subtleties — expose as utilities: text-muted, text-subtle, text-faint */
+  --color-muted: color-mix(in oklab, var(--color-text) 72%, transparent);
+  --color-subtle: color-mix(in oklab, var(--color-text) 60%, transparent);
+  --color-faint: color-mix(in oklab, var(--color-text) 45%, transparent);
+
+  /* Radius & shadow (custom; shadow-* namespace only generates when named accordingly) */
+  --radius-pill: 9999px;
+  --radius-2xl: 1.25rem;
+  /* Custom card shadow used via var(--shadow-card) */
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -10px rgb(0 0 0 / 0.15);
+
+  /* === Depth system tokens (visual + motion) === */
+  /* Motion & easing (namespaced so utilities like `ease-soft` are available) */
+  --ease-soft: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-deep: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Optional durations (used via var() in component CSS; Tailwind doesn't expose duration-* via @theme) */
+  --duration-snug: 160ms;
+  --duration-slow: 420ms;
+
+  /* Shadows per depth (D0..D3) — utilities: shadow-depth-0 ... shadow-depth-3 */
+  --shadow-depth-0: 0 0 0 0 rgb(0 0 0 / 0);
+  --shadow-depth-1: 0 2px 6px rgb(0 0 0 / 0.08), 0 8px 16px -8px rgb(0 0 0 / 0.18);
+  --shadow-depth-2: 0 2px 6px rgb(0 0 0 / 0.07), 0 12px 26px -12px rgb(0 0 0 / 0.2);
+  --shadow-depth-3: 0 6px 16px rgb(0 0 0 / 0.12), 0 22px 48px -18px rgb(0 0 0 / 0.3);
+
+  /* Inset shadows per depth — utilities: inset-shadow-depth-0 ... inset-shadow-depth-3 */
+  --inset-shadow-depth-0: inset 0 0 0 0 rgb(0 0 0 / 0);
+  --inset-shadow-depth-1: inset 0 1px 1px rgb(0 0 0 / 0.06);
+  --inset-shadow-depth-2: inset 0 2px 3px rgb(0 0 0 / 0.12);
+  --inset-shadow-depth-3: inset 0 3px 6px rgb(0 0 0 / 0.18);
+
+  /* Drop shadows per depth — utilities: drop-shadow-depth-0 ... drop-shadow-depth-3 */
+  --drop-shadow-depth-0: 0 0 0 rgb(0 0 0 / 0);
+  --drop-shadow-depth-1: 0 1px 1px rgb(0 0 0 / 0.12);
+  --drop-shadow-depth-2: 0 3px 3px rgb(0 0 0 / 0.18);
+  --drop-shadow-depth-3: 0 6px 6px rgb(0 0 0 / 0.24);
+
+  /* Layer opacities per depth (used as variables, not utilities) */
+  --layer-opacity-0: 0.85;
+  --layer-opacity-1: 0.98;
+  --layer-opacity-2: 0.965;
+  --layer-opacity-3: 0.94;
+
+  /* Timeline ambient opacities (used by scenes) */
+  --timeline-heavy-ambient: 0.82;
+  --timeline-slow-ambient: 0.9;
+  --timeline-flow-ambient: 1;
+
+  /* Ambient animations (utilities: animate-breathe, animate-twinkle) */
+  --animate-breathe: breathe 4s ease-in-out infinite;
+  --animate-twinkle: twinkle 3.2s ease-in-out infinite;
+
+  @keyframes breathe {
+    0%,
+    100% {
+      filter: brightness(100%);
+      transform: translateY(0);
+    }
+    50% {
+      filter: brightness(114%);
+      transform: translateY(-1px);
+    }
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}
+
+/* === Runtime dark mapping (no duplicate @theme) === */
+@layer base {
+  :root[data-theme='dark'],
+  :root.dark {
+    --color-surface: oklch(21% 0.07 241);
+    --color-elev: oklch(18% 0.02 200);
+    --color-text: oklch(97% 0.01 180);
+
+    /* Slightly cooler/glow accent at night */
+    --color-accent: oklch(78% 0.12 190);
+    --color-on-accent: oklch(16% 0.02 200);
+
+    --color-positive: oklch(75% 0.12 150);
+    --color-warning: oklch(82% 0.14 80);
+    --color-danger: oklch(68% 0.16 27);
+
+    --color-border: oklch(38% 0.03 180);
+
+    /* Darker card shadow */
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.12), 0 8px 18px -8px rgb(0 0 0 / 0.35);
+
+    /* Depth shadows tuned for dark */
+    --shadow-depth-0: 0 0 0 0 rgb(0 0 0 / 0);
+    --shadow-depth-1: 0 1px 2px rgb(0 0 0 / 0.12), 0 6px 14px -8px rgb(0 0 0 / 0.28);
+    --shadow-depth-2: 0 2px 8px rgb(0 0 0 / 0.18), 0 14px 30px -12px rgb(0 0 0 / 0.36);
+    --shadow-depth-3: 0 8px 20px rgb(0 0 0 / 0.28), 0 26px 54px -20px rgb(0 0 0 / 0.5);
+
+    --inset-shadow-depth-0: inset 0 0 0 0 rgb(0 0 0 / 0);
+    --inset-shadow-depth-1: inset 0 1px 1px rgb(0 0 0 / 0.12);
+    --inset-shadow-depth-2: inset 0 2px 3px rgb(0 0 0 / 0.2);
+    --inset-shadow-depth-3: inset 0 3px 6px rgb(0 0 0 / 0.3);
+
+    --drop-shadow-depth-0: 0 0 0 rgb(0 0 0 / 0);
+    --drop-shadow-depth-1: 0 1px 1px rgb(0 0 0 / 0.25);
+    --drop-shadow-depth-2: 0 3px 3px rgb(0 0 0 / 0.32);
+    --drop-shadow-depth-3: 0 6px 6px rgb(0 0 0 / 0.42);
+  }
+
+  /* Respect system preference when no explicit choice */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --color-surface: oklch(21% 0.07 241);
+      --color-elev: oklch(18% 0.02 200);
+      --color-text: oklch(97% 0.01 180);
+      --color-accent: oklch(78% 0.12 190);
+      --color-on-accent: oklch(16% 0.02 200);
+
+      --color-positive: oklch(75% 0.12 150);
+      --color-warning: oklch(82% 0.14 80);
+      --color-danger: oklch(68% 0.16 27);
+
+      --color-border: oklch(38% 0.03 180);
+      --shadow-card: 0 1px 2px rgb(0 0 0 / 0.12), 0 8px 18px -8px rgb(0 0 0 / 0.35);
+
+      --inset-shadow-depth-0: inset 0 0 0 0 rgb(0 0 0 / 0);
+      --inset-shadow-depth-1: inset 0 1px 1px rgb(0 0 0 / 0.12);
+      --inset-shadow-depth-2: inset 0 2px 3px rgb(0 0 0 / 0.2);
+      --inset-shadow-depth-3: inset 0 3px 6px rgb(0 0 0 / 0.3);
+
+      --drop-shadow-depth-0: 0 0 0 rgb(0 0 0 / 0);
+      --drop-shadow-depth-1: 0 1px 1px rgb(0 0 0 / 0.25);
+      --drop-shadow-depth-2: 0 3px 3px rgb(0 0 0 / 0.32);
+      --drop-shadow-depth-3: 0 6px 6px rgb(0 0 0 / 0.42);
+    }
+  }
+
+  /* Depth mapping helpers — set current depth variables from [data-depth] */
+  :root {
+    --depth-shadow: var(--shadow-depth-0);
+    --depth-opacity: var(--layer-opacity-0);
+  }
+  [data-depth='1'] {
+    --depth-shadow: var(--shadow-depth-1);
+    --depth-opacity: var(--layer-opacity-1);
+  }
+  [data-depth='2'] {
+    --depth-shadow: var(--shadow-depth-2);
+    --depth-opacity: var(--layer-opacity-2);
+  }
+  [data-depth='3'] {
+    --depth-shadow: var(--shadow-depth-3);
+    --depth-opacity: var(--layer-opacity-3);
+  }
+
+  /* Reverse‑the‑Poles (RTP) — abundance mode
+     why: security is a floor, not a leash | what: flip safe defaults | how: dataset flag */
+  :root[data-mode='rtp'] {
+    --composer-privacy-default: sealed; /* start private; sharing is opt‑in */
+    --rest-is-repair: 1; /* surfaces gentle hints in UI */
+    /* capacity stays at 3 by design (small honest wins) */
+  }
+}
+
+/* === Aliases for custom CSS & calc() ===
+   These do not create utilities; they are convenience variables.
+*/
+:root {
+  --surface: var(--color-surface);
+  --elev: var(--color-elev);
+  --text: var(--color-text);
+  --accent: var(--color-accent);
+  --on-accent: var(--color-on-accent);
+  --border: var(--color-border);
+
+  --text-muted: var(--color-muted);
+  --text-subtle: var(--color-subtle);
+  --text-faint: var(--color-faint);
+  --color-fill-subtle: color-mix(in oklab, var(--color-text) 8%, var(--color-surface));
+
+  --sheet-radius: var(--radius-2xl);
+  --shadow-card-ambient: var(--shadow-card);
+
+  /* Covenant & RTP-friendly defaults (read by UI; override via [data-mode]) */
+  --composer-privacy-default: public; /* flipped to `sealed` in RTP */
+  --capacity-units-per-day: 3; /* UI renders three capacity dots */
+  --rtp-hint-default: "ask, don't test"; /* language-interrupt default hint */
+  --rest-is-repair: 0; /* 1 when RTP mode is active */
+
+  /* Motion — durations */
+  --dur-pulse: 700ms; /* UI chip pulse duration */
+  --dur-toast: 5s; /* or 4800ms */
+}
+
+@layer utilities {
+  .border-transparent {
+    border-color: transparent;
+  }
+  .text-2xs {
+    font-size: var(--text-2xs);
+  }
+  .elev-1 {
+    @apply shadow-depth-1;
+  }
+  .elev-2 {
+    @apply shadow-depth-2;
+  }
+  .elev-3 {
+    @apply shadow-depth-3;
+  }
+  .depth-ambient {
+    box-shadow: var(--depth-shadow);
+    opacity: var(--depth-opacity);
+    transition: box-shadow var(--duration-snug) var(--ease-soft), opacity var(--duration-snug) var(--ease-soft),
+      filter var(--duration-snug) var(--ease-soft), transform var(--duration-snug) var(--ease-soft);
+  }
+  .ambient-heavy {
+    opacity: var(--timeline-heavy-ambient);
+    transition: opacity var(--duration-slow) var(--ease-soft);
+  }
+  .ambient-slow {
+    opacity: var(--timeline-slow-ambient);
+    transition: opacity var(--duration-snug) var(--ease-soft);
+  }
+  .ambient-flow {
+    opacity: var(--timeline-flow-ambient);
+    transition: opacity var(--duration-snug) var(--ease-deep);
+  }
+
+  /* Animation utilities — apply tokenized keyframes with one class */
+  .animate-breathe {
+    animation: var(--animate-breathe);
+  }
+  .animate-twinkle {
+    animation: var(--animate-twinkle);
+  }
+
+  /* Respect reduced motion: disable ambient animations */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-breathe,
+    .animate-twinkle {
+      animation: none !important;
+    }
+  }
+}

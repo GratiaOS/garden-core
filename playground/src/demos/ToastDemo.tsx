@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Toaster, showToast } from '@garden/ui';
+import { Button, Toaster, showToast, clearToast, useToasterTest } from '@garden/ui';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -14,12 +14,23 @@ export function ToastDemo() {
   const [position, setPosition] = React.useState<'bottom-center' | 'top-right'>('bottom-center');
   const [message, setMessage] = React.useState('Hello from Garden 🌱');
 
+  // Dev: keyboard shortcuts & auto demo (Alt+T fire • Alt+Y clear)
+  const demo = useToasterTest();
+  // Platform-aware key labels (Mac shows ⌥, others show Alt)
+  const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/i.test((navigator as any).platform || (navigator as any).userAgent || '');
+  const hotT = isMac ? '⌥T' : 'Alt+T';
+  const hotY = isMac ? '⌥Y' : 'Alt+Y';
+
   return (
     <div className="space-y-8">
       <header className="space-y-1">
         <h2 className="text-lg font-semibold">Toast</h2>
         <p className="text-sm text-muted">
           Headless primitive with token-driven skin. Emits via <code>showToast()</code>, renders via <code>&lt;Toaster/&gt;</code>.
+        </p>
+        <p className="text-xs text-subtle">
+          Dev shortcuts: <kbd className="px-1 py-0.5 rounded border border-border bg-elev">{hotT}</kbd> demo toast ·{' '}
+          <kbd className="px-1 py-0.5 rounded border border-border bg-elev">{hotY}</kbd> clear. Use “Start auto” below to cycle.
         </p>
       </header>
 
@@ -45,6 +56,23 @@ export function ToastDemo() {
           />
         </label>
         <Button onClick={() => showToast(message)}>See toast</Button>
+      </Section>
+
+      {/* Dev helpers */}
+      <Section title="Dev (shortcuts &amp; auto)">
+        <Button onClick={() => demo.fireDemo()}>Demo toast ({hotT})</Button>
+        <Button variant="outline" onClick={() => demo.clearDemo()}>
+          Clear all ({hotY})
+        </Button>
+        {demo.running ? (
+          <Button tone="warning" onClick={() => demo.stopAuto()}>
+            Stop auto
+          </Button>
+        ) : (
+          <Button tone="accent" onClick={() => demo.startAuto()}>
+            Start auto
+          </Button>
+        )}
       </Section>
 
       {/* Variants */}
@@ -85,6 +113,19 @@ export function ToastDemo() {
         </Button>
         <Button tone="danger" onClick={() => showToast({ icon: '⛔️', title: 'Error', desc: 'Something failed.', variant: 'danger' })}>
           ⛔️ Error
+        </Button>
+      </Section>
+
+      {/* Keyed upsert (replace same key instead of stacking) */}
+      <Section title="Keyed sequence (upsert)">
+        <Button onClick={() => showToast({ key: 'sync', title: 'Syncing…', desc: 'Holding steady', variant: 'neutral', icon: '🪁' })}>
+          🔁 Syncing…
+        </Button>
+        <Button tone="positive" onClick={() => showToast({ key: 'sync', title: 'Synced', desc: 'All good', variant: 'positive', icon: '🌈' })}>
+          ✅ Synced
+        </Button>
+        <Button variant="outline" onClick={() => clearToast('sync')}>
+          Clear “sync”
         </Button>
       </Section>
 

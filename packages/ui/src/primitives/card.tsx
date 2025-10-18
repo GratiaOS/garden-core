@@ -27,14 +27,21 @@ import * as React from 'react';
  *   • Keep padding modest; compose layout with Stack/Grid instead of adding layout logic here.
  */
 
+/** Visual depth/outline semantics (skin renders). */
 type Variant = 'plain' | 'elev' | 'glow';
+/** Inner spacing scale for content. */
 type Padding = 'none' | 'sm' | 'md' | 'lg';
 
 export type CardProps<T extends React.ElementType = 'div'> = {
+  /** Render as a different element. Defaults to div. */
   as?: T;
+  /** Visual depth/outline semantics. Defaults to "elev". */
   variant?: Variant;
+  /** Inner spacing scale. Defaults to "md". */
   padding?: Padding;
+  /** Additional class names forwarded to the root. */
   className?: string;
+  /** Content inside the card (accessible name comes from content/aria props). */
   children?: React.ReactNode;
 } & Omit<React.ComponentPropsWithoutRef<T>, 'as' | 'children' | 'className'>;
 
@@ -43,16 +50,10 @@ const _Card = React.forwardRef(
     { as, variant = 'elev', padding = 'md', className, children, ...rest }: CardProps<T>,
     ref: React.Ref<Element>
   ) => {
-    const Comp = (as || 'div') as React.ElementType;
+    const Comp = (as || 'div') as React.ElementType; // polymorphic root
 
     return (
-      <Comp
-        ref={ref}
-        data-ui="card"
-        data-variant={variant}
-        data-padding={padding}
-        className={className}
-        {...rest}>
+      <Comp ref={ref} data-ui="card" data-variant={variant} data-padding={padding} className={className} {...rest}>
         {children}
       </Comp>
     );

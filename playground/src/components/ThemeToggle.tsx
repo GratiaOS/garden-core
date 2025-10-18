@@ -26,12 +26,13 @@ export function ThemeToggle() {
     const apply = () => {
       const prefersDark = mql.matches;
       const next = mode === 'system' ? (prefersDark ? 'dark' : 'light') : mode;
-      if (next === 'dark') {
-        root.setAttribute('data-theme', 'dark');
-        root.classList.add('dark');
-      } else {
+
+      root.classList.toggle('dark', next === 'dark');
+
+      if (mode === 'system') {
         root.removeAttribute('data-theme');
-        root.classList.remove('dark');
+      } else {
+        root.setAttribute('data-theme', next);
       }
     };
 

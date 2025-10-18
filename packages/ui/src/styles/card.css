@@ -10,25 +10,32 @@
      • [data-ui='card']                        — root
      • [data-variant='plain|elev|glow']        — depth/outline semantics
      • [data-padding='none|sm|md|lg']          — inner spacing
+     • [data-tone='subtle|accent|positive|warning|danger'] — ring/outline tone (optional)
+     • [data-depth='inherit|0|1|2|3']         — shadow depth passthrough
+
+   A11y
+     • Card is presentational by default; semantics come from the element you render.
+     • If interactive (link/button), ensure a visible focus style (see [data-interactive]).
 
    Notes
      • Base uses --color-elev with border + depth token; 'plain' swaps to --color-surface.
      • 'glow' draws an accent outline using --ring-accent (with safe fallback).
      • Keep motion subtle; any reveal/hover effects belong in the app layer.
+     • Tokens: --surface, --elev, --text, --border, --sheet-radius, --shadow-depth-*, --ring-accent (optional).
    ──────────────────────────────────────────────────────────── */
 @layer components {
   /* Base — tokenized surface, border, and depth */
   [data-ui='card'] {
     border-radius: var(--sheet-radius, var(--radius-2xl));
-    border: 1px solid var(--color-border);
-    background: var(--color-elev);
+    border: 1px solid var(--border);
+    background: var(--elev);
     box-shadow: var(--shadow-depth-2, 0 6px 18px -6px rgb(0 0 0 / 0.2));
     color: var(--text);
   }
 
   /* Variants — plain/elev/glow semantics */
   [data-ui='card'][data-variant='plain'] {
-    background: var(--color-surface);
+    background: var(--surface);
     box-shadow: none;
   }
 
@@ -53,5 +60,55 @@
   }
   [data-ui='card'][data-padding='lg'] {
     padding: 1.5rem;
+  }
+
+  /* Depth passthrough — opt-in shadow control (syncs with Pad depth) */
+  [data-ui='card']:not([data-variant='plain'])[data-depth='inherit'] {
+    /* Use container-provided depth variable when available */
+    box-shadow: var(--depth-shadow, var(--shadow-depth-2));
+  }
+  [data-ui='card']:not([data-variant='plain'])[data-depth='0'] { box-shadow: var(--shadow-depth-0); }
+  [data-ui='card']:not([data-variant='plain'])[data-depth='1'] { box-shadow: var(--shadow-depth-1); }
+  [data-ui='card']:not([data-variant='plain'])[data-depth='2'] { box-shadow: var(--shadow-depth-2); }
+  [data-ui='card']:not([data-variant='plain'])[data-depth='3'] { box-shadow: var(--shadow-depth-3); }
+
+  /* Tone → focus/outline ring color variable (used by :focus-visible & glow) */
+  [data-ui='card'][data-tone='subtle']   { --ring-accent: color-mix(in oklab, var(--color-text) 80%, white 20%); }
+  [data-ui='card'][data-tone='accent']   { --ring-accent: color-mix(in oklab, var(--color-accent) 85%, white 15%); }
+  [data-ui='card'][data-tone='positive'] { --ring-accent: color-mix(in oklab, var(--color-positive) 85%, white 15%); }
+  [data-ui='card'][data-tone='warning']  { --ring-accent: color-mix(in oklab, var(--color-warning) 85%, white 15%); }
+  [data-ui='card'][data-tone='danger']   { --ring-accent: color-mix(in oklab, var(--color-danger) 85%, white 15%); }
+
+  /* Optional: interactive hover/active soften (opt-in via data-interactive) */
+  [data-ui='card'][data-interactive='true'] {
+    transition: filter var(--duration-snug, 160ms) var(--ease-soft, ease), box-shadow var(--duration-snug, 160ms) var(--ease-soft, ease);
+  }
+  [data-ui='card'][data-interactive='true']:hover {
+    filter: brightness(1.02);
+  }
+  [data-ui='card'][data-interactive='true']:active {
+    filter: brightness(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-ui='card'][data-interactive='true'] {
+      transition: none;
+    }
+  }
+
+  /* Optional: interactive focus (opt-in via data-interactive) */
+  [data-ui='card'][data-interactive='true']:focus-visible {
+    outline: 2px solid var(--ring-accent, color-mix(in oklab, var(--color-accent) 85%, white 15%));
+    outline-offset: 2px;
+  }
+
+  /* Disabled — dim + block interaction (opt-in interactive only) */
+  [data-ui='card'][data-interactive='true'][aria-disabled='true'],
+  a[data-ui='card'][aria-disabled='true'],
+  button[data-ui='card'][disabled] {
+    opacity: 0.55;
+    filter: none !important;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 }

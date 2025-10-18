@@ -11,6 +11,7 @@
      • [data-variant='soft|solid|outline|subtle']   — visual weight
      • [data-tone='subtle|accent|positive|warning|danger']
      • [data-density='cozy|snug']                   — vertical rhythm
+     • [data-depth='inherit|0|1|2|3']               — shadow depth passthrough (optional)
 
    Notes
      • Subtle variant uses neutral surface tokens (good for low-stakes tags).
@@ -109,5 +110,58 @@
     background: var(--color-fill-subtle);
     color: var(--color-text);
     border-color: color-mix(in oklab, var(--color-text) 12%, transparent);
+  }
+  /* Depth passthrough — opt‑in shadow for chip emphasis */
+  [data-ui='pill'][data-depth='inherit'] { box-shadow: var(--depth-shadow, var(--shadow-depth-1)); }
+  [data-ui='pill'][data-depth='0'] { box-shadow: var(--shadow-depth-0); }
+  [data-ui='pill'][data-depth='1'] { box-shadow: var(--shadow-depth-1); }
+  [data-ui='pill'][data-depth='2'] { box-shadow: var(--shadow-depth-2); }
+  [data-ui='pill'][data-depth='3'] { box-shadow: var(--shadow-depth-3); }
+
+  /* Tone → focus ring color variable (used by :focus-visible) */
+  [data-ui='pill'][data-tone='subtle']  { --ring-accent: color-mix(in oklab, var(--color-text) 80%, white 20%); }
+  [data-ui='pill'][data-tone='accent']  { --ring-accent: color-mix(in oklab, var(--color-accent) 85%, white 15%); }
+  [data-ui='pill'][data-tone='positive']{ --ring-accent: color-mix(in oklab, var(--color-positive) 85%, white 15%); }
+  [data-ui='pill'][data-tone='warning'] { --ring-accent: color-mix(in oklab, var(--color-warning) 85%, white 15%); }
+  [data-ui='pill'][data-tone='danger']  { --ring-accent: color-mix(in oklab, var(--color-danger) 85%, white 15%); }
+
+  /* Focus-visible — gentle tokenized outline for focusable pills */
+  [data-ui='pill']:focus-visible {
+    outline: 2px solid var(--ring-accent, color-mix(in oklab, var(--color-accent) 85%, white 15%));
+    outline-offset: 2px;
+  }
+  /* Optional: interactive hover/active soften (opt‑in or semantic elements) */
+  [data-ui='pill'][data-interactive='true'],
+  button[data-ui='pill'],
+  a[data-ui='pill'] {
+    transition: filter var(--duration-snug, 160ms) var(--ease-soft, ease);
+  }
+  [data-ui='pill'][data-interactive='true']:hover,
+  button[data-ui='pill']:hover,
+  a[data-ui='pill']:hover {
+    filter: brightness(1.01);
+  }
+  [data-ui='pill'][data-interactive='true']:active,
+  button[data-ui='pill']:active,
+  a[data-ui='pill']:active {
+    filter: brightness(0.99);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-ui='pill'][data-interactive='true'],
+    button[data-ui='pill'],
+    a[data-ui='pill'] {
+      transition: none;
+    }
+  }
+
+  /* Disabled state — dim + no soften; supports native and ARIA patterns */
+  [data-ui='pill'][aria-disabled='true'],
+  button[data-ui='pill'][disabled],
+  a[data-ui='pill'][aria-disabled='true'] {
+    opacity: 0.55;
+    filter: none !important;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 }

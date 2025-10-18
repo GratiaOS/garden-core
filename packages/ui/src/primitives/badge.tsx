@@ -27,28 +27,44 @@ import * as React from 'react';
  *  • Use Pill when you want a rounder / more prominent chip.
  */
 
+/** Visual tone (mapped by the skin). */
 export type BadgeTone = 'subtle' | 'accent' | 'positive' | 'warning' | 'danger' | (string & {});
+/** Visual weight (see skin for rendering). */
 export type BadgeVariant = 'soft' | 'solid' | 'outline' | 'subtle' | (string & {});
+/** Component size scale. Defaults to "sm". */
 export type BadgeSize = 'sm' | 'md' | (string & {});
 
 type BaseProps = {
+  /** Visual weight. Defaults to "soft". */
   variant?: BadgeVariant;
+  /** Color tone. Defaults to "subtle". */
   tone?: BadgeTone;
+  /** Component size. Defaults to "sm". */
   size?: BadgeSize;
+  /** Optional leading adornment (icon, dot, avatar). */
   leading?: React.ReactNode;
+  /** Optional trailing adornment (icon, counter, close). */
   trailing?: React.ReactNode;
+  /** Additional class names forwarded to the root. */
   className?: string;
+  /** Visible label/content (accessible name). */
   children?: React.ReactNode;
 };
 
+/** Render as a different element. Defaults to span. */
 type BadgeSpanProps = BaseProps & React.ComponentPropsWithoutRef<'span'> & { as?: 'span' };
+/** Render as a button element. */
 type BadgeButtonProps = BaseProps & React.ComponentPropsWithoutRef<'button'> & { as: 'button' };
+/** Render as a link element. */
 type BadgeAnchorProps = BaseProps & React.ComponentPropsWithoutRef<'a'> & { as: 'a' };
 
-export type BadgeProps = BadgeSpanProps | BadgeButtonProps | BadgeAnchorProps;
+/** Discriminated union of supported render targets (defaults to <span>). */
+type BadgeProps = BadgeSpanProps | BadgeButtonProps | BadgeAnchorProps;
 
+/** Actual element type (resolved by `as`). */
 type BadgeElement = HTMLElement;
 
+/** Compose visual slots and hide icons from assistive tech (text is the name). */
 function renderContent(leading: React.ReactNode, trailing: React.ReactNode, children: React.ReactNode) {
   return (
     <>

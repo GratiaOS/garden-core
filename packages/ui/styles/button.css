@@ -19,6 +19,7 @@
      • Focus-visible ring uses --ring-accent (fallback mixes accent against white).
      • Hover lift is tiny (0.5px); no animations here, so reduced motion is implicit.
      • Controls remain tabbable and legible across light/dark themes.
+     • Icon slots are presentational; TS marks them aria-hidden so screen readers read the label once.
 
    Theming notes
      • Surface/background: --color-elev; text: --color-text; borders: --color-border.
@@ -42,6 +43,7 @@
     line-height: 1;
     transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
     -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
   }
 
   /* Density */
@@ -65,11 +67,19 @@
     margin-inline-start: 0.25rem;
   }
 
+  /* Tone → focus ring color variable (used by :focus-visible) */
+  [data-ui='button'][data-tone='default'] { --ring-accent: color-mix(in oklab, var(--color-text) 80%, white 20%); }
+  [data-ui='button'][data-tone='accent']  { --ring-accent: color-mix(in oklab, var(--color-accent) 85%, white 15%); }
+  [data-ui='button'][data-tone='positive']{ --ring-accent: color-mix(in oklab, var(--color-positive) 85%, white 15%); }
+  [data-ui='button'][data-tone='warning'] { --ring-accent: color-mix(in oklab, var(--color-warning) 85%, white 15%); }
+  [data-ui='button'][data-tone='danger']  { --ring-accent: color-mix(in oklab, var(--color-danger) 85%, white 15%); }
+
   /* Spinner — inline, token-aware, respects reduced motion */
   [data-ui='button'] [data-slot='spinner'] {
     display: inline-block;
     width: 0.875rem; /* 14px */
     height: 0.875rem; /* 14px */
+    box-sizing: border-box; /* ensures width/height include border (fixes box-model lint) */
     margin-inline-start: 0.25rem;
     border-radius: 9999px;
     border: 2px solid currentColor;
@@ -106,11 +116,12 @@
     border-radius: inherit;
     pointer-events: none; /* overlay does not steal clicks */
     /* Gentle dim across variants (token-mixed) */
-    background: color-mix(in oklab, var(--color-elev) 82%, var(--color-text) 18%);
+    background: var(--button-overlay-dim, color-mix(in oklab, var(--color-elev) 82%, var(--color-text) 18%));
   }
   [data-ui='button'][data-loading-mode='blocking'] [data-slot='overlay'] [data-slot='spinner'] {
     width: 1rem; /* 16px */
     height: 1rem; /* 16px */
+    box-sizing: border-box; /* ensures width/height include border (fixes box-model lint) */
     margin: 0; /* centered, no extra gap */
   }
 
@@ -219,6 +230,12 @@
     [data-ui='button'][data-variant='ghost'][data-tone='danger']:hover {
       background: color-mix(in oklab, var(--color-danger) 10%, transparent);
     }
+  }
+
+  /* Active — cancel hover lift, add gentle press */
+  [data-ui='button']:not([disabled])[data-state='idle']:active {
+    transform: translateY(0);
+    filter: brightness(0.98);
   }
 
   /* Focus — :focus-visible ring uses --ring-accent (fallback blends accent for contrast) */
