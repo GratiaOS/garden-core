@@ -1,5 +1,6 @@
 # 🌿 Garden Core
 
+[![Sponsor GratiaOS](https://img.shields.io/badge/Sponsor-♥︎%20GratiaOS-ff69b4?logo=githubsponsors)](https://github.com/sponsors/GratiaOS)
 [![Version](https://img.shields.io/github/v/tag/GratiaOS/garden-core?label=version)](https://github.com/GratiaOS/garden-core/releases)
 [![CI](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL--3.0--only-blue.svg)](./LICENSE)
@@ -17,6 +18,13 @@ At the heart of Garden Core lies a natural growth cycle, where each element nurt
 - 🌳 **Patterns as canopies** — higher-order layouts and experiences that grow from shared foundations.
 
 > Our goal is to make building with **presence**, **trust**, and **beauty** the default.
+
+---
+
+## 💖 Sponsors
+
+If the Garden has helped you ship or smile, consider supporting its growth.  
+→ **https://github.com/sponsors/GratiaOS**
 
 ---
 
