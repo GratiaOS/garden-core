@@ -49,6 +49,8 @@ export type ToastOptions = {
   icon?: string;
   /** Optional hook called when the toast is dismissed (timeout/click/Escape/clear). */
   onDismiss?: () => void;
+  /** Optional click handler — runs before dismiss (if enabled). */
+  onClick?: () => void;
 };
 
 // Detect dev mode without importing Node types (works in browser ESM).
@@ -208,6 +210,7 @@ export type ToastItemLike = {
   message?: string;
   icon?: string;
   onDismiss?: () => void;
+  onClick?: () => void;
   uiState?: 'entering' | 'leaving';
 };
 
@@ -386,6 +389,7 @@ export const Toaster: React.FC<ToasterProps> = ({
               message: d.message ?? existing.message,
               icon: d.icon ?? existing.icon,
               onDismiss: d.onDismiss ?? existing.onDismiss,
+              onClick: d.onClick ?? existing.onClick,
             };
             const next = [...prev];
             next[idx] = updated;
@@ -404,6 +408,7 @@ export const Toaster: React.FC<ToasterProps> = ({
               message: d.message,
               icon: d.icon,
               onDismiss: d.onDismiss,
+              onClick: d.onClick,
               uiState: 'entering',
             };
             const next = [...prev, item];
@@ -433,6 +438,7 @@ export const Toaster: React.FC<ToasterProps> = ({
         message: d.message,
         icon: d.icon,
         onDismiss: d.onDismiss,
+        onClick: d.onClick,
         uiState: 'entering',
       };
 
@@ -530,6 +536,14 @@ export const Toaster: React.FC<ToasterProps> = ({
             ? renderIcon({ variant: t.variant, title: t.title, desc: t.desc, message: t.message, icon: t.icon, key: t.key })
             : undefined;
           const iconNode = renderedIcon ?? (t.icon ? <span aria-hidden>{t.icon}</span> : null);
+          const invokeClick = () => {
+            try {
+              t.onClick?.();
+            } catch {
+              /* ignore */
+            }
+            if (dismissOnClick) dismiss(t.id);
+          };
           return (
             <div
               key={t.id}
@@ -538,7 +552,7 @@ export const Toaster: React.FC<ToasterProps> = ({
               data-ui="toast-item"
               data-variant={t.variant}
               data-state={t.uiState}
-              onClick={dismissOnClick ? () => dismiss(t.id) : undefined}
+              onClick={t.onClick || dismissOnClick ? invokeClick : undefined}
               onMouseEnter={() => pause(t.id)}
               onMouseLeave={() => resume(t.id)}
               title={dismissOnClick ? 'Click to dismiss' : undefined}
@@ -548,7 +562,7 @@ export const Toaster: React.FC<ToasterProps> = ({
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  if (dismissOnClick) dismiss(t.id);
+                  invokeClick();
                 } else if (e.key === 'Escape') {
                   e.preventDefault();
                   dismiss(t.id);

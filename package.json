@@ -1,7 +1,8 @@
 {
   "name": "garden-core",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.2",
+  "funding": "https://github.com/sponsors/GratiaOS",
   "packageManager": "pnpm@10.17.1",
   "scripts": {
     "dev": "pnpm -C playground dev",
