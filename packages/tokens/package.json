@@ -1,7 +1,6 @@
 {
   "name": "@garden/tokens",
   "version": "0.1.0",
-  "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
   "sideEffects": [
     "./theme.css",

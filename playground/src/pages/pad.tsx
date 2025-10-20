@@ -13,7 +13,7 @@ export default function PadPage() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [friendText, setFriendText] = useState('');
   const [oneTrueNext, setOneTrueNext] = useState<string | null>(null);
-  const [_archive, setArchive] = useState<{ id: string; text: string; ts: number }[]>([]);
+  const [archive, setArchive] = useState<{ id: string; text: string; ts: number }[]>([]);
 
   // Interaction + audio (idle chime)
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -126,19 +126,6 @@ export default function PadPage() {
     return () => {
       if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
     };
-  }, []);
-
-  useEffect(() => {
-    const t = window.setTimeout(() => {
-      showToast({
-        title: 'We’re on GitHub Sponsors! 🎉',
-        desc: 'Help the Garden grow — thank you for being here.',
-        icon: '🌱',
-        variant: 'positive',
-        onClick: () => window.open('https://github.com/sponsors/GratiaOS', '_blank', 'noopener,noreferrer'),
-      });
-    }, 600);
-    return () => window.clearTimeout(t);
   }, []);
 
   useEffect(() => {

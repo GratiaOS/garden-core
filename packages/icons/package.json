@@ -1,7 +1,6 @@
 {
   "name": "@garden/icons",
   "version": "0.1.0",
-  "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
