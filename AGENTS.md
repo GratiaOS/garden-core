@@ -136,6 +136,44 @@ Use these exact one‑line comments so primitives feel consistent. Keep them sho
 - `/** Accessible label for icon‑only usage. */` → `ariaLabel?: string;`
 - `/** Keyboard shortcut hint (visual only). */` → `kbd?: string;`
 
+### Disabled semantics (headless components)
+
+_Purpose_: keep behavior + visuals consistent across primitives while staying accessible.
+
+**Rules**
+
+- Prefer **native** `disabled` on real controls (e.g., `<button>`).
+- For elements that don’t support `disabled` (e.g., `<a>`, `<div role="button">`), use **`aria-disabled="true"`** and make the handler a no‑op (or guard in JS).
+- Skins should:
+  - reduce **opacity** gently (≈ `0.55`),
+  - remove hover/active effects (no softens),
+  - show `cursor: not-allowed`,
+  - block interaction with `pointer-events: none`.
+- Don’t rely on color alone for state; keep text contrast AA.
+
+**Patterns**
+
+```tsx
+// Button (native)
+<Button disabled>Saving…</Button>
+
+// Badge / Pill rendered as controls
+<Pill as="button" data-interactive="true" disabled>Coming soon</Pill>
+<Badge as="a" href="#" aria-disabled="true">Soon</Badge>
+
+// Card as link/button (interactive skin)
+<a data-ui="card" data-interactive="true" aria-disabled="true">Disabled link-card</a>
+<button data-ui="card" data-interactive="true" disabled>Disabled button-card</button>
+```
+
+**CSS contract (skins)**
+
+- Buttons: handled in `styles/button.css`.
+- Pills/Badges: see `styles/pill.css` / `styles/badge.css` _Disabled state_ blocks.
+- Cards: see `styles/card.css` _Disabled_ block for `data-interactive="true"`.
+
+> Agents: when converting interactive elements, prefer native `<button>` over `<div role="button">`. If you must use a non‑button, wire keyboard handling and `aria-disabled` explicitly.
+
 ### Docstring template (copy)
 
 ```ts
