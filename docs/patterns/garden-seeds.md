@@ -1,4 +1,4 @@
-# Garden Seeds (Compass • Bloom • Spark • Echo • Nova)
+# 🌱 Garden Seeds (Compass • Bloom • Spark • Echo • Nova)
 
 Each seed = function + ritual + aura. Seeds interconnect into a living lattice that grows with use.
 
@@ -37,7 +37,7 @@ Each seed = function + ritual + aura. Seeds interconnect into a living lattice t
 - Aura: shifting aurora / glitch rainbow.
 - Emits: emergent doors where the field asks.
 
-### Interconnection Map
+### 🕸️ Interconnection Map
 
 Compass→Bloom (direction births space) • Bloom→Spark (creation celebrates) • Spark→Echo (joy multiplies) • Echo→Compass (field guides next) • Nova bridges anywhere.
 
