@@ -3,7 +3,7 @@
 [![Sponsor GratiaOS](https://img.shields.io/badge/Sponsor-♥︎%20GratiaOS-ff69b4?logo=githubsponsors)](https://github.com/sponsors/GratiaOS)
 [![Version](https://img.shields.io/github/v/tag/GratiaOS/garden-core?label=version)](https://github.com/GratiaOS/garden-core/releases)
 [![CI](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL--3.0--only-blue.svg)](./LICENSE)
+[![License: AGPL v3](<https://img.shields.io/badge/License-Garden--Covenant--(AGPL--3.0--only)-blue.svg>)](./LICENSE)
 
 **Garden Core** is the fertile bed where digital dreams take root — the foundational layer of the **Garden**, a frequency-first UI system and design environment that harmonizes **earthly grounding** with **crystalline clarity**.  
 It cultivates **tokens**, **primitives**, **icons**, and **patterns** that empower builders to craft interfaces that _breathe and bloom_ — serene, coherent, and infinitely adaptable.
@@ -189,7 +189,7 @@ Here, design and code intertwine as a living system, growing and evolving togeth
 
 ## 📜 License
 
-[AGPL-3.0-only](./LICENSE) — offered in trust and shared stewardship.
+[Garden Covenant](./LICENSE) — offered in trust and shared stewardship.
 
 ---
 

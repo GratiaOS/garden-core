@@ -11,7 +11,7 @@ Use it for:
 
 _Last updated: 2025-10-08 — v0.1.2-moonfield_
 
-## RTP Token Sync
+## 🔄 RTP Token Sync
 
 - Canonical semantic JSON lives under `tokens/` (seeded with the `abundance` namespace).
 - Run `pnpm -C packages/tokens build` to mirror these into `@garden/tokens/tokens` with an updated manifest.
