@@ -1,8 +1,8 @@
-# 🌿 Garden UI
+# 🌿 `@garden/ui`
 
-[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](../../CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](../../CHANGELOG.md)
 [![Build](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
-[![License](https://img.shields.io/badge/license-Garden%20Public%20License-blue.svg)](../../LICENSE)
+[![License](<https://img.shields.io/badge/license-Garden%20Covenant%20(AGPL-3.0)-blue.svg>)](../../LICENSE)
 
 **Garden UI** is the shared component library that gives shape and soul to the Garden.  
 It’s where headless primitives meet design tokens, growing together into a living interface system.
@@ -163,8 +163,7 @@ We keep the UI package **light**, **clear**, and **deeply documented**.
 
 ## 📄 License
 
-© 2025 Firegate / Gratia OS.  
-Licensed under the [Garden Public License](../../LICENSE).
+Licensed under the [Garden Public License.](../../LICENSE).
 
 ---
 

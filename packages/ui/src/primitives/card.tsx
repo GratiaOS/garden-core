@@ -11,7 +11,7 @@ import * as React from 'react';
  *
  * Data API (for skins)
  *   • [data-ui="card"]
- *   • [data-variant="plain|elev|glow"]   — depth/outline semantics
+ *   • [data-variant="plain|elev|glow|outline|inset|ghost|…"] — depth/outline semantics (extensible)
  *   • [data-padding="none|sm|md|lg"]     — inner spacing
  *
  * A11y
@@ -25,10 +25,14 @@ import * as React from 'react';
  * When to use
  *   • As a neutral container in dashboards, pads, and panels.
  *   • Keep padding modest; compose layout with Stack/Grid instead of adding layout logic here.
+ *
+ * Notes
+ *   • Variants are **pass‑through** to CSS skins; adding values here doesn't change visuals unless your skin targets them.
+ *   • The type allows custom strings so downstream apps can trial variants without changing this file again.
  */
 
 /** Visual depth/outline semantics (skin renders). */
-type Variant = 'plain' | 'elev' | 'glow';
+type Variant = 'plain' | 'elev' | 'glow' | 'outline' | 'inset' | 'ghost' | (string & {});
 /** Inner spacing scale for content. */
 type Padding = 'none' | 'sm' | 'md' | 'lg';
 

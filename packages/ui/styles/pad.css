@@ -45,3 +45,96 @@
     box-shadow: 0 0 0 3px var(--pad-ring);
   }
 }
+
+/* 3) Pad mood & depth utilities (Layered Synesthetic UI) */
+@layer utilities {
+  /* Mood → glow intensity map (used by .mood-glow) */
+  [data-pad-mood='soft'] {
+    --pad-glow: 0.15;
+  }
+  [data-pad-mood='focused'] {
+    --pad-glow: 0.32;
+  }
+  [data-pad-mood='celebratory'] {
+    --pad-glow: 0.55;
+  }
+
+  /* Mood-responsive glow halo. Apply to any rounded container.
+     Tip: wrap your pad header/body in a `.mood-glow` element. */
+  .mood-glow {
+    position: relative;
+  }
+  .mood-glow::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(120% 120% at 50% 50%, color-mix(in oklab, var(--pad-accent) 65%, transparent 35%) 0%, transparent 60%);
+    filter: blur(24px);
+    opacity: var(--pad-glow, 0.2);
+    transition: opacity var(--duration-normal, 220ms) var(--easing-soft, ease);
+  }
+
+  /* Mood ring — constant outline that scales with mood (pairs well with .mood-glow) */
+  .mood-ring {
+    position: relative;
+  }
+  .mood-ring::after {
+    content: '';
+    position: absolute;
+    inset: 0; /* hugs the element */
+    border-radius: inherit;
+    pointer-events: none;
+    /* width scales a touch with mood; color reuses --pad-ring */
+    box-shadow: 0 0 0 calc(2px + 2px * var(--pad-glow, 0.2)) var(--pad-ring);
+    opacity: clamp(0.25, var(--pad-glow, 0.35), 0.8);
+    transition: opacity var(--duration-normal, 220ms) var(--easing-soft, ease);
+  }
+
+  /* Whisper ring — depth-aware focus/hover outline */
+  .whisper-ring {
+    outline: none;
+    transition: box-shadow var(--duration-snug, 160ms) var(--easing-soft, ease);
+  }
+  [data-depth='0'] .whisper-ring:focus-visible,
+  [data-depth='0'] .whisper-ring:hover {
+    box-shadow: 0 0 0 0 var(--pad-ring);
+  }
+  [data-depth='1'] .whisper-ring:focus-visible,
+  [data-depth='1'] .whisper-ring:hover {
+    box-shadow: 0 0 0 2px var(--pad-ring);
+  }
+  [data-depth='2'] .whisper-ring:focus-visible,
+  [data-depth='2'] .whisper-ring:hover {
+    box-shadow: 0 0 0 3px var(--pad-ring);
+  }
+  [data-depth='3'] .whisper-ring:focus-visible,
+  [data-depth='3'] .whisper-ring:hover {
+    box-shadow: 0 0 0 5px var(--pad-ring);
+  }
+
+  /* Wave visual — fades in with depth (for layered ornaments) */
+  .wave-visual {
+    opacity: 0.15;
+    transition: opacity var(--duration-normal, 220ms) var(--easing-soft, ease);
+  }
+  [data-depth='1'] .wave-visual {
+    opacity: 0.35;
+  }
+  [data-depth='2'] .wave-visual {
+    opacity: 0.6;
+  }
+  [data-depth='3'] .wave-visual {
+    opacity: 0.9;
+  }
+
+  /* A11y: respect motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .mood-glow::before,
+    .whisper-ring,
+    .wave-visual {
+      transition: none !important;
+    }
+  }
+}

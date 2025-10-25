@@ -69,7 +69,7 @@
     padding: 0.5rem 0.75rem;
     transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease, outline-color 0.15s ease;
     position: relative;
-    --_ring-size: var(--ring-size, 3px);
+    --_ring-size: var(--ring-size, 1px);
     --_ring-color: var(--ring-accent, color-mix(in oklab, var(--color-accent) 85%, white 15%));
   }
   [data-ui='field'] [data-part='control']:hover {
