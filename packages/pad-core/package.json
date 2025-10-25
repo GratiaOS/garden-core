@@ -1,0 +1,36 @@
+{
+  "name": "@garden/pad-core",
+  "version": "0.1.0",
+  "description": "Shared pad contract, registry, routing, and events for Garden pads.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./realtime": {
+      "types": "./dist/realtime/index.d.ts",
+      "import": "./dist/realtime/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "react": "^18 || ^19"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.13",
+    "react": "^19.1.1",
+    "typescript": "^5.9.3",
+    "rimraf": "^6.0.1"
+  }
+}
