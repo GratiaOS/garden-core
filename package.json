@@ -5,7 +5,10 @@
   "funding": "https://github.com/sponsors/GratiaOS",
   "packageManager": "pnpm@10.17.1",
   "scripts": {
-    "dev": "pnpm -C playground dev",
+    "dev": "pnpm -r --parallel dev",
+    "dev:server": "pnpm --filter @garden/server dev",
+    "dev:playground": "pnpm --filter @garden/playground dev",
+    "start:prod": "cross-env NODE_ENV=production dotenv -e server/.env.production -- pnpm --filter @garden/server start",
     "build": "pnpm -r build",
     "lint": "echo 'lint TBA' && exit 0",
     "changeset": "changeset",
@@ -13,6 +16,8 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^7.4.1"
   }
 }
