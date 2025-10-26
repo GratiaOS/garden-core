@@ -32,14 +32,20 @@ function usePresence(meProgress: number, initial: Player[] = INITIAL_PLAYERS, ki
     const rt = createRealtime({ kind, webrtc: { signalUrl } });
     adapterRef.current = rt;
     setRtStatus('connecting');
+    let unsubscribePresence: (() => void) | null = null;
+    let cancelled = false;
     (async () => {
       try {
         await rt.joinCircle('firecircle'); // default circle for playground
+        if (cancelled) {
+          await rt.leaveCircle().catch(() => {});
+          return;
+        }
         joinedRef.current = true;
         setRealtimePort(rt, 'firecircle'); // expose to pad-core’s scene-events
         setRtStatus('connected');
         // Subscribe to presence updates
-        const off = rt.subscribe<{ t: number; padId?: string; sceneId?: string; system?: string }>(TOPIC_PRESENCE, (payload, env) => {
+        unsubscribePresence = rt.subscribe<{ t: number; padId?: string; sceneId?: string; system?: string }>(TOPIC_PRESENCE, (payload, env) => {
           // Ignore our own published presence (we already mirrored locally)
           if (env.sender === rt.myPeerId()) return;
           const pid = env.sender;
@@ -61,16 +67,20 @@ function usePresence(meProgress: number, initial: Player[] = INITIAL_PLAYERS, ki
             showToast({ title: 'Presence', desc: payload.system, icon: '🕸️', variant: 'neutral' });
           }
         });
-        return () => off();
       } catch (err) {
         setRtStatus('disconnected');
         console.warn('[presence] join failed, staying local-only', err);
       }
     })();
     return () => {
+      cancelled = true;
       joinedRef.current = false;
       setRtStatus('disconnected');
       setRealtimePort(null, null);
+      try {
+        unsubscribePresence?.();
+      } catch {}
+      unsubscribePresence = null;
       adapterRef.current?.leaveCircle().catch(() => {});
     };
   }, [kind, signalUrl]);
