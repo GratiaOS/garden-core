@@ -1,4 +1,4 @@
-# @garden/tokens
+# @gratiaos/tokens
 
 ## 0.1.1
 

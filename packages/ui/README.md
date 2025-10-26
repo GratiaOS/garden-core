@@ -1,4 +1,4 @@
-# 🌿 `@garden/ui`
+# 🌿 `@gratiaos/ui`
 
 [![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](../../CHANGELOG.md)
 [![Build](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
@@ -34,9 +34,9 @@ pnpm build
 In your app entry:
 
 ```tsx
-import { Button, Card, Pill, Field } from '@garden/ui';
-import { Toaster, showToast } from '@garden/ui';
-import '@garden/ui/base.css'; // pulls tokens + component skins
+import { Button, Card, Pill, Field } from '@gratiaos/ui';
+import { Toaster, showToast } from '@gratiaos/ui';
+import '@gratiaos/ui/base.css'; // pulls tokens + component skins
 ```
 
 > Minimal CSS footprint: components are headless and opt‑in styled via `base.css` (tokens + skins). You may ship your own skins.
@@ -106,7 +106,7 @@ Both modes set `aria-busy`, emit data‑attrs for skins, and block clicks while 
 
 ## 🎨 Theming & Tokens
 
-No hardcoded hex. Components read tokens from `@garden/tokens`:
+No hardcoded hex. Components read tokens from `@gratiaos/tokens`:
 
 ```css
 @theme {
@@ -153,7 +153,7 @@ Visit <http://localhost:5173> and open the **Lab** tab 🌿
 
 We keep the UI package **light**, **clear**, and **deeply documented**.
 
-1. **Start with tokens** — extend `@garden/tokens` if needed
+1. **Start with tokens** — extend `@gratiaos/tokens` if needed
 2. **Write the primitive** in `src/primitives`
 3. **Add a skin** in `src/styles` (optional; primitives are headless)
 4. **Add a demo** to the Playground

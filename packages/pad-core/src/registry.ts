@@ -7,7 +7,7 @@
  *
  * Typical usage
  * ```ts
- * import { createRegistry, sortPads, globalRegistry } from '@garden/pad-core';
+ * import { createRegistry, sortPads, globalRegistry } from '@gratiaos/pad-core';
  *
  * // 1) Local registry
  * const reg = createRegistry();

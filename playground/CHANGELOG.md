@@ -18,9 +18,9 @@
 - Updated dependencies [079a984]
 - Updated dependencies [8a48e34]
 - Updated dependencies [8a48e34]
-  - @garden/pad-core@0.2.0
-  - @garden/tokens@0.1.1
-  - @garden/ui@0.1.2
+  - @gratiaos/pad-core@0.2.0
+  - @gratiaos/tokens@0.1.1
+  - @gratiaos/ui@0.1.2
 
 ## 🌍 0.1.3 — Realtime & P2P Pads
 
@@ -48,6 +48,6 @@
 - cbae5e2: seed playground
 - Updated dependencies
 - Updated dependencies [cbae5e2]
-  - @garden/tokens@0.1.0
-  - @garden/icons@0.1.0
-  - @garden/ui@0.1.0
+  - @gratiaos/tokens@0.1.0
+  - @gratiaos/icons@0.1.0
+  - @gratiaos/ui@0.1.0

@@ -1,4 +1,4 @@
-# @garden/tokens
+# @gratiaos/tokens
 
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](../../CHANGELOG.md)
 [![Build](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
@@ -12,8 +12,8 @@ Tailwind v4 theme variables for Garden projects.
 Usage:
 
 ```ts
-import '@garden/tokens'; // pulls index.css
-// or, in CSS: @import "@garden/tokens/theme.css";
+import '@gratiaos/tokens'; // pulls index.css
+// or, in CSS: @import "@gratiaos/tokens/theme.css";
 ```
 
 ---

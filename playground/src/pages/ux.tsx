@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Button, Card, Toaster, showToast, Badge } from '@garden/ui';
+import { Button, Card, Toaster, showToast, Badge } from '@gratiaos/ui';
 import {
   usePadMood,
   onPadRouteChange,
@@ -11,8 +11,8 @@ import {
   onSceneComplete,
   type PadManifest,
   setRealtimePort,
-} from '@garden/pad-core';
-import { createRealtime, TOPIC_PRESENCE, type RealtimePort, type RealtimeKind } from '@garden/pad-core/realtime';
+} from '@gratiaos/pad-core';
+import { createRealtime, TOPIC_PRESENCE, type RealtimePort, type RealtimeKind } from '@gratiaos/pad-core/realtime';
 
 // Single abstraction point to hot-swap presence to realtime later (now: port factory -> sim in dev, webrtc in prod)
 function usePresence(meProgress: number, initial: Player[] = INITIAL_PLAYERS, kind: RealtimeKind = 'sim', signalUrl?: string): PresenceControls {

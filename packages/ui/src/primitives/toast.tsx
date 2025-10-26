@@ -72,7 +72,7 @@ function isDevEnvironment() {
  *  • Exposes helpers to fire, clear, and run an interval-based "auto" demo.
  *
  * Usage
- *  import { Toaster, useToasterTest } from '@garden/ui';
+ *  import { Toaster, useToasterTest } from '@gratiaos/ui';
  *  ...
  *  function DevRoot() {
  *    useToasterTest(); // Alt+T to push a demo toast, Alt+Y to clear

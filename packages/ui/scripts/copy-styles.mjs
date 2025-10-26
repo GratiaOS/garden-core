@@ -7,7 +7,7 @@
 // 1) Copies all CSS files from packages/ui/src/styles → packages/ui/styles
 // 2) Vendor-passes the tokens theme (packages/tokens/.../theme.css) into
 //    packages/ui/styles/theme.css so apps can import:
-//       import '@garden/ui/styles/theme.css'
+//       import '@gratiaos/ui/styles/theme.css'
 //
 // Safe to run repeatedly; overwrites existing files.
 

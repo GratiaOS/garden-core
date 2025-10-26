@@ -6,9 +6,9 @@
   "packageManager": "pnpm@10.17.1",
   "scripts": {
     "dev": "pnpm -r --parallel dev",
-    "dev:server": "pnpm --filter @garden/server dev",
-    "dev:playground": "pnpm --filter @garden/playground dev",
-    "start:prod": "cross-env NODE_ENV=production dotenv -e server/.env.production -- pnpm --filter @garden/server start",
+    "dev:server": "pnpm --filter @gratiaos/server dev",
+    "dev:playground": "pnpm --filter playground dev",
+    "start:prod": "cross-env NODE_ENV=production dotenv -e server/.env.production -- pnpm --filter @gratiaos/server start",
     "build": "pnpm -r build",
     "lint": "echo 'lint TBA' && exit 0",
     "changeset": "changeset",

@@ -1,4 +1,4 @@
-# 🌿 @garden/pad-core
+# 🌿 @gratiaos/pad-core
 
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](../../CHANGELOG.md)
 [![Build](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
@@ -33,7 +33,7 @@ pad-core integrates with the Garden Realtime stack and Firecircle Signaling Serv
 ### Usage example
 
 ```ts
-import { dispatchSceneEnter, onSceneEnter, setRealtimePort } from '@garden/pad-core';
+import { dispatchSceneEnter, onSceneEnter, setRealtimePort } from '@gratiaos/pad-core';
 
 // Register realtime port when your app joins a circle
 setRealtimePort(adapter, 'firecircle');
@@ -57,7 +57,7 @@ A small in-memory helper that connects pad-core’s event system to any active r
 When registered, outgoing `scene:*` events are published over P2P; incoming messages are replayed locally as DOM events.
 
 ```ts
-import { setRealtimePort, getRealtimePort } from '@garden/pad-core';
+import { setRealtimePort, getRealtimePort } from '@gratiaos/pad-core';
 
 // called once joined
 setRealtimePort(realtimeAdapter, 'firecircle');

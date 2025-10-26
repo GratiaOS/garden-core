@@ -1,5 +1,5 @@
 /**
- * @garden/pad-core — catalog helpers
+ * @gratiaos/pad-core — catalog helpers
  * ------------------------------------------------------------
  * Utilities to compose/merge pad registries and derive stable,
  * UI‑friendly lists (catalogs) from pad manifests.

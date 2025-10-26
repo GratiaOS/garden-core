@@ -11,7 +11,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@garden/ui': path.resolve(dirname, '../packages/ui/src'),
+      '@gratiaos/ui': path.resolve(dirname, '../packages/ui/src'),
     },
   },
 });

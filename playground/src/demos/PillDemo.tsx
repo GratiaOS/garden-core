@@ -1,4 +1,4 @@
-import { Pill } from '@garden/ui';
+import { Pill } from '@gratiaos/ui';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (

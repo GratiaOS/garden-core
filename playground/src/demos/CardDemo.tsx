@@ -1,4 +1,4 @@
-import { Card } from '@garden/ui';
+import { Card } from '@gratiaos/ui';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (

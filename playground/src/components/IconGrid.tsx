@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
-import type { IconProps } from '@garden/icons';
-import { Card } from '@garden/ui';
+import type { IconProps } from '@gratiaos/icons';
+import { Card } from '@gratiaos/ui';
 
 interface IconGridProps {
   icons: { name: string; component: ComponentType<IconProps> }[];

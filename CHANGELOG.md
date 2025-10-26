@@ -24,7 +24,7 @@
 
 ### 🌿 In the Garden
 
-- `@garden/pad-core/realtime`
+- `@gratiaos/pad-core/realtime`
   - Introduced **Realtime Port** interface (`port.ts`) — a small, typed contract for live sync adapters.
   - Added **SimAdapter** (local event bus) and **WebRtcAdapter** (P2P via signaling hub + DataChannels).
   - Added **factory** (`index.ts`) to auto-select `sim` or `webrtc` based on environment.
@@ -59,7 +59,7 @@
 
 **Description** — Introduces a lightweight, typed foundation for building and routing Pads across apps. IDs are stable, manifests are explicit, and a tiny event bus lets Pads whisper mood/theme changes without coupling.
 
-- pad-core: seed `@garden/pad-core` package with:
+- pad-core: seed `@gratiaos/pad-core` package with:
   - `types.ts` — core types (`PadId`, `PadSceneId`, `PadManifest`, `PadMood`, etc.)
   - `registry.ts` — in‑memory registry helpers (`createRegistry`, `registerAll`, `sortPads`, `globalRegistry`)
   - `catalog.ts` — optional catalog builders (`buildCatalog`, `buildCatalogFromMany`, `filterCatalog`, `groupCatalog`)
@@ -68,7 +68,7 @@
   - `id.ts` — id utilities (`uid`, `slug`)
   - `index.ts` — barrel exports for DX
 - pad-core(events): fold the tiny `padEvents` bus (`PadSignal`, `PadMood`) from `packages/contracts/pad.ts` into this package; keep the old module as a thin re-export for now (migration-safe).
-- pad-core(rename): published under `@garden/pad-core` (was `@garden/pads-core` during early experiments); README + exports updated to document the new helpers.
+- pad-core(rename): published under `@gratiaos/pad-core` (was `@garden/pads-core` during early experiments); README + exports updated to document the new helpers.
 - docs: add README with **Concepts**, **Quick start**, **Routing**, and a minimal usage sample.
 - build(workspace): include the new package in the workspace and publish config (no breaking changes to existing consumers).
 
@@ -87,7 +87,7 @@
 - playground(FieldDemo): reverted to standard Field component showcase (like other demos); the “LightGate + orb” exploration now lives in Pad.
 
 - styles: badge/button/card/field/pill skins aligned (radius/weights/tones); small polish passes.
-- build(ui): copy tokens **theme.css** from `packages/tokens/` into `@garden/ui/styles/theme.css` (updated `copy-styles.mjs`).
+- build(ui): copy tokens **theme.css** from `packages/tokens/` into `@gratiaos/ui/styles/theme.css` (updated `copy-styles.mjs`).
 - scripts: add `scripts/check-headers.mjs` utility for style/header sanity checks.
 - playground(Pad): integrate Garden friend scene + second shimmer and a subtle success tint for “shipped!” vibes.
 
@@ -115,7 +115,7 @@
 
 ## 🌱 Garden Link-Up — 2025-10-12
 
-- ui: linked garden-core workspace packages (`@garden/ui`, `@garden/tokens`) and pulled theme CSS into the Pad.
+- ui: linked garden-core workspace packages (`@gratiaos/ui`, `@gratiaos/tokens`) and pulled theme CSS into the Pad.
 - ui: Dashboard + StatusBar now use Garden primitives and abundance tokens for RTP styling.
 - build: pnpm workspace includes `../garden-core/packages/*` so local Garden builds are consumed directly.
 - styles: synced stylesheet imports to expose `--radius-pill`, `--color-surface`, and related abundance tokens across the Pad.
@@ -126,7 +126,7 @@
 
 - tokens: seeded `abundance` namespace with RTP guardrails (`tokens/abundance.json`).
 - tokens: added Reverse the Poles mode defaults (`tokens/modes/reverse-poles.json`).
-- build(tokens): introduce manifest + sync script so `@garden/tokens` exposes semantic JSON for downstream consumers.
+- build(tokens): introduce manifest + sync script so `@gratiaos/tokens` exposes semantic JSON for downstream consumers.
 
 ## 🌕 v0.1.2 — Moonfield Milestone — 2025-10-08
 
@@ -174,7 +174,7 @@ This milestone marks the moment when **field, structure, and flow** began co-cre
 
 - Introduced shared component styles (`base.css`, `button.css`, `card.css`, `field.css`, `pill.css`, `pad.css`) under `packages/ui/src/styles`.
 - Refactored `Button`, `Pill`, `Card`, and `Field` primitives to use Garden tokens and new depth system.
-- Added `README.md` for `@garden/ui` to guide integration.
+- Added `README.md` for `@gratiaos/ui` to guide integration.
 - Removed legacy Playground `App.css` to complete migration.
 - Expanded theme tokens with `--color-fill-subtle` and consistent `--radius-pill`.
 - Improved `Pad` layering and structure in Playground to prepare for synesthetic UI patterns.

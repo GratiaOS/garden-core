@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Field } from '@garden/ui';
+import { Field } from '@gratiaos/ui';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -27,7 +27,7 @@ export function FieldDemo() {
           <input type="text" placeholder="Riley Garden" />
         </Field>
         <Field label="Email" hint="We only use this for product updates.">
-          <input type="email" placeholder="you@garden.dev" />
+          <input type="email" placeholder="you@gratiaos.dev" />
         </Field>
       </Section>
 
@@ -36,7 +36,7 @@ export function FieldDemo() {
           <input type="text" placeholder="Garden Cooperative" />
         </Field>
         <Field label="Display name" required>
-          <input type="text" placeholder="@garden-friend" />
+          <input type="text" placeholder="@gratiaos-friend" />
         </Field>
       </Section>
 
@@ -91,10 +91,10 @@ export function FieldDemo() {
       <footer>
         <h3 className="text-sm font-medium text-subtle mb-2">Usage</h3>
         <pre className="bg-elev border border-border text-xs p-3 rounded-md overflow-x-auto">
-          <code className="whitespace-pre">{`import { Field } from '@garden/ui';
+          <code className="whitespace-pre">{`import { Field } from '@gratiaos/ui';
 
 <Field label="Email" description="We send confirmations here.">
-  <input type="email" placeholder="you@garden.dev" />
+  <input type="email" placeholder="you@gratiaos.dev" />
 </Field>
 
 <Field label="Bio">

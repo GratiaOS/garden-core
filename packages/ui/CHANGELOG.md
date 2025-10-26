@@ -1,4 +1,4 @@
-# @garden/ui
+# @gratiaos/ui
 
 ## 0.1.2
 

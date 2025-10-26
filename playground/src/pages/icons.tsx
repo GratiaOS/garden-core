@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { ComponentType } from 'react';
-import { Branch, Anchor, Doorway, Leaf, Sparkles, Heart } from '@garden/icons';
-import type { IconProps } from '@garden/icons';
+import { Branch, Anchor, Doorway, Leaf, Sparkles, Heart } from '@gratiaos/icons';
+import type { IconProps } from '@gratiaos/icons';
 import { IconGrid } from '../components/IconGrid';
 
 type IconEntry = {

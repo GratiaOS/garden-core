@@ -1,5 +1,5 @@
 /**
- * @garden/pad-core — ID & slug helpers
+ * @gratiaos/pad-core — ID & slug helpers
  *
  * Goals:
  * - Stable, URL-safe IDs without external deps.

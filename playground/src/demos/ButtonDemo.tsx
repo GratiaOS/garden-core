@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Button } from '@garden/ui';
-import { Leaf, Sparkles, Heart, Branch, Anchor } from '@garden/icons';
+import { Button } from '@gratiaos/ui';
+import { Leaf, Sparkles, Heart, Branch, Anchor } from '@gratiaos/icons';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (

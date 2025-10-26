@@ -1,4 +1,4 @@
-# @garden/icons
+# @gratiaos/icons
 
 ## 0.1.0
 

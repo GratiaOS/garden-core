@@ -1,4 +1,4 @@
-# 🌿 `@garden/icons`
+# 🌿 `@gratiaos/icons`
 
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](../../CHANGELOG.md)
 [![Build](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
@@ -10,7 +10,7 @@ Icons are tree-shakable and inherit `currentColor` automatically.
 ## Usage
 
 ```tsx
-import { Leaf, Sparkles, Heart } from '@garden/icons';
+import { Leaf, Sparkles, Heart } from '@gratiaos/icons';
 
 export function Demo() {
   return (

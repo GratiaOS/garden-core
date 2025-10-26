@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { Button, Toaster, showToast, Badge, Card } from '@garden/ui';
+import { Button, Toaster, showToast, Badge, Card } from '@gratiaos/ui';
 import {
   padEvents,
   usePadMood,
@@ -9,13 +9,13 @@ import {
   onSceneComplete,
   setRealtimePort,
   getRealtimePort,
-} from '@garden/pad-core';
-import { createRealtime } from '@garden/pad-core/realtime';
+} from '@gratiaos/pad-core';
+import { createRealtime } from '@gratiaos/pad-core/realtime';
 
 /**
  * Garden Playground — Two‑scene Pad (Companion + Archive)
  *
- * This page is a lightweight smoke‑test for the @garden/pads-core ideas,
+ * This page is a lightweight smoke‑test for the @gratiaos/pads-core ideas,
  * without depending on the package. We simulate a Pad with multiple scenes:
  *
  *   • Companion — the whisper + One True Next flow (your original UI)
@@ -46,7 +46,7 @@ type SceneEventRecord = {
 // Stable Pad identity for events (unique within the playground)
 const PAD_ID = 'playground:two-scene';
 
-// Mood helpers (align with @garden/pad-core)
+// Mood helpers (align with @gratiaos/pad-core)
 const MOODS = ['soft', 'focused', 'celebratory'] as const;
 type PadMood = (typeof MOODS)[number];
 

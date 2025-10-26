@@ -9,10 +9,10 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@garden/ui": ["../packages/ui/dist/index.d.ts", "../packages/ui/dist/index.js"],
-      "@garden/ui/*": ["../packages/ui/dist/*"],
-      "@garden/pad-core": ["../packages/pad-core/dist/index.d.ts", "../packages/pad-core/dist/index.js"],
-      "@garden/pad-core/*": ["../packages/pad-core/dist/*"]
+      "@gratiaos/ui": ["../packages/ui/dist/index.d.ts", "../packages/ui/dist/index.js"],
+      "@gratiaos/ui/*": ["../packages/ui/dist/*"],
+      "@gratiaos/pad-core": ["../packages/pad-core/dist/index.d.ts", "../packages/pad-core/dist/index.js"],
+      "@gratiaos/pad-core/*": ["../packages/pad-core/dist/*"]
     },
 
     /* Bundler mode */

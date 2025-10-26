@@ -1,4 +1,4 @@
-# @garden/pad-core
+# @gratiaos/pad-core
 
 ## 0.2.0
 

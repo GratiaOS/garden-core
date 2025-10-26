@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Toaster, showToast, clearToast, useToasterTest } from '@garden/ui';
+import { Button, Toaster, showToast, clearToast, useToasterTest } from '@gratiaos/ui';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -133,7 +133,7 @@ export function ToastDemo() {
       <footer>
         <h3 className="text-sm font-medium text-subtle mb-2">Usage</h3>
         <pre className="bg-elev border border-border text-xs p-3 rounded-md overflow-x-auto">
-          <code className="whitespace-pre">{`import { Toaster, showToast } from '@garden/ui';
+          <code className="whitespace-pre">{`import { Toaster, showToast } from '@gratiaos/ui';
 
 // Mount once near the app root
 <Toaster position="bottom-center"

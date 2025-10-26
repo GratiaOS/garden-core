@@ -77,16 +77,16 @@ importers:
       '@fontsource-variable/inter':
         specifier: ^5.2.8
         version: 5.2.8
-      '@garden/icons':
+      '@gratiaos/icons':
         specifier: workspace:*
         version: link:../packages/icons
-      '@garden/pad-core':
+      '@gratiaos/pad-core':
         specifier: workspace:*
         version: link:../packages/pad-core
-      '@garden/tokens':
+      '@gratiaos/tokens':
         specifier: workspace:*
         version: link:../packages/tokens
-      '@garden/ui':
+      '@gratiaos/ui':
         specifier: workspace:*
         version: link:../packages/ui
       react:

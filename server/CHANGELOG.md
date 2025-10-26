@@ -1,4 +1,4 @@
-# @garden/server
+# @gratiaos/server
 
 ## 0.2.0
 

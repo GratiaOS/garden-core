@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Badge } from '@garden/ui';
-import { Leaf, Sparkles, Heart, Branch, Anchor } from '@garden/icons';
+import { Badge } from '@gratiaos/ui';
+import { Leaf, Sparkles, Heart, Branch, Anchor } from '@gratiaos/icons';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -108,7 +108,7 @@ export function BadgeDemo() {
       <footer>
         <h3 className="text-sm font-medium text-subtle mb-2">Usage</h3>
         <pre className="bg-elev border border-border text-xs p-3 rounded-md overflow-x-auto">
-          <code className="whitespace-pre">{`import { Badge } from '@garden/ui';
+          <code className="whitespace-pre">{`import { Badge } from '@gratiaos/ui';
 
 <Badge tone="accent">Accent</Badge>
 <Badge variant="solid" tone="positive">OK</Badge>

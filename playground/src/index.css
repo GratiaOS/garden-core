@@ -1,4 +1,4 @@
-@import '@garden/tokens/theme.css';
+@import '@gratiaos/tokens/theme.css';
 @import 'tailwindcss';
-@import '@garden/ui/styles/base.css' layer(components);
-@import '@garden/ui/styles/pad.css';
+@import '@gratiaos/ui/styles/base.css' layer(components);
+@import '@gratiaos/ui/styles/pad.css';
