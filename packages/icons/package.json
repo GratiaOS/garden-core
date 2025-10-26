@@ -1,6 +1,6 @@
 {
   "name": "@gratiaos/icons",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
   "main": "./dist/index.js",

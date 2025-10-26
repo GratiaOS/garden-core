@@ -1,5 +1,23 @@
 # 🎡 Playground Changelog
 
+## 1.0.0
+
+### Major Changes
+
+- 2f294db: refactor!: move Garden packages to the @gratiaos scope
+
+  - rename all workspaces from `@garden/*` to `@gratiaos/*`
+  - update internal imports, build scripts, and docs to the new scope
+  - adjust pnpm scripts and playground aliases to use the renamed packages
+
+### Patch Changes
+
+- Updated dependencies [2f294db]
+  - @gratiaos/pad-core@1.0.0
+  - @gratiaos/ui@1.0.0
+  - @gratiaos/tokens@1.0.0
+  - @gratiaos/icons@1.0.0
+
 ## 0.2.0
 
 ### Minor Changes

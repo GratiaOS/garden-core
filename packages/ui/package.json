@@ -1,6 +1,6 @@
 {
   "name": "@gratiaos/ui",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
   "main": "./dist/index.js",
