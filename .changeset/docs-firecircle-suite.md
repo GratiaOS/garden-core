@@ -1,5 +1,5 @@
 ---
-"@garden/docs": none
+"@garden/pad-core": "none"
 ---
 
 docs: Firecircle & P2P documentation suite

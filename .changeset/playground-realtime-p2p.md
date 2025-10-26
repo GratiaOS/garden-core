@@ -1,5 +1,5 @@
 ---
-"@garden/playground": minor
+"playground": minor
 ---
 
 feat: Realtime & P2P Pads
