@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, Link, NavLink, useLocation } from 'react-route
 import IconsPage from './pages/icons';
 import LabPage from './pages/lab';
 import PadPage from './pages/pad';
+import UxPage from './pages/ux';
 import { ThemeToggle } from './components/ThemeToggle';
 
 function TopNav() {
@@ -33,6 +34,9 @@ function TopNav() {
           </NavLink>
           <NavLink to="/icons" className={linkCls}>
             Icons
+          </NavLink>
+          <NavLink to="/ux" className={linkCls}>
+            UX
           </NavLink>
         </div>
         <ThemeToggle />
@@ -70,6 +74,7 @@ export default function App() {
         <Route path="/" element={<PadPage />} />
         <Route path="/lab" element={<LabPage />} />
         <Route path="/icons" element={<IconsPage />} />
+        <Route path="/ux" element={<UxPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

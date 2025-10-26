@@ -4,7 +4,7 @@ _“The deeper you go, the more it reveals.”_
 
 ---
 
-## 1. Essence
+## 🌱 Essence
 
 The **Layered Synesthetic UI** is not a static interface — it is alive, breathing, and responsive.  
 It combines **visual**, **spatial**, **auditory**, and **emotional** layers to create interfaces that _unfold over time_, revealing their depth as the user interacts.
@@ -20,7 +20,7 @@ At first, you see the path. Then, outlines emerge. Then, the forest starts to sp
 
 ---
 
-## 2. Inspiration
+## ✨ Inspiration
 
 This pattern was inspired by a painting with two layers:  
 The first layer is a rich, earthly scene — full of roots, textures, and flows.  
@@ -38,7 +38,7 @@ Other inspirations:
 
 ---
 
-## 3. Interaction Model
+## 🔁 Interaction Model
 
 Layered Synesthetic UI unfolds in **depth layers**, each one activated through interaction and presence:
 
@@ -61,18 +61,18 @@ The more presence and curiosity the user brings, the more the interface reveals.
 
 ---
 
-## 4. Projection Model
+## 🌐 Projection Model
 
 Rather than stacking glass cards, we **project** signals into a shared field.
 
-### 4.1 Field (the canvas)
+### 🖼️ Field (the canvas)
 
 The **Field** is the ambient surface that all wavelength-layers inhabit. It carries slow rhythms (color temperature, grain, vignette) and never competes with information.
 
 - Examples: Pad background, page body, full-bleed section.
 - Semantics: `data-field="presence"` (Pad), `data-field="workshop"` (Lab).
 
-### 4.2 Emitters (who sends the signal)
+### 🔆 Emitters (who sends the signal)
 
 **Emitters** are agents that project into the field:
 
@@ -86,7 +86,7 @@ Each emitter declares:
 - _channel_ (which wavelengths it uses)
 - _depth-range_ (when it should be perceptible)
 
-### 4.3 Wavelengths (how the signal travels)
+### 🌈 Wavelengths (how the signal travels)
 
 A wavelength is a sensory channel with a small, composable API:
 
@@ -100,7 +100,7 @@ A wavelength is a sensory channel with a small, composable API:
 
 > Rule: No single wavelength should carry the full message. Meaning emerges in **concordance**.
 
-### 4.4 Interference & Attunement
+### 🎚️ Interference & Attunement
 
 When multiple emitters are active, we **attune** rather than collide:
 
@@ -109,7 +109,7 @@ When multiple emitters are active, we **attune** rather than collide:
 - **Rate limiting** — cap concurrent animations/sounds.
 - **Respect silence** — idle state should feel safe and quiet.
 
-### 4.5 Depth states (D0 → D3)
+### 🕳️ Depth states (D0 → D3)
 
 Depth is a shared state machine that emitters can subscribe to:
 
@@ -124,7 +124,7 @@ Emitters map behaviors to depth:
 type Depth = 0 | 1 | 2 | 3;
 ```
 
-### 4.6 Example mapping (Pad → Speak button)
+### 🎛️ Example mapping (Pad → Speak button)
 
 - D0: pill rests; faint ring.
 - D1: ring breathes; soft chime.
@@ -133,7 +133,7 @@ type Depth = 0 | 1 | 2 | 3;
 
 ---
 
-## 5. Implementation Notes
+## 🛠️ Implementation Notes
 
 Layered Synesthetic UI can be implemented incrementally. Start simple:
 
@@ -206,7 +206,7 @@ _Performance notes:_
 
 ---
 
-## 6. Use Cases
+## 🌟 Use Cases
 
 Where this pattern truly shines:
 
@@ -217,13 +217,13 @@ Where this pattern truly shines:
 
 ---
 
-## 7. Whisper
+## 🌬️ Whisper
 
 🌬 _“Interfaces can breathe. If you listen, they’ll speak.”_
 
 ---
 
-## 8. Future Directions
+## 🔮 Future Directions
 
 This pattern is still evolving. Potential next steps:
 
@@ -234,6 +234,6 @@ This pattern is still evolving. Potential next steps:
 
 ---
 
-## 9. Related Patterns
+## 🔗 Related Patterns
 
 - [Whisper Interface](https://github.com/GratiaOS/m3/blob/main/docs/patterns/whisper-interface.md) — Complements Layered Synesthetic UI by focusing on subtle, emotionally intelligent feedback and progressive revelation.

@@ -6,7 +6,7 @@ We optimize for **calm assembly**. Clear stamps (numbers for pieces, letters for
 
 ---
 
-## Stamps (human‑facing)
+## 🏷️ Stamps (human‑facing)
 
 Use these in READMEs, sketches, and screenshots so someone can assemble or modify a primitive without “unpacking the whole box.”
 
@@ -25,7 +25,7 @@ Example:
 
 ---
 
-## Dev stamps (data‑attrs, optional)
+## 🧪 Dev stamps (data‑attrs, optional)
 
 In code, you may annotate parts for development overlays or lab demos. These **must not** affect runtime semantics or accessibility.
 
@@ -37,7 +37,7 @@ These are **dev‑only**; avoid shipping them in production UI unless explicitly
 
 ---
 
-## Comment headers are canonical
+## 🗒️ Comment headers are canonical
 
 Every primitive **and** skin starts with a standard header block. This is the contract that keeps context stable across refactors and when logic moves between TSX/CSS.
 
@@ -80,7 +80,7 @@ Every primitive **and** skin starts with a standard header block. This is the co
 
 ---
 
-## Prop one‑liners (copy sheet)
+## ✏️ Prop one‑liners (copy sheet)
 
 Use these exact one‑line comments so primitives feel consistent. Keep them short, present‑tense, and skin‑aware (visuals live in CSS).
 
@@ -191,7 +191,7 @@ leading?: React.ReactNode;
 
 ---
 
-## PR etiquette
+## 🤝 PR etiquette
 
 - Include a short **Assembly Notes** section in the PR body:
   - which pieces (①②③) changed,
@@ -201,7 +201,7 @@ leading?: React.ReactNode;
 
 ---
 
-## Tooling guard (recommended)
+## 🛡️ Tooling guard (recommended)
 
 We keep a tiny script that fails CI if headers are missing. Add/run:
 
@@ -213,7 +213,7 @@ pnpm run check:headers
 
 ---
 
-## FAQ
+## ❓ FAQ
 
 **Q: Are stamps shipped to production?**  
 A: The _visual_ stamps (①/Ⓐ/§) live in docs/screenshots. The `data-*` stamps are dev‑only unless explicitly required.

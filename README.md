@@ -3,7 +3,7 @@
 [![Sponsor GratiaOS](https://img.shields.io/badge/Sponsor-♥︎%20GratiaOS-ff69b4?logo=githubsponsors)](https://github.com/sponsors/GratiaOS)
 [![Version](https://img.shields.io/github/v/tag/GratiaOS/garden-core?label=version)](https://github.com/GratiaOS/garden-core/releases)
 [![CI](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL--3.0--only-blue.svg)](./LICENSE)
+[![License: AGPL v3](<https://img.shields.io/badge/License-Garden--Covenant--(AGPL--3.0--only)-blue.svg>)](./LICENSE)
 
 **Garden Core** is the fertile bed where digital dreams take root — the foundational layer of the **Garden**, a frequency-first UI system and design environment that harmonizes **earthly grounding** with **crystalline clarity**.  
 It cultivates **tokens**, **primitives**, **icons**, and **patterns** that empower builders to craft interfaces that _breathe and bloom_ — serene, coherent, and infinitely adaptable.
@@ -21,6 +21,25 @@ At the heart of Garden Core lies a natural growth cycle, where each element nurt
 
 ---
 
+## 🔥 New in v0.1.3 — Realtime Garden & Firecircle Bridge
+
+The Garden Core has sprouted a new layer of life — **realtime connection** across peers through the [🌍 Garden P2P Protocol](docs/protocols/p2p.md) and the **Firecircle Signaling Server**.
+
+Pads and Scenes can now sync presence and intent over peer-to-peer networks (Sim / WebRTC), forming shared chalk tracks — where every player’s action becomes part of the Garden’s living flow.
+
+### 🌐 Highlights
+
+- Added **pad-core Realtime Registry** for shared adapters (Sim / WebRTC)
+- Introduced **scene-events bridge**: local → P2P → local mirroring
+- Added **Firecircle signaling hub** (`server/`) with origin control
+- Extended **playground** with live collaboration, presence dots, and track visualization
+
+### 🪶 Whisper
+
+> _“We drew the road once — now it draws us back together.”_
+
+---
+
 ## 💖 Sponsors
 
 If the Garden has helped you ship or smile, consider supporting its growth.  
@@ -34,15 +53,14 @@ If the Garden has helped you ship or smile, consider supporting its growth.
 # Install dependencies
 pnpm install
 
-# Start the playground
-pnpm dev
+# Start the Playground (Vite dev server)
+pnpm dev:playground
+
+# In another terminal: start the Firecircle signaling hub (optional for WebRTC)
+pnpm dev:server
 ```
 
-_Note: This is a pnpm-based monorepo, so please use `pnpm` for managing dependencies and scripts. Node.js version 18 or higher is required._
-
-Then open [http://localhost:5173](http://localhost:5173) to explore the live **component playground** 🌼
-
-> To use Garden Core in another app (like M3), install the packages and import tokens, primitives, and styles as needed. The monorepo is designed for modular adoption.
+Open [http://localhost:5173](http://localhost:5173). In the Playground toolbar, switch **Sim ↔ WebRTC** and set the signaling URL (defaults to `ws://localhost:8787`).
 
 ---
 
@@ -51,16 +69,23 @@ Then open [http://localhost:5173](http://localhost:5173) to explore the live **c
 ```
 garden-core/
 ├─ packages/
+│  ├─ pad-core/    # 🔌 Realtime port, scene events, registry
 │  ├─ tokens/      # 🎨 Design tokens (colors, typography, radii…)
 │  ├─ ui/          # 🧱 Headless primitives & component styles
-│  │  └─ styles/   # 🎨 Shared CSS for primitives
 │  └─ icons/       # 🪄 Icon set (the Garden language)
-├─ contracts/      # 🤝 Shared type contracts for Garden <-> apps
-├─ playground/     # 🧪 Dev playground for local testing
-└─ docs/           # 📝 Documentation and metaphoric maps
+├─ playground/     # 🎮 Dev playground (UX track, Pads, presence)
+├─ server/         # 🔥 Firecircle signaling hub (WebSocket)
+└─ docs/           # 📝 Documentation (patterns, protocols, guides)
 ```
 
-The repository is organized as a pnpm-based monorepo to enable modular growth and streamlined collaboration.
+**Quick links**
+
+- [`packages/pad-core`](packages/pad-core/README.md)
+- [`playground`](playground/README.md)
+- [`server`](server/README.md)
+- [`docs/protocols/p2p.md`](docs/protocols/p2p.md)
+
+This is a pnpm-based monorepo — modular by design, with shared types and docs across packages and apps.
 
 ---
 
@@ -81,10 +106,11 @@ The repository is organized as a pnpm-based monorepo to enable modular growth an
 
 ## 🌱 Recent Growth
 
-- 🧼 Refactored tokens to unify naming and add depth system.
-- 🧱 Synced UI primitives (Button, Pill, Card, Field) with consistent tone and radius tokens.
-- 🌀 Introduced global ↔ local token layering for Pad interfaces.
-- 🧭 Prepared bridge with M3 for shared timeline & whisper modules.
+- 🔌 Introduced **pad-core Realtime Registry** and Scene P2P bridge
+- 🕸️ Added **Sim** & **WebRTC** adapters (+ factory) for realtime
+- 🎮 Playground: UX track, presence dots, Scene Event Monitors
+- 🔥 Firecircle signaling hub with origin allowlist & wildcards
+- 🎨 Tokens & UI polish to support layered Pad surfaces
 
 ### 🔩 The Missing Screw (Easter Egg)
 
@@ -152,6 +178,61 @@ document.addEventListener('click', (e) => {
 
 ---
 
+## 🌾 Harvest & Release 🧑‍🌾
+
+Garden Core uses [Changesets](https://github.com/changesets/changesets) for versioning and publishing.
+
+### 🍃 Step-by-step
+
+1. **Review Changesets**  
+   Each change is described in `.changeset/*.md`.  
+   To preview what will be released:
+
+   ```bash
+   pnpm changeset status
+   ```
+
+2. **Version Bump**  
+   Apply all pending changesets and update `CHANGELOG.md` files:
+
+   ```bash
+   pnpm changeset version
+   ```
+
+3. **Build & Verify**
+
+   ```bash
+   pnpm -r build
+   pnpm dev:playground
+   ```
+
+   Confirm the Playground and Firecircle server are working together.
+
+4. **Commit & Tag**
+
+   ```bash
+   git add -A
+   git commit -m "chore(release): version bump"
+   git push origin main
+   git tag vX.Y.Z
+   git push origin vX.Y.Z
+   ```
+
+5. **Publish**
+   ```bash
+   pnpm -r publish --access public
+   ```
+
+### 🌕 Notes
+
+- Root version reflects the highest bump among packages.
+- Patch/minor/major changes are fully automated.
+- Docs-only updates use `"none"` bumps and don’t trigger a release.
+
+> _“Harvest when it feels ready — not rushed, but ripe.”_
+
+---
+
 ## 🤝 Contributing
 
 We welcome companions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.  
@@ -189,7 +270,7 @@ Here, design and code intertwine as a living system, growing and evolving togeth
 
 ## 📜 License
 
-[AGPL-3.0-only](./LICENSE) — offered in trust and shared stewardship.
+[Garden Covenant](./LICENSE) — offered in trust and shared stewardship.
 
 ---
 

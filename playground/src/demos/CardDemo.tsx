@@ -30,6 +30,18 @@ export function CardDemo() {
           <Card variant="glow">Glow</Card>
           <p className="text-center text-xs text-muted">glow</p>
         </div>
+        <div className="space-y-2">
+          <Card variant="outline">Outline</Card>
+          <p className="text-center text-xs text-muted">outline</p>
+        </div>
+        <div className="space-y-2">
+          <Card variant="ghost">Ghost</Card>
+          <p className="text-center text-xs text-muted">ghost</p>
+        </div>
+        <div className="space-y-2">
+          <Card variant="inset">Inset</Card>
+          <p className="text-center text-xs text-muted">inset</p>
+        </div>
       </Section>
 
       <Section title="Padding">

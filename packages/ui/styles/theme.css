@@ -51,6 +51,23 @@
   --duration-snug: 160ms;
   --duration-slow: 420ms;
 
+  /* Scene transition tokens (Pad scene enter/exit) */
+  --scene-enter-duration: 360ms;
+  --scene-exit-duration: 300ms;
+  --scene-enter-ease: var(--ease-deep);
+  --scene-exit-ease: var(--ease-soft);
+
+  /* Optional depth-affine visual helpers (opt-in per element) */
+  --layer-scale-0: 1;
+  --layer-scale-1: 1.005;
+  --layer-scale-2: 1.01;
+  --layer-scale-3: 1.015;
+
+  --layer-blur-0: 0px;
+  --layer-blur-1: 0.2px;
+  --layer-blur-2: 0.6px;
+  --layer-blur-3: 1px;
+
   /* Shadows per depth (D0..D3) — utilities: shadow-depth-0 ... shadow-depth-3 */
   --shadow-depth-0: 0 0 0 0 rgb(0 0 0 / 0);
   --shadow-depth-1: 0 2px 6px rgb(0 0 0 / 0.08), 0 8px 16px -8px rgb(0 0 0 / 0.18);
@@ -102,6 +119,31 @@
     }
     50% {
       opacity: 1;
+    }
+  }
+
+  @keyframes sceneIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px) scale(0.995);
+      filter: blur(1px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+  @keyframes sceneOut {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(2px) scale(0.995);
+      filter: blur(0.6px);
     }
   }
 }
@@ -190,6 +232,77 @@
     --depth-opacity: var(--layer-opacity-3);
   }
 
+  /* Pad mood → token remap
+     These scopes re-tune accent/hero/scene timings without changing structure.
+     Apply on any Pad root: <section data-pad-mood="soft|focused|celebratory">…</section>
+  */
+  :root[data-pad-mood='soft'],
+  [data-pad-mood='soft'] {
+    /* soften accent & motion */
+    --accent-strength: 0.75;
+    --ring-alpha: 0.16;
+    --glow-intensity: 0.08;
+    --grain-strength: 0.1;
+    --grain-size: 160px; /* larger tile -> softer grain geometry */
+    --track-glow: color-mix(in oklab, var(--color-accent) 45%, transparent);
+    --track-shadow: color-mix(in oklab, var(--color-text) 25%, transparent);
+    --scene-highlight: color-mix(in oklab, var(--color-accent) 55%, transparent);
+    --presence-dot-color: color-mix(in oklab, var(--color-accent) 65%, white 15%);
+    --ghost-trail-color: color-mix(in oklab, var(--color-accent) 18%, transparent);
+
+    /* calmer hero gradient and slower entrances */
+    --pad-hero-start: color-mix(in oklab, var(--accent) 8%, var(--surface));
+    --pad-hero-end: color-mix(in oklab, var(--accent) 2%, var(--surface));
+    --scene-enter-duration: 420ms;
+    --scene-exit-duration: 360ms;
+    --scene-enter-ease: var(--ease-soft);
+    --scene-exit-ease: var(--ease-soft);
+  }
+
+  :root[data-pad-mood='focused'],
+  [data-pad-mood='focused'] {
+    /* tighten motion; stronger accent presence */
+    --accent-strength: 1.08;
+    --ring-alpha: 0.22;
+    --glow-intensity: 0.12;
+    --grain-strength: 0.12;
+    --grain-size: 130px; /* tighter tile -> slightly crisper grain */
+    --track-glow: color-mix(in oklab, var(--color-accent) 65%, transparent);
+    --track-shadow: color-mix(in oklab, var(--color-accent) 28%, transparent);
+    --scene-highlight: color-mix(in oklab, var(--color-accent) 70%, transparent);
+    --presence-dot-color: color-mix(in oklab, var(--color-accent) 78%, white 12%);
+    --ghost-trail-color: color-mix(in oklab, var(--color-accent) 24%, transparent);
+
+    --pad-hero-start: color-mix(in oklab, var(--accent) 16%, var(--surface));
+    --pad-hero-end: color-mix(in oklab, var(--accent) 6%, var(--surface));
+    --scene-enter-duration: 300ms;
+    --scene-exit-duration: 260ms;
+    --scene-enter-ease: var(--ease-deep);
+    --scene-exit-ease: var(--ease-deep);
+  }
+
+  :root[data-pad-mood='celebratory'],
+  [data-pad-mood='celebratory'] {
+    /* vivid accent, brisk motion, brighter hero */
+    --accent-strength: 1.18;
+    --ring-alpha: 0.26;
+    --glow-intensity: 0.18;
+    --grain-strength: 0.14;
+    --grain-size: 120px; /* smallest tile -> more lively grain */
+    --track-glow: color-mix(in oklab, var(--color-accent) 90%, white 10%);
+    --track-shadow: color-mix(in oklab, var(--color-accent) 35%, transparent);
+    --scene-highlight: color-mix(in oklab, var(--color-accent) 92%, white 8%);
+    --presence-dot-color: color-mix(in oklab, var(--color-accent) 94%, white 12%);
+    --ghost-trail-color: color-mix(in oklab, var(--color-accent) 32%, transparent);
+
+    --pad-hero-start: color-mix(in oklab, var(--accent) 24%, var(--surface));
+    --pad-hero-end: color-mix(in oklab, var(--accent) 12%, var(--surface));
+    --scene-enter-duration: 280ms;
+    --scene-exit-duration: 240ms;
+    --scene-enter-ease: var(--ease-deep);
+    --scene-exit-ease: var(--ease-deep);
+  }
+
   /* Reverse‑the‑Poles (RTP) — abundance mode
      why: security is a floor, not a leash | what: flip safe defaults | how: dataset flag */
   :root[data-mode='rtp'] {
@@ -227,6 +340,22 @@
   /* Motion — durations */
   --dur-pulse: 700ms; /* UI chip pulse duration */
   --dur-toast: 5s; /* or 4800ms */
+
+  /* Pad hero gradient defaults (used by PadChrome) */
+  --pad-hero-start: color-mix(in oklab, var(--accent) 12%, var(--surface));
+  --pad-hero-end: color-mix(in oklab, var(--accent) 3%, var(--surface));
+
+  /* Pad mood tokens (default values; remapped by [data-pad-mood]) */
+  --accent-strength: 1; /* 0.0–1.2 — scales accent usage */
+  --glow-intensity: 0.1; /* 0–1 — subtle halo/glow */
+  --ring-alpha: 0.18; /* 0–1 — whisper ring strength */
+  --grain-strength: 0.12; /* 0–1 — ambient grain strength */
+  --grain-size: 140px; /* px — grain tile size used by card grain overlay */
+  --track-glow: color-mix(in oklab, var(--color-accent) 55%, transparent);
+  --track-shadow: color-mix(in oklab, var(--color-text) 25%, transparent);
+  --scene-highlight: color-mix(in oklab, var(--color-accent) 60%, transparent);
+  --presence-dot-color: color-mix(in oklab, var(--color-accent) 70%, white 15%);
+  --ghost-trail-color: color-mix(in oklab, var(--color-accent) 22%, transparent);
 }
 
 @layer utilities {
@@ -264,6 +393,85 @@
     transition: opacity var(--duration-snug) var(--ease-deep);
   }
 
+  /* Scene enter/exit helpers (hooked to Pad scene transitions) */
+  .scene-enter {
+    animation: sceneIn var(--scene-enter-duration) var(--scene-enter-ease);
+    will-change: opacity, transform, filter;
+  }
+  .scene-exit {
+    animation: sceneOut var(--scene-exit-duration) var(--scene-exit-ease);
+    will-change: opacity, transform, filter;
+  }
+
+  /* Depth-aware visual layer helper — apply to a child that should respond to [data-depth] */
+  .wave-visual {
+    transition: opacity var(--duration-snug) var(--ease-soft), filter var(--duration-snug) var(--ease-soft),
+      transform var(--duration-snug) var(--ease-soft);
+  }
+  [data-depth='0'] .wave-visual {
+    opacity: var(--layer-opacity-0);
+    filter: blur(var(--layer-blur-0));
+    transform: scale(var(--layer-scale-0));
+  }
+  [data-depth='1'] .wave-visual {
+    opacity: var(--layer-opacity-1);
+    filter: blur(var(--layer-blur-1));
+    transform: scale(var(--layer-scale-1));
+  }
+  [data-depth='2'] .wave-visual {
+    opacity: var(--layer-opacity-2);
+    filter: blur(var(--layer-blur-2));
+    transform: scale(var(--layer-scale-2));
+  }
+  [data-depth='3'] .wave-visual {
+    opacity: var(--layer-opacity-3);
+    filter: blur(var(--layer-blur-3));
+    transform: scale(var(--layer-scale-3));
+  }
+
+  /* Whisper ring — subtle focus/hover halo for interactive bits */
+  .whisper-ring {
+    outline: 0;
+    box-shadow: 0 0 0 0 transparent, inset 0 0 0 0 transparent;
+    transition: box-shadow var(--duration-snug) var(--ease-soft);
+  }
+  .whisper-ring:is(:hover, :focus-visible) {
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) calc(60% * var(--accent-strength)), transparent),
+      0 0 0 6px color-mix(in oklab, var(--accent) calc(12% * var(--accent-strength)), transparent);
+  }
+
+  /* Mood glow — soft ambient halo that scales with pad mood tokens
+     Uses:
+       --glow-intensity (0..1)
+       --accent-strength (0..1.2)
+       --accent (color)
+     Apply to any element with rounded corners for best effect.
+  */
+  .mood-glow {
+    position: relative;
+    isolation: isolate; /* keep ::after within this stacking context */
+    z-index: 0;
+    transition: box-shadow var(--duration-snug) var(--ease-soft);
+  }
+  .mood-glow::after {
+    content: '';
+    position: absolute;
+    inset: -1px; /* tiny bleed to avoid seams on borders */
+    border-radius: inherit; /* follow host radius */
+    pointer-events: none;
+    z-index: -1;
+    opacity: clamp(0, var(--glow-intensity), 1);
+    transition: box-shadow var(--duration-snug) var(--ease-soft), opacity var(--duration-snug) var(--ease-soft);
+    /* ambient halo; relies on box-shadow so it stays GPU-friendly */
+    box-shadow: 0 0 calc(24px * var(--glow-intensity)) calc(6px * var(--glow-intensity))
+      color-mix(in oklab, var(--accent) calc(18% * var(--accent-strength)), transparent);
+  }
+  .mood-glow:is(:hover, :focus-within)::after {
+    /* slight lift on interaction */
+    box-shadow: 0 0 calc(28px * var(--glow-intensity)) calc(8px * var(--glow-intensity))
+      color-mix(in oklab, var(--accent) calc(26% * var(--accent-strength)), transparent);
+  }
+
   /* Animation utilities — apply tokenized keyframes with one class */
   .animate-breathe {
     animation: var(--animate-breathe);
@@ -275,7 +483,9 @@
   /* Respect reduced motion: disable ambient animations */
   @media (prefers-reduced-motion: reduce) {
     .animate-breathe,
-    .animate-twinkle {
+    .animate-twinkle,
+    .scene-enter,
+    .scene-exit {
       animation: none !important;
     }
   }
