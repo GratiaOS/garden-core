@@ -1,0 +1,40 @@
+name: Publish @gratiaos packages
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'pkg-v*'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.19.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm -r build
+
+      - name: Publish workspaces via trusted publisher
+        run: pnpm -r publish --provenance --no-git-checks --filter "@gratiaos/*"
+        env:
+          NPM_CONFIG_PROVENANCE: true
