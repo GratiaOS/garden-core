@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
+  "license": "AGPL-3.0-only",
+  "description": "Composable theme-friendly SVG icons for Garden apps.",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
@@ -24,5 +29,10 @@
   },
   "peerDependencies": {
     "react": "^18 || ^19"
-  }
+  },
+  "files": [
+    "dist/**",
+    "README.md",
+    "LICENSE"
+  ]
 }

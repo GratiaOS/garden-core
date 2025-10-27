@@ -1,8 +1,13 @@
 {
   "name": "@gratiaos/pad-core",
   "version": "1.0.0",
-  "description": "Shared pad contract, registry, routing, and events for Garden pads.",
+  "description": "Shared pad contract, registry, routing, and realtime events for Garden apps.",
+  "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
+  "license": "AGPL-3.0-only",
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "exports": {
     ".": {
@@ -18,7 +23,9 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "peerDependencies": {
     "react": "^18 || ^19"

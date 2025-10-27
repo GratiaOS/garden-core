@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
+  "license": "AGPL-3.0-only",
+  "description": "Headless Garden UI primitives with opt-in skins and realtime-friendly hooks.",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
