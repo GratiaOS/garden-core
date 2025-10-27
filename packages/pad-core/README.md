@@ -1,11 +1,11 @@
 # 🌿 @gratiaos/pad-core
 
-[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](../../CHANGELOG.md)
+[![npm version](https://img.shields.io/npm/v/@gratiaos/pad-core)](https://www.npmjs.com/package/@gratiaos/pad-core)
 [![Build](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
-[![License: AGPL v3](<https://img.shields.io/badge/License-Garden--Covenant--(AGPL--3.0--only)-blue.svg>)](../../LICENSE)
+[![License](https://img.shields.io/npm/l/%40gratiaos%2Fpad-core)](https://github.com/GratiaOS/garden-core/blob/main/LICENSE)
 
 **Garden Pad Core** is the shared contract + registry that keeps Pads discoverable, routable, and in conversation with their host shells. 🌳✨  
-Now extended with **Realtime Presence**, **Scene Events**, and **P2P awareness** via the [Garden P2P Protocol](../../docs/protocols/p2p.md).
+Now extended with **Realtime Presence**, **Scene Events**, and **P2P awareness** via the [Garden P2P Protocol](https://github.com/GratiaOS/garden-core/blob/main/docs/protocols/p2p.md).
 
 It’s framework-agnostic, DOM-optional, and designed to let Pads bloom in any app (Playground, M3 UI, future mirrors).  
 The package is side-effect free (`"sideEffects": false`) so bundlers can tree-shake unused helpers.
@@ -73,13 +73,11 @@ port?.publish('scenes', { padId: 'value', sceneId: 'compose' });
 
 To use pad-core in a connected environment:
 
-1. Run the [Firecircle Signaling Server](../../server/README.md).
+1. Run the [Firecircle Signaling Server](https://github.com/GratiaOS/garden-core/blob/main/server/README.md).
 2. In your app (Playground, M3, etc.), connect a realtime adapter.
 3. Register the adapter with `setRealtimePort`.
 4. Start dispatching scene events — they’ll flow to all connected peers.
 
 ---
 
-## 🪶 Whisper
-
-> _“Every pad is a node, every scene a pulse — together, the Garden breathes.”_
+🌬️ whisper: _“Every pad is a node, every scene a pulse — together, the Garden breathes.”_

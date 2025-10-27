@@ -1,8 +1,8 @@
 # 🌿 `@gratiaos/ui`
 
-[![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](../../CHANGELOG.md)
+[![npm version](https://img.shields.io/npm/v/@gratiaos/ui)](https://www.npmjs.com/package/@gratiaos/ui)
 [![Build](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
-[![License](<https://img.shields.io/badge/license-Garden%20Covenant%20(AGPL-3.0)-blue.svg>)](../../LICENSE)
+[![License](https://img.shields.io/npm/l/%40gratiaos%2Fui)](https://github.com/GratiaOS/garden-core/blob/main/LICENSE)
 
 **Garden UI** is the shared component library that gives shape and soul to the Garden.  
 It’s where headless primitives meet design tokens, growing together into a living interface system.
@@ -24,22 +24,30 @@ Every primitive is **semantic** (not ornamental), **composable**, and **theme‑
 
 ## 📦 Installation
 
-Garden UI lives inside the Garden monorepo. From the repo root:
+### In your app (npm / pnpm)
 
 ```bash
-pnpm install
-pnpm build
+# add the UI package + tokens (for themes)
+pnpm add @gratiaos/ui @gratiaos/tokens
 ```
 
 In your app entry:
 
 ```tsx
-import { Button, Card, Pill, Field } from '@gratiaos/ui';
-import { Toaster, showToast } from '@gratiaos/ui';
+import { Button, Card, Pill, Field, Toaster, showToast } from '@gratiaos/ui';
 import '@gratiaos/ui/base.css'; // pulls tokens + component skins
 ```
 
-> Minimal CSS footprint: components are headless and opt‑in styled via `base.css` (tokens + skins). You may ship your own skins.
+> Minimal CSS footprint: components are headless and opt‑in styled via `base.css` (tokens + skins). You may ship your own skins instead.
+
+### In the monorepo (local development)
+
+From the repo root:
+
+```bash
+pnpm install
+pnpm -r build
+```
 
 ---
 
@@ -158,12 +166,6 @@ We keep the UI package **light**, **clear**, and **deeply documented**.
 3. **Add a skin** in `src/styles` (optional; primitives are headless)
 4. **Add a demo** to the Playground
 5. **Update this README** 🫶
-
----
-
-## 📄 License
-
-Licensed under the [Garden Public License.](../../LICENSE).
 
 ---
 
