@@ -16,3 +16,4 @@ yarn-debug.log*
 !.env.local.example
 gratia.code-workspace
 *.tsbuildinfo
+target/
