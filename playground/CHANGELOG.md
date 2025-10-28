@@ -1,5 +1,15 @@
 # 🎡 Playground Changelog
 
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @gratiaos/icons@1.0.3
+  - @gratiaos/pad-core@1.0.3
+  - @gratiaos/tokens@1.0.3
+  - @gratiaos/ui@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

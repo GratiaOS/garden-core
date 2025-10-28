@@ -1,5 +1,11 @@
 # @gratiaos/ui
 
+## 1.0.3
+
+### Patch Changes
+
+- post-seed: publish via OIDC (provenance) to verify pipeline
+
 ## 1.0.2
 
 ### Patch Changes
