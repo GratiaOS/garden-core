@@ -1,5 +1,11 @@
 # @gratiaos/ui
 
+## 1.0.2
+
+### Patch Changes
+
+- align versions post-seed
+
 ## 1.0.1
 
 ### Patch Changes

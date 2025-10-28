@@ -1,6 +1,6 @@
 {
   "name": "@gratiaos/pad-core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Shared pad contract, registry, routing, and realtime events for Garden apps.",
   "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
