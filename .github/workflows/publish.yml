@@ -35,14 +35,16 @@ jobs:
 
       - name: Debug npm auth
         run: |
-          npm whoami || true
-          npm config get registry
-          cat ~/.npmrc || true
+          echo "node: $(node -v) npm: $(npm -v) pnpm: $(pnpm -v)"
+          npm config get @gratiaos:registry || true
+          npm config get registry || true
+          npm whoami || echo "whoami expected to 401 under OIDC (no static token)"
+          test -f ~/.npmrc && cat ~/.npmrc || echo "(no ~/.npmrc — OIDC flow)"
 
       - name: Build packages
         run: pnpm -r build
 
       - name: Publish workspaces via trusted publisher
-        run: pnpm -r publish --provenance --no-git-checks --filter "@gratiaos/*"
+        run: pnpm -r publish --provenance --access public --no-git-checks --filter "@gratiaos/*"
         env:
           NPM_CONFIG_PROVENANCE: true
