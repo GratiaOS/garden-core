@@ -48,8 +48,23 @@ jobs:
           npm view @gratiaos/tokens versions --json || true
           npm view @gratiaos/pad-core versions --json || true
 
+      - name: Sanitize npmrc for OIDC (remove token auth)
+        run: |
+          echo "Using userconfig: $NPM_CONFIG_USERCONFIG"
+          if test -f "$NPM_CONFIG_USERCONFIG"; then
+            echo "--- before" && cat "$NPM_CONFIG_USERCONFIG" || true
+            sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG" || true
+            sed -i '/always-auth/d' "$NPM_CONFIG_USERCONFIG" || true
+          fi
+          echo "@gratiaos:registry=https://registry.npmjs.org/" >> "$NPM_CONFIG_USERCONFIG"
+          echo "--- after" && cat "$NPM_CONFIG_USERCONFIG" || true
+        env:
+          NODE_AUTH_TOKEN: ''
+
       - name: Enable provenance
         run: npm config set provenance true
+        env:
+          NODE_AUTH_TOKEN: ''
 
       - name: Publish each package if this version is missing
         run: |
@@ -63,7 +78,10 @@ jobs:
               echo "🟡 skip $NAME@$VER (already on registry)"
             else
               echo "🟢 publish $NAME@$VER (OIDC + provenance)"
-              npm publish --access public --provenance
+              npm publish --access public --provenance --registry https://registry.npmjs.org/
             fi
             popd >/dev/null
           done
+        env:
+          NODE_AUTH_TOKEN: ''
+          NPM_CONFIG_PROVENANCE: true
