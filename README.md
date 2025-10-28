@@ -264,7 +264,7 @@ Here, design and code intertwine as a living system, growing and evolving togeth
 
 - **v1.0.3 — The Self‑Releasing Garden** (2025‑10‑28):  
   🌕 Full Trusted Publishing via GitHub Actions (OIDC).  
-  All Garden packages (`icons`, `ui`, `tokens`, `pad-core`) now publish automatically through [npm Trusted Publishing](https://docs.npmjs.com/trusted-publishing).  
+  All Garden packages (`icons`, `ui`, `tokens`, `pad-core`) now publish automatically through [npm Trusted Publishers](https://docs.npmjs.com/trusted-publishers).  
   _“The Garden releases itself.”_
 
 - **v0.1.2 — Moonfield** (2025-10-08):  
