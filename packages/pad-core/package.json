@@ -7,6 +7,7 @@
   "license": "AGPL-3.0-only",
   "publishConfig": {
     "access": "public",
+    "registry": "https://registry.npmjs.org/",
     "provenance": true
   },
   "repository": {
@@ -41,8 +42,8 @@
     "clean": "rimraf dist"
   },
   "devDependencies": {
-    "@types/react": "^19.1.13",
-    "react": "^19.1.1",
+    "@types/react": "^19.2.2",
+    "react": "^19.2.0",
     "typescript": "^5.9.3",
     "rimraf": "^6.0.1"
   }
