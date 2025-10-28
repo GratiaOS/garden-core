@@ -73,16 +73,17 @@ jobs:
 
       - name: Publish each package if this version is missing
         run: |
-          pnpm -r --filter "@gratiaos/*" exec bash -lc '
-            set -euo pipefail
-            NAME=$(node -p "require(\"./package.json\").name")
-            VER=$(node -p "require(\"./package.json\").version")
+          set -euo pipefail
+          for pkg in packages/icons packages/pad-core packages/tokens packages/ui; do
+            echo "── $pkg"
+            pushd "$pkg" >/dev/null
+            NAME=$(node -p "require('./package.json').name")
+            VER=$(node -p "require('./package.json').version")
             if npm view "$NAME@$VER" version >/dev/null 2>&1; then
               echo "🟡 skip $NAME@$VER (already on registry)"
             else
               echo "🟢 publish $NAME@$VER (OIDC + provenance)"
-              npm publish --access public --provenance --registry https://registry.npmjs.org/
+              npm publish --access public --provenance
             fi
-          '
-        env:
-          NPM_CONFIG_PROVENANCE: true
+            popd >/dev/null
+          done
