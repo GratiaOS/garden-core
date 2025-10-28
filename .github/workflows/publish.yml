@@ -46,13 +46,23 @@ jobs:
           npm view @gratiaos/tokens versions --json || true
           npm view @gratiaos/pad-core versions --json || true
 
+      - name: Sanitize npmrc for OIDC (remove token auth)
+        run: |
+          echo "Using userconfig: $NPM_CONFIG_USERCONFIG"
+          if test -f "$NPM_CONFIG_USERCONFIG"; then
+            echo "--- before" && cat "$NPM_CONFIG_USERCONFIG" || true
+            # Remove any token-based auth lines so npm uses OIDC
+            sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG" || true
+            sed -i '/always-auth/d' "$NPM_CONFIG_USERCONFIG" || true
+          fi
+          # Ensure scoped registry is present
+          echo "@gratiaos:registry=https://registry.npmjs.org/" >> "$NPM_CONFIG_USERCONFIG"
+          echo "--- after" && cat "$NPM_CONFIG_USERCONFIG" || true
+
       - name: Ensure OIDC auth (no legacy token)
         run: |
           echo "userconfig: $NPM_CONFIG_USERCONFIG"
           test -f "$NPM_CONFIG_USERCONFIG" && cat "$NPM_CONFIG_USERCONFIG" || echo "(no userconfig yet)"
-          # remove any token-based auth so npm uses OIDC
-          npm config delete '//registry.npmjs.org/:_authToken' || true
-          npm config delete _auth || true
           echo "NODE_AUTH_TOKEN was: ${NODE_AUTH_TOKEN:+set}"
           unset NODE_AUTH_TOKEN
           echo "NODE_AUTH_TOKEN now: ${NODE_AUTH_TOKEN:+set}"
