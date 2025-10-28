@@ -6,7 +6,13 @@
   "license": "AGPL-3.0-only",
   "description": "Headless Garden UI primitives with opt-in skins and realtime-friendly hooks.",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GratiaOS/garden-core.git",
+    "directory": "packages/ui"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

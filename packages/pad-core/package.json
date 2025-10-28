@@ -6,7 +6,13 @@
   "type": "module",
   "license": "AGPL-3.0-only",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GratiaOS/garden-core.git",
+    "directory": "packages/pad-core"
   },
   "sideEffects": false,
   "exports": {
