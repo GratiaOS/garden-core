@@ -27,6 +27,12 @@ jobs:
           scope: '@gratiaos'
           always-auth: false
 
+      - name: Ensure npm 11.5.1+
+        run: |
+          echo "npm before:" $(npm -v)
+          npm install -g npm@^11.5.1
+          echo "npm after:" $(npm -v)
+
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
@@ -62,6 +68,7 @@ jobs:
           NODE_AUTH_TOKEN: ''
 
       - name: Enable provenance
+        # With Trusted Publishing, provenance is automatic; we set this explicitly for clarity.
         run: npm config set provenance true
         env:
           NODE_AUTH_TOKEN: ''
