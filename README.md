@@ -21,7 +21,7 @@ At the heart of Garden Core lies a natural growth cycle, where each element nurt
 
 ---
 
-## 🔥 New in v0.1.3 — Realtime Garden & Firecircle Bridge
+## 🔥 New in v1.0.3 — Realtime Garden & Firecircle Bridge
 
 The Garden Core has sprouted a new layer of life — **realtime connection** across peers through the [🌍 Garden P2P Protocol](docs/protocols/p2p.md) and the **Firecircle Signaling Server**.
 
