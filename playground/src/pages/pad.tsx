@@ -11,6 +11,7 @@ import {
   getRealtimePort,
 } from '@gratiaos/pad-core';
 import { createRealtime } from '@gratiaos/pad-core/realtime';
+import PromptCardNoOpinion from '../demos/PromptCardNoOpinion';
 
 /**
  * Garden Playground — Two‑scene Pad (Companion + Archive)
@@ -799,6 +800,7 @@ export default function PadPage() {
   return (
     <div data-field="presence" data-depth={depth} data-pad-mood={mood} className="bg-surface text-text min-h-dvh relative overflow-hidden">
       <SceneSwitcher scene={scene} onSelectScene={setScene} mood={mood} onSelectMood={setMood} />
+      <PromptCardNoOpinion tags={['no-opinion']} />
 
       {/* Transition veil (Layer 2/3): lifts during scene switch, then fades */}
       <div
