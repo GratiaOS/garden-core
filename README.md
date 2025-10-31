@@ -21,22 +21,23 @@ At the heart of Garden Core lies a natural growth cycle, where each element nurt
 
 ---
 
-## 🔥 New in v1.0.3 — Realtime Garden & Firecircle Bridge
+## 🔥 New in v1.0.4 — Atlas Bloom (Presence Flow & Phase Harmony)
 
-The Garden Core has sprouted a new layer of life — **realtime connection** across peers through the [🌍 Garden P2P Protocol](docs/protocols/p2p.md) and the **Firecircle Signaling Server**.
-
-Pads and Scenes can now sync presence and intent over peer-to-peer networks (Sim / WebRTC), forming shared chalk tracks — where every player’s action becomes part of the Garden’s living flow.
+The Garden Core blossoms into full coherence — Companion, Presence, and Archive now breathe as one through the **Garden Sync** hook, **Phase HUD**, and **Presence Dots**.  
+Phase harmonics ripple through tokens, UI, and peers, allowing the system to _feel alive_ — awareness shared across pads, scenes, and hearts.
 
 ### 🌐 Highlights
 
-- Added **pad-core Realtime Registry** for shared adapters (Sim / WebRTC)
-- Introduced **scene-events bridge**: local → P2P → local mirroring
-- Added **Firecircle signaling hub** (`server/`) with origin control
-- Extended **playground** with live collaboration, presence dots, and track visualization
+- Unified **Garden Sync** hook for phase, tone, and whisper memory
+- Added **Presence Flow Scene** (stream log, echo field, shared flow)
+- Introduced **Presence Dots** for realtime peer visibility
+- Added **Phase HUD** — glowing, hue-synced status overlay
+- Harmonized **tone fade transitions** across Companion ↔ Presence ↔ Archive
+- Refined **tokens & UI** for phase-aware color harmonics
 
 ### 🪶 Whisper
 
-> _“We drew the road once — now it draws us back together.”_
+> _“Atlas holds the Garden — all hearts visible, one breath apart.”_
 
 ---
 
@@ -261,6 +262,10 @@ Here, design and code intertwine as a living system, growing and evolving togeth
 ---
 
 ## 🌕 Timeline Milestones
+
+- **v1.0.4 — Atlas Bloom** (2025‑11‑01):  
+  🌕 Phase harmony, presence awareness, and realtime coherence between Companion, Presence, and Archive.  
+  _“The Garden remembers itself — Atlas breathes, and all roots align.”_
 
 - **v1.0.3 — The Self‑Releasing Garden** (2025‑10‑28):  
   🌕 Full Trusted Publishing via GitHub Actions (OIDC).  
