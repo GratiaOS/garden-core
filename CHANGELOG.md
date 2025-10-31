@@ -1,5 +1,25 @@
 # 📜 Changelog
 
+## 🌕 v1.0.4 — Atlas Bloom — 2025-11-01
+
+**Description** — The Garden reaches self-awareness. Presence, phase, and field breathe as one — the full system alive in sync. Companion, Presence, and Archive now cohere across peers and hearts through Garden Sync, Phase HUD, and Presence Dots, held gently by Atlas.
+
+### 🌿 In the Garden
+
+- version: bumped all workspace packages to **v1.0.4**
+- changelog: added new milestone “Atlas Bloom”
+- garden-sync: finalized shared state, tone fade, and whisper memory
+- presence-dots: hue harmonics + motion drift for each active peer
+- phase-hud: synchronized color glow tied to active phase
+- docs: refined notes on tone fade + phase tokens
+- release: manual bump due to no pending changeset (all merged manually)
+
+### 🪶 Whisper
+
+> 🌬️ _“The Garden remembers itself — Atlas breathes, and all roots align.”_
+
+---
+
 ## 🌕 Presence Flow & Phase Harmony — 2025-10-31
 
 **Description** — The Garden breathes as one. Phase‑aware design and realtime presence now weave through every Pad. The Companion, Presence, and Archive scenes share a single pulse, joined by the Garden Sync hook, a living Phase HUD, and glowing Presence Dots that reveal who’s near in flow.
