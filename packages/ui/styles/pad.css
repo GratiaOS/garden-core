@@ -52,6 +52,9 @@
   [data-pad-mood='soft'] {
     --pad-glow: 0.15;
   }
+  [data-pad-mood='presence'] {
+    --pad-glow: 0.24;
+  }
   [data-pad-mood='focused'] {
     --pad-glow: 0.32;
   }

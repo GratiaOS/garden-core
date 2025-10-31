@@ -36,6 +36,18 @@
   --color-subtle: color-mix(in oklab, var(--color-text) 60%, transparent);
   --color-faint: color-mix(in oklab, var(--color-text) 45%, transparent);
 
+  /* Tone fade neutrals (scene transitions) */
+  --tone-transition-duration: 800ms;
+  --tone-transition: background var(--tone-transition-duration) var(--ease-soft, ease), color var(--tone-transition-duration) var(--ease-soft, ease);
+  --tone-neutral-surface: color-mix(in oklab, var(--color-surface) 70%, var(--color-accent) 30%);
+  --tone-neutral-text: color-mix(in oklab, var(--color-text) 65%, var(--color-accent) 35%);
+
+  /* Phase hues (used by presence dots + HUD) */
+  --phase-companion-hue: 160; /* trust / green */
+  --phase-presence-hue: 210; /* clarity / blue */
+  --phase-archive-hue: 330; /* reflection / violet */
+  --hud-glow-strength: 0.45; /* HUD glow strength */
+
   /* Radius & shadow (custom; shadow-* namespace only generates when named accordingly) */
   --radius-pill: 9999px;
   --radius-2xl: 1.25rem;

@@ -5,4 +5,5 @@ export * from './primitives/card.js';
 export * from './primitives/field.js';
 export * from './primitives/badge.js';
 export * from './primitives/toast.js';
+export * from './primitives/whisper.js';
 export * from './hooks/index.js';
