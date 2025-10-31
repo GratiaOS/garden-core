@@ -22,7 +22,7 @@ export type PadSceneId = string;
 export type SceneId = PadSceneId;
 
 /** A pad's transient “mood” (used for micro-animations / ambience). */
-export type PadMood = 'soft' | 'focused' | 'celebratory';
+export type PadMood = 'soft' | 'focused' | 'celebratory' | 'presence';
 
 /** Optional theme nudge a pad can suggest to its host shell. */
 export interface PadTheme {
