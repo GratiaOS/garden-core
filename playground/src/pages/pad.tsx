@@ -1,17 +1,20 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { Button, Toaster, showToast, Badge, Card } from '@gratiaos/ui';
 import {
   padEvents,
   usePadMood,
   dispatchSceneEnter,
   dispatchSceneComplete,
-  onSceneEnter,
-  onSceneComplete,
   setRealtimePort,
   getRealtimePort,
+  onSceneEnter,
+  onSceneComplete,
+  type SceneVia,
 } from '@gratiaos/pad-core';
 import { createRealtime } from '@gratiaos/pad-core/realtime';
 import PromptCardNoOpinion from '../demos/PromptCardNoOpinion';
+import PresenceFlow, { type PresenceFlowEntry } from '../scenes/presence-flow';
+import { useGardenSync, usePhaseClass } from '../pad/hooks/useGardenSync';
 
 /**
  * Garden Playground — Two‑scene Pad (Companion + Archive)
@@ -30,25 +33,17 @@ import PromptCardNoOpinion from '../demos/PromptCardNoOpinion';
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
 
-type SceneId = 'companion' | 'archive';
+type SceneId = 'companion' | 'presence' | 'archive';
 type Msg = { id: string; role: 'user' | 'companion'; text: string };
 type ArchivedItem = { id: string; text: string; ts: number };
 type Depth = 0 | 1 | 2 | 3;
 
 // Local Scene Event monitor record (dev aid)
-type SceneEventRecord = {
-  kind: 'enter' | 'complete';
-  padId: string;
-  sceneId: string;
-  ts: number;
-  meta?: Record<string, unknown>;
-};
-
 // Stable Pad identity for events (unique within the playground)
 const PAD_ID = 'playground:two-scene';
 
 // Mood helpers (align with @gratiaos/pad-core)
-const MOODS = ['soft', 'focused', 'celebratory'] as const;
+const MOODS = ['soft', 'presence', 'focused', 'celebratory'] as const;
 type PadMood = (typeof MOODS)[number];
 
 type SceneSwitcherProps = {
@@ -56,9 +51,10 @@ type SceneSwitcherProps = {
   onSelectScene: (scene: SceneId) => void;
   mood: PadMood;
   onSelectMood: (mood: PadMood) => void;
+  presencePing?: boolean;
 };
 
-function SceneSwitcher({ scene, onSelectScene, mood, onSelectMood }: SceneSwitcherProps) {
+function SceneSwitcher({ scene, onSelectScene, mood, onSelectMood, presencePing }: SceneSwitcherProps) {
   return (
     <div className="absolute top-4 right-4 z-40 flex flex-wrap items-center gap-3">
       <div className="flex items-center gap-2">
@@ -73,6 +69,23 @@ function SceneSwitcher({ scene, onSelectScene, mood, onSelectMood }: SceneSwitch
           onClick={() => onSelectScene('companion')}
           aria-pressed={scene === 'companion'}>
           Companion
+        </Button>
+        <Button
+          type="button"
+          density="snug"
+          variant={scene === 'presence' ? 'solid' : 'outline'}
+          tone="positive"
+          onClick={() => onSelectScene('presence')}
+          aria-pressed={scene === 'presence'}>
+          <span className="inline-flex items-center gap-2">
+            Presence
+            {presencePing && scene !== 'presence' ? (
+              <span className="relative inline-flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
+              </span>
+            ) : null}
+          </span>
         </Button>
         <Button
           type="button"
@@ -95,7 +108,7 @@ function SceneSwitcher({ scene, onSelectScene, mood, onSelectMood }: SceneSwitch
             type="button"
             density="snug"
             variant={mood === m ? 'solid' : 'outline'}
-            tone={m === 'celebratory' ? 'positive' : 'accent'}
+            tone={m === 'celebratory' || m === 'presence' ? 'positive' : 'accent'}
             onClick={() => onSelectMood(m as PadMood)}
             aria-pressed={mood === m}>
             {m.charAt(0).toUpperCase() + m.slice(1)}
@@ -220,11 +233,138 @@ function fuzzyIncludes(haystack: string, needle: string): boolean {
   return true;
 }
 
+const PRESENCE_FEED_STORAGE_KEY = 'garden:presence-feed';
+
+function normalizePresenceEntry(raw: unknown, fallbackSource: PresenceFlowEntry['source']): PresenceFlowEntry | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const obj = raw as Record<string, unknown>;
+  const id = typeof obj.id === 'string' && obj.id.trim().length > 0 ? obj.id.trim() : uid();
+  const text = typeof obj.text === 'string' ? obj.text.trim() : '';
+  if (!text) return null;
+  const tokens = Array.isArray(obj.tokens)
+    ? obj.tokens
+        .map((token) => (typeof token === 'string' ? token.trim() : ''))
+        .filter((token): token is string => token.length > 0)
+        .slice(0, 12)
+    : [];
+  const source =
+    obj.source === 'local' || obj.source === 'peer'
+      ? (obj.source as PresenceFlowEntry['source'])
+      : fallbackSource;
+  const ts = typeof obj.ts === 'number' && Number.isFinite(obj.ts) ? obj.ts : Date.now();
+  return { id, text, tokens, source, ts };
+}
+
+function parsePresenceFeed(raw: string | null, fallbackSource: PresenceFlowEntry['source']): PresenceFlowEntry[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    const entries: PresenceFlowEntry[] = [];
+    for (const item of parsed) {
+      const normalized = normalizePresenceEntry(item, fallbackSource);
+      if (normalized) entries.push(normalized);
+    }
+    return entries;
+  } catch {
+    return [];
+  }
+}
+
+function mergePresenceFeeds(existing: PresenceFlowEntry[], incoming: PresenceFlowEntry[]): PresenceFlowEntry[] {
+  if (incoming.length === 0) return existing;
+  const map = new Map<string, PresenceFlowEntry>();
+  for (const entry of incoming.concat(existing)) {
+    if (!map.has(entry.id)) {
+      map.set(entry.id, entry);
+    }
+  }
+  return Array.from(map.values())
+    .sort((a, b) => b.ts - a.ts)
+    .slice(0, 24);
+}
+
+
+
+function normalizeSceneId(value: string | SceneId | undefined | null): SceneId | null {
+  if (!value) return null;
+  const lower = `${value}`.toLowerCase();
+  if (lower === 'companion' || lower === 'presence' || lower === 'archive') {
+    return lower as SceneId;
+  }
+  return null;
+}
+
+function parseCompanionCompletion(result: unknown): { archivedId?: string; text: string } | null {
+  if (!result || typeof result !== 'object') return null;
+  const maybe = result as Record<string, unknown>;
+  const text = typeof maybe.text === 'string' ? maybe.text.trim() : '';
+  if (!text) return null;
+  const archivedId =
+    typeof maybe.archivedId === 'string' && maybe.archivedId.trim().length > 0 ? maybe.archivedId.trim() : undefined;
+  return { archivedId, text };
+}
+
+const FLOW_STOP_WORDS = new Set([
+  'a',
+  'an',
+  'and',
+  'the',
+  'to',
+  'for',
+  'with',
+  'in',
+  'on',
+  'of',
+  'at',
+  'by',
+  'it',
+  'is',
+  'be',
+  'am',
+  'are',
+  'as',
+  'that',
+]);
+
+function derivePresenceTokens(text: string, existing?: unknown): string[] {
+  if (Array.isArray(existing)) {
+    const normalized = existing
+      .map((token) => (typeof token === 'string' ? token.trim() : ''))
+      .filter((token): token is string => token.length > 0);
+    if (normalized.length > 0) return normalized.slice(0, 6);
+  }
+  const counts = new Map<string, number>();
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    .forEach((word) => {
+      if (FLOW_STOP_WORDS.has(word)) return;
+      counts.set(word, (counts.get(word) ?? 0) + 1);
+    });
+  return Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([word]) => word);
+}
+
+function parsePresenceCompletion(result: unknown): { id?: string; text: string; tokens: string[] } | null {
+  if (!result || typeof result !== 'object') return null;
+  const maybe = result as Record<string, unknown>;
+  const text = typeof maybe.text === 'string' ? maybe.text.trim() : '';
+  if (!text) return null;
+  const id = typeof maybe.id === 'string' && maybe.id.trim().length > 0 ? maybe.id.trim() : undefined;
+  const tokens = derivePresenceTokens(text, maybe.tokens);
+  return { id, text, tokens };
+}
+
 function readSceneFromHash(): SceneId {
   const h = (location.hash || '').toLowerCase();
   const m = h.match(/scene=([a-z]+)/);
-  const s = (m?.[1] as SceneId | undefined) ?? 'companion';
-  return s === 'archive' ? 'archive' : 'companion';
+  const normalized = normalizeSceneId(m?.[1] as SceneId | undefined);
+  return normalized ?? 'companion';
 }
 
 function setSceneInHash(next: SceneId) {
@@ -238,9 +378,73 @@ function setSceneInHash(next: SceneId) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function PadPage() {
-  // Scene state + hash sync
-  const [scene, setScene] = useState<SceneId>(readSceneFromHash);
+  // Scene state (shared via Garden Sync) + hash sync
+  const { phase: scene, setPhase: setGardenPhase, addWhisper, applyToneFade, whispers } = useGardenSync();
+  const phaseClass = usePhaseClass();
   const [mood, setMood] = usePadMood('soft');
+
+  // Root ref for tone fade transitions
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const sceneRef = useRef<SceneId>(scene);
+  const [presencePing, setPresencePing] = useState(false);
+  const localSceneCompletions = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    sceneRef.current = scene;
+  }, [scene]);
+
+  const goToScene = useCallback(
+    (next: SceneId, via: SceneVia = 'inspector', origin: 'local' | 'external' = 'local') => {
+      const changed = sceneRef.current !== next;
+      if (changed) {
+        sceneRef.current = next;
+        setGardenPhase(next);
+      }
+      if (next === 'presence') {
+        setPresencePing(false);
+      }
+      if (origin === 'local') {
+        try {
+          dispatchSceneEnter({ padId: PAD_ID, sceneId: next, via });
+        } catch {}
+      }
+    },
+    [setGardenPhase, setPresencePing]
+  );
+  const appendPresenceEntry = useCallback((entry: PresenceFlowEntry) => {
+    setPresenceFeed((prev) => {
+      if (prev.some((item) => item.id === entry.id)) {
+        return prev;
+      }
+      const next = mergePresenceFeeds(prev, [entry]).slice(0, 24);
+      try {
+        localStorage.setItem(PRESENCE_FEED_STORAGE_KEY, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+  const handlePresenceSend = useCallback(
+    (payload: { text: string; tokens: string[] }) => {
+      const id = uid();
+      localSceneCompletions.current.add(id);
+      const entry: PresenceFlowEntry = {
+        id,
+        text: payload.text,
+        tokens: payload.tokens,
+        source: 'local',
+        ts: Date.now(),
+      };
+      appendPresenceEntry(entry);
+      try {
+        dispatchSceneComplete({ padId: PAD_ID, sceneId: 'presence', result: { id, ...payload }, success: true });
+      } catch {}
+    },
+    [appendPresenceEntry]
+  );
+  const handlePresenceArchive = useCallback((payload: Partial<{ text: string; tokens: string[] }>) => {
+    try {
+      dispatchSceneComplete({ padId: PAD_ID, sceneId: 'presence', result: { ...payload, archived: true }, success: true });
+    } catch {}
+  }, []);
 
   useEffect(() => {
     // Reuse an existing realtime port if one is already registered (e.g., from /ux)
@@ -282,82 +486,36 @@ export default function PadPage() {
     };
   }, []);
   useEffect(() => {
-    const onHash = () => setScene(readSceneFromHash());
+    const onHash = () => {
+      const next = readSceneFromHash();
+      if (sceneRef.current !== next) {
+        goToScene(next, 'deeplink', 'external');
+      }
+    };
     window.addEventListener('hashchange', onHash);
+    onHash();
     return () => window.removeEventListener('hashchange', onHash);
-  }, []);
+  }, [goToScene]);
+  useEffect(() => {
+    const off = onSceneEnter((event) => {
+      const normalized = normalizeSceneId(event.detail.sceneId);
+      if (!normalized) return;
+      if (sceneRef.current === normalized) return;
+      goToScene(normalized, event.detail.via ?? 'system', 'external');
+    });
+    return () => {
+      try {
+        off();
+      } catch {}
+    };
+  }, [goToScene]);
   useEffect(() => {
     setSceneInHash(scene);
-    try {
-      dispatchSceneEnter({ padId: PAD_ID, sceneId: scene, via: 'inspector' });
-    } catch {}
-  }, [scene]);
+    if (rootRef.current) applyToneFade(rootRef.current);
+  }, [scene, applyToneFade]);
 
   const [depth, setDepth] = useState<Depth>(1);
   const [switching, setSwitching] = useState(false);
-
-  // Local Scene Event monitor (so Pad page shows events without switching to /ux)
-  const [sceneEvents, setSceneEvents] = useState<SceneEventRecord[]>([]);
-  useEffect(() => {
-    const isDev =
-      (typeof globalThis !== 'undefined' && (globalThis as any).process?.env?.NODE_ENV !== 'production') ||
-      (typeof import.meta !== 'undefined' && (import.meta as any).env && (import.meta as any).env.MODE !== 'production');
-
-    const offEnter = onSceneEnter((e) => {
-      const d = e.detail;
-      try {
-        showToast({ title: 'Scene enter', desc: `${d.padId} · ${d.sceneId}`, icon: '🎬', variant: 'neutral' });
-      } catch {}
-      if (isDev) {
-        // eslint-disable-next-line no-console
-        console.debug('[scene:enter]', { padId: d.padId, sceneId: d.sceneId, via: d.via, actorId: d.actorId, t: d.timestamp });
-      }
-      const rec: SceneEventRecord = {
-        kind: 'enter',
-        padId: String(d.padId),
-        sceneId: String(d.sceneId),
-        ts: d.timestamp ?? Date.now(),
-        meta: { via: d.via, actorId: d.actorId },
-      };
-      setSceneEvents((prev) => [rec, ...prev].slice(0, 10));
-    });
-
-    const offComplete = onSceneComplete((e) => {
-      const d = e.detail;
-      try {
-        showToast({
-          title: d.success === false ? 'Scene failed' : 'Scene complete',
-          desc: `${d.padId} · ${d.sceneId}`,
-          icon: d.success === false ? '⚠️' : '✅',
-          variant: d.success === false ? 'warning' : 'positive',
-        });
-      } catch {}
-      if (isDev) {
-        // eslint-disable-next-line no-console
-        console.debug('[scene:complete]', {
-          padId: d.padId,
-          sceneId: d.sceneId,
-          success: d.success,
-          result: d.result,
-          actorId: d.actorId,
-          t: d.timestamp,
-        });
-      }
-      const rec: SceneEventRecord = {
-        kind: 'complete',
-        padId: String(d.padId),
-        sceneId: String(d.sceneId),
-        ts: d.timestamp ?? Date.now(),
-        meta: { success: d.success, actorId: d.actorId },
-      };
-      setSceneEvents((prev) => [rec, ...prev].slice(0, 10));
-    });
-
-    return () => {
-      offEnter();
-      offComplete();
-    };
-  }, []);
 
   // Synesthetic scene transition: briefly lift depth and play a soft cue
   useEffect(() => {
@@ -374,7 +532,8 @@ export default function PadPage() {
 
   useEffect(() => {
     // Reflect current scene into local mood (the hook will broadcast)
-    setMood(scene === 'archive' ? 'focused' : 'soft');
+    const nextMood = scene === 'archive' ? 'focused' : scene === 'presence' ? 'presence' : 'soft';
+    setMood(nextMood);
   }, [scene, setMood]);
 
   useEffect(() => {
@@ -396,11 +555,88 @@ export default function PadPage() {
       return [];
     }
   });
+  const [presenceFeed, setPresenceFeed] = useState<PresenceFlowEntry[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      return parsePresenceFeed(localStorage.getItem(PRESENCE_FEED_STORAGE_KEY), 'local');
+    } catch {
+      return [];
+    }
+  });
   useEffect(() => {
     try {
       localStorage.setItem('garden:pad:archive', JSON.stringify(archive));
     } catch {}
   }, [archive]);
+  useEffect(() => {
+    const off = onSceneComplete((event) => {
+      if (event.detail.padId && event.detail.padId !== PAD_ID) return;
+      const normalized = normalizeSceneId(event.detail.sceneId);
+      if (normalized === 'companion') {
+        const result = parseCompanionCompletion(event.detail.result);
+        if (!result) return;
+        if (result.archivedId && localSceneCompletions.current.delete(result.archivedId)) {
+          return;
+        }
+        const timestamp = event.detail.timestamp ?? Date.now();
+        const entryId = result.archivedId ?? uid();
+        let insertedId: string | null = null;
+        setArchive((prev) => {
+          if (prev.some((item) => item.id === entryId)) {
+            return prev;
+          }
+          insertedId = entryId;
+          return [...prev, { id: entryId, text: result.text, ts: timestamp }];
+        });
+        if (insertedId) {
+          try {
+            showToast({
+              title: 'Companion shipped',
+              desc: result.text,
+              icon: '📡',
+              variant: 'positive',
+            });
+          } catch {}
+        }
+        return;
+      }
+      if (normalized === 'presence') {
+        const completion = parsePresenceCompletion(event.detail.result);
+        if (!completion) return;
+        if (completion.id && localSceneCompletions.current.delete(completion.id)) {
+          return;
+        }
+        const entryId = completion.id ?? uid();
+        const entry: PresenceFlowEntry = {
+          id: entryId,
+          text: completion.text,
+          tokens: completion.tokens,
+          source: 'peer',
+          ts: event.detail.timestamp ?? Date.now(),
+        };
+        appendPresenceEntry(entry);
+        if (sceneRef.current !== 'presence') {
+          setPresencePing(true);
+        }
+      }
+    });
+    return () => {
+      try {
+        off();
+      } catch {}
+    };
+  }, [setArchive, appendPresenceEntry, setPresencePing]);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handler = (event: StorageEvent) => {
+      if (event.key !== PRESENCE_FEED_STORAGE_KEY) return;
+      const incoming = parsePresenceFeed(event.newValue, 'peer');
+      if (incoming.length === 0) return;
+      setPresenceFeed((prev) => mergePresenceFeeds(prev, incoming));
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
 
   // Archive tools: search + bulk select
   const [search, setSearch] = useState('');
@@ -604,6 +840,7 @@ export default function PadPage() {
         try {
           padEvents.send({ type: 'PAD.EVENT.CAPTURED', payload: { noteId: newId } });
         } catch {}
+        localSceneCompletions.current.add(newId);
         setArchive((a) => [...a, { id: newId, text: archived, ts: Date.now() }]);
         try {
           dispatchSceneComplete({ padId: PAD_ID, sceneId: 'companion', result: { archivedId: newId, text: archived }, success: true });
@@ -655,7 +892,7 @@ export default function PadPage() {
   const glintOpacity = glintStart !== null ? Math.max(0, 1 - Math.min(1, (t - glintStart) / 0.6)) : 0;
   const neLightOpacity = Math.min(0.7, 0.18 + friendBreath * 0.18 + dewOpacity * 0.18 + glintOpacity * 0.22);
 
-  // Keyboard: "g a" → archive, "g g" → companion (robust chord detector)
+  // Keyboard: "g g" → companion, "g p" → presence, "g a" → archive (robust chord detector)
   useEffect(() => {
     let lastKey: string | null = null;
     let lastAt = 0;
@@ -666,7 +903,7 @@ export default function PadPage() {
 
       if (key === 'g') {
         if (lastKey === 'g' && now - lastAt < 650) {
-          setScene('companion');
+          goToScene('companion', 'inspector');
           lastKey = null;
           return;
         }
@@ -675,8 +912,8 @@ export default function PadPage() {
         return;
       }
 
-      if (key === 'a' && lastKey === 'g' && now - lastAt < 650) {
-        setScene('archive');
+      if ((key === 'a' || key === 'p') && lastKey === 'g' && now - lastAt < 650) {
+        goToScene(key === 'a' ? 'archive' : 'presence', 'inspector');
         lastKey = null;
         return;
       }
@@ -686,7 +923,7 @@ export default function PadPage() {
 
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [goToScene]);
 
   // ── Render (layered, both scenes mounted with cross-fade) ─────────────────
   const sortedArchive = useMemo(() => [...archive].sort((a, b) => b.ts - a.ts), [archive]);
@@ -729,6 +966,9 @@ export default function PadPage() {
     }
     return Array.from(groups.values());
   }, [filteredArchive]);
+
+  // Derived: last whisper from Garden Sync
+  const lastWhisper = Array.isArray(whispers) && whispers.length > 0 ? whispers[whispers.length - 1] ?? '' : '';
 
   // Soft delete confirmation window per-item
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -792,15 +1032,19 @@ export default function PadPage() {
       next.delete(chosen.id);
       return next;
     });
-    setScene('companion');
+    goToScene('companion', 'inspector');
     try {
       showToast({ title: 'Restored', desc: 'Holding latest selected.', icon: '↩︎', variant: 'neutral' });
     } catch {}
   }
   return (
-    <div data-field="presence" data-depth={depth} data-pad-mood={mood} className="bg-surface text-text min-h-dvh relative overflow-hidden">
-      <SceneSwitcher scene={scene} onSelectScene={setScene} mood={mood} onSelectMood={setMood} />
-      <PromptCardNoOpinion tags={['no-opinion']} />
+    <div
+      ref={rootRef}
+      data-field="presence"
+      data-depth={depth}
+      data-pad-mood={mood}
+      className={`bg-surface text-text min-h-dvh relative overflow-hidden ${phaseClass}`}>
+      <SceneSwitcher scene={scene} onSelectScene={goToScene} mood={mood} onSelectMood={setMood} presencePing={presencePing} />
 
       {/* Transition veil (Layer 2/3): lifts during scene switch, then fades */}
       <div
@@ -874,6 +1118,9 @@ export default function PadPage() {
             }}
           />
         )}
+        <div className="relative z-40 mx-auto max-w-3xl px-4 py-10 space-y-6">
+          <PromptCardNoOpinion tags={['no-opinion']} />
+        </div>
 
         {/* Floating orb */}
         <div
@@ -930,6 +1177,9 @@ export default function PadPage() {
             const userMsg = { id: uid(), role: 'user' as const, text };
             const reply = companionReply(text);
             setMessages((m) => [...m, userMsg, { id: uid(), role: 'companion' as const, text: reply }]);
+            try {
+              addWhisper(reply);
+            } catch {}
             setFriendText('');
             setDewStart(t);
           }}
@@ -957,6 +1207,15 @@ export default function PadPage() {
             Tip: say <code>next: …</code> to pin your One&nbsp;True&nbsp;Next, then <code>done</code> to archive (press ⌘Z to undo).
           </div>
         </form>
+      </div>
+
+      {/* Presence layer */}
+      <div
+        className={`absolute inset-0 transition-[opacity,transform,filter] duration-500 ease-soft ${
+          scene === 'presence' ? 'opacity-100 translate-y-0 scene-enter' : 'opacity-0 translate-y-2 blur-xs pointer-events-none scene-exit'
+        }`}
+        data-scene="presence">
+        <PresenceFlow onSend={handlePresenceSend} onArchive={handlePresenceArchive} feed={presenceFeed} phase={scene} />
       </div>
 
       {/* Archive layer */}
@@ -1039,10 +1298,7 @@ export default function PadPage() {
               badge={{ text: 'companion', tone: 'accent' }}
               onOpen={() => {
                 // Route to the “companion” scene for now
-                setScene('companion');
-                try {
-                  dispatchSceneEnter({ padId: PAD_ID, sceneId: 'companion', via: 'inspector' });
-                } catch {}
+                goToScene('companion', 'inspector');
                 try {
                   showToast({ title: 'Opening Town Pad', desc: 'Companion scene', icon: '😽', variant: 'neutral' });
                 } catch {}
@@ -1105,10 +1361,7 @@ export default function PadPage() {
                               pulseDepth(setDepth, 2 as Depth, 420);
                               setOneTrueNext(it.text);
                               setArchive((a) => a.filter((x) => x.id !== it.id));
-                              setScene('companion');
-                              try {
-                                dispatchSceneEnter({ padId: PAD_ID, sceneId: 'companion', via: 'inspector' });
-                              } catch {}
+                              goToScene('companion', 'inspector');
                               try {
                                 showToast({ title: 'Restored', desc: 'Holding it again.', icon: '↩︎', variant: 'neutral' });
                               } catch {}
@@ -1152,10 +1405,7 @@ export default function PadPage() {
                                       pulseDepth(setDepth, 2 as Depth, 420);
                                       setOneTrueNext(it.text);
                                       setArchive((a) => a.filter((x) => x.id !== it.id));
-                                      setScene('companion');
-                                      try {
-                                        dispatchSceneEnter({ padId: PAD_ID, sceneId: 'companion', via: 'inspector' });
-                                      } catch {}
+                                      goToScene('companion', 'inspector');
                                       try {
                                         showToast({ title: 'Restored', desc: 'Holding it again.', icon: '↩︎', variant: 'neutral' });
                                       } catch {}
@@ -1180,39 +1430,17 @@ export default function PadPage() {
         </main>
       </div>
 
-      {/* Tiny Scene Event Monitor (Pad page) */}
-      <Card variant="plain" className="pointer-events-auto fixed bottom-6 right-6 z-50 w-[min(360px,92vw)] ">
-        <header className="flex items-center justify-between">
-          <div className="text-sm font-medium">Scene Events</div>
-          <div className="flex items-center gap-2">
-            <Badge tone="subtle" variant="soft">
-              {sceneEvents.length}
-            </Badge>
-            <Button type="button" density="snug" variant="ghost" onClick={() => setSceneEvents([])}>
-              Clear
-            </Button>
+      {/* Phase HUD (debug) */}
+      <div className={`fixed left-3 bottom-3 z-[60] pointer-events-none select-none text-xs fade-in phase-hud phase-${scene}`} role="status" aria-live="polite">
+        <div className="rounded-lg border border-border/60 bg-surface/70 backdrop-blur-xs px-2.5 py-1.5 shadow-sm">
+          <div>
+            Phase: <span className="font-medium">{scene}</span>
           </div>
-        </header>
-        <ul className="max-h-48 overflow-auto divide-y divide-border/60">
-          {sceneEvents.length === 0 ? (
-            <li className="py-2 text-sm text-subtle">No events yet — try switching scenes or shipping a done.</li>
-          ) : (
-            sceneEvents.map((ev, i) => (
-              <li key={i} className="py-2 text-sm flex items-center justify-between">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Badge tone={ev.kind === 'complete' ? 'positive' : 'accent'} variant="soft">
-                    {ev.kind}
-                  </Badge>
-                  <span className="truncate">
-                    {ev.padId} · {ev.sceneId}
-                  </span>
-                </div>
-                <span className="text-xs text-subtle">{new Date(ev.ts).toLocaleTimeString()}</span>
-              </li>
-            ))
-          )}
-        </ul>
-      </Card>
+          <div className="truncate max-w-[44ch]">
+            Whisper: <span className="italic">{lastWhisper || '—'}</span>
+          </div>
+        </div>
+      </div>
       <Toaster position="top-right" />
     </div>
   );

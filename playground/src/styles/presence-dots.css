@@ -1,0 +1,131 @@
+@keyframes dot-breathe {
+  from {
+    transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(1);
+    filter: brightness(1);
+  }
+  to {
+    transform: translate(calc(var(--dx, 0px) * 1.3), calc(var(--dy, 0px) * 1.3)) scale(1.15);
+    filter: brightness(1.25);
+  }
+}
+
+@keyframes hud-glow {
+  0%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 3px currentColor);
+  }
+  50% {
+    filter: brightness(1.25) drop-shadow(0 0 6px currentColor);
+  }
+}
+
+@theme {
+  --dot-size: 0.75rem;
+  --dot-gap: 0.3rem;
+  --dot-glow: 0 0 6px rgba(0, 0, 0, 0.3);
+  --dot-breathe: dot-breathe 2.6s ease-in-out infinite alternate;
+}
+
+@utility presence-dots {
+  @apply flex items-center gap-[var(--dot-gap)] py-1 transition-transform duration-1000 ease-in-out;
+  transform: translateY(0);
+}
+
+@utility presence-dots-empty {
+  @apply text-[0.65rem] italic text-faint;
+}
+
+@utility presence-dot {
+  @apply rounded-full shadow-[var(--dot-glow)] opacity-90 transition-transform duration-300 ease-in-out;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  --dot-phase-hue: var(--phase-presence-hue);
+  /* Fallback first, then enhanced mix for capable browsers */
+  background-color: hsl(var(--dot-phase-hue) 75% 62%);
+  background-color: color-mix(in oklab, hsl(var(--dot-phase-hue) 75% 62%) 55%, var(--dot-tint, hsl(var(--dot-phase-hue) 75% 62%)) 45%);
+  box-shadow: 0 0 8px color-mix(in oklab, hsl(var(--dot-phase-hue) 70% 68%) 70%, transparent 30%);
+  animation: var(--dot-breathe);
+}
+
+@utility phase-hud {
+  @apply transition-[color,filter] duration-700 ease-in-out;
+  animation: hud-glow 6s ease-in-out infinite;
+  /* strength controlled indirectly via color + shadow in keyframes; variable reserved for future mapping */
+}
+
+@layer utilities {
+  .presence-dots:hover {
+    transform: translateY(-2px);
+  }
+
+  .presence-dot:nth-child(1) {
+    --dx: 1px;
+    --dy: 1px;
+    animation-delay: 0s;
+  }
+
+  .presence-dot:nth-child(2) {
+    --dx: -1px;
+    --dy: 1.2px;
+    animation-delay: 0.3s;
+  }
+
+  .presence-dot:nth-child(3) {
+    --dx: 1.4px;
+    --dy: -1px;
+    animation-delay: 0.6s;
+  }
+
+  .presence-dot:nth-child(4) {
+    --dx: -0.8px;
+    --dy: -1.5px;
+    animation-delay: 0.9s;
+  }
+
+  .presence-dot:hover {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+
+  .phase-companion .presence-dot {
+    --dot-phase-hue: var(--phase-companion-hue);
+    box-shadow: 0 0 8px hsl(var(--phase-companion-hue) 70% 65% / 0.6);
+  }
+
+  .phase-presence .presence-dot {
+    --dot-phase-hue: var(--phase-presence-hue);
+    box-shadow: 0 0 8px hsl(var(--phase-presence-hue) 75% 68% / 0.55);
+  }
+
+  .phase-archive .presence-dot {
+    --dot-phase-hue: var(--phase-archive-hue);
+    box-shadow: 0 0 8px hsl(var(--phase-archive-hue) 65% 70% / 0.5);
+  }
+
+  .phase-companion .phase-hud {
+    color: hsl(var(--phase-companion-hue) 65% 70%);
+    animation-duration: 6.4s;
+  }
+
+  .phase-presence .phase-hud {
+    color: hsl(var(--phase-presence-hue) 70% 70%);
+    animation-duration: 5.5s;
+  }
+
+  .phase-archive .phase-hud {
+    color: hsl(var(--phase-archive-hue) 60% 70%);
+    animation-duration: 7s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presence-dot {
+    animation: none !important;
+  }
+  .phase-hud {
+    animation: none !important;
+  }
+  .presence-dots:hover {
+    transform: none !important;
+  }
+}

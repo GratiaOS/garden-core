@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Card, Badge, Button, Field } from '@gratiaos/ui';
+import '../styles/flow-widgets.css';
 
 type Props = {
   /** Tags for the current pad (e.g., ["no-opinion", "p2p"]) */
@@ -23,6 +24,36 @@ function useLocalStorage<T>(key: string, initial: T) {
     } catch {}
   }, [key, value]);
   return [value, setValue] as const;
+}
+
+type FlowFieldState = 'idle' | 'flowing' | 'paused';
+
+type FlowNotebookFieldProps = {
+  label: React.ReactNode;
+  hint: React.ReactNode;
+  value: string;
+  onChange: (next: string) => void;
+  placeholder: string;
+  rows?: number;
+  state: FlowFieldState;
+};
+
+function FlowNotebookField({ label, hint, value, onChange, placeholder, rows = 6, state }: FlowNotebookFieldProps) {
+  const className = ['flow-field', state ? `flow-field--${state}` : null].filter(Boolean).join(' ');
+  return (
+    <Field label={label} hint={hint} className={className}>
+      {(control) => (
+        <textarea
+          {...control}
+          rows={rows}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder}
+          className="flow-field__input"
+        />
+      )}
+    </Field>
+  );
 }
 
 export default function PromptCardNoOpinion({ tags = [], storageKey = 'gc:no-opinion:twobucket' }: Props) {
@@ -64,12 +95,12 @@ export default function PromptCardNoOpinion({ tags = [], storageKey = 'gc:no-opi
   };
 
   return (
-    <Card variant="elev" padding="lg" data-depth="inherit" className="space-y-6 bg-surface/80 backdrop-blur">
-      <div className="flex items-center gap-2 text-xs uppercase tracking-[0.32em] text-subtle/80">
+    <Card variant="elev" padding="lg" data-depth="inherit" className="space-y-6">
+      <div className="flex items-center gap-2">
         <Badge tone="subtle" variant="soft" size="sm">
           Prompt
         </Badge>
-        <span className="text-subtle/70">no-opinion</span>
+        <span className="text-sm text-subtle">no-opinion</span>
       </div>
 
       <div className="space-y-2">
@@ -122,30 +153,24 @@ export default function PromptCardNoOpinion({ tags = [], storageKey = 'gc:no-opi
       </Card>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Field label="Felt &amp; Kept" hint="Hold what remains useful or true after the feeling softens.">
-          {(control) => (
-            <textarea
-              {...control}
-              value={kept}
-              onChange={(e) => setKept(e.target.value)}
-              rows={6}
-              placeholder="what remains useful / true after feeling…"
-              className="min-h-28 resize-vertical rounded-xl border border-border/50 bg-surface/80 px-3 py-2 text-sm text-text shadow-inner focus:outline-none focus:ring-2 focus:ring-[color:var(--color-accent)]"
-            />
-          )}
-        </Field>
-        <Field label="Felt &amp; Let Go" hint="Release without labeling. Let it drift out of the system.">
-          {(control) => (
-            <textarea
-              {...control}
-              value={letgo}
-              onChange={(e) => setLetgo(e.target.value)}
-              rows={6}
-              placeholder="what can be released without labeling…"
-              className="min-h-28 resize-vertical rounded-xl border border-border/50 bg-surface/80 px-3 py-2 text-sm text-text shadow-inner focus:outline-none focus:ring-2 focus:ring-[color:var(--color-positive)]"
-            />
-          )}
-        </Field>
+        <FlowNotebookField
+          label="Felt &amp; Kept"
+          hint="Hold what remains useful or true after the feeling softens."
+          value={kept}
+          onChange={setKept}
+          placeholder="what remains useful / true after feeling…"
+          rows={6}
+          state={running ? 'flowing' : kept.trim() ? 'paused' : 'idle'}
+        />
+        <FlowNotebookField
+          label="Felt &amp; Let Go"
+          hint="Release without labeling. Let it drift out of the system."
+          value={letgo}
+          onChange={setLetgo}
+          placeholder="what can be released without labeling…"
+          rows={6}
+          state={running ? 'flowing' : letgo.trim() ? 'paused' : 'idle'}
+        />
       </div>
 
       <div className="flex flex-wrap items-center gap-2">

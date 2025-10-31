@@ -60,10 +60,17 @@ export default function App() {
       '/': 'Garden Core · Pad',
       '/lab': 'Garden Core · Lab',
       '/icons': 'Garden Core · Icons',
+      '/ux': 'Garden Core · UX',
     };
     // Exact match first, then prefix match for nested paths under /lab or /icons
     const exact = map[location.pathname];
-    const pref = location.pathname.startsWith('/lab') ? map['/lab'] : location.pathname.startsWith('/icons') ? map['/icons'] : map['/'];
+    const pref = location.pathname.startsWith('/lab')
+      ? map['/lab']
+      : location.pathname.startsWith('/icons')
+      ? map['/icons']
+      : location.pathname.startsWith('/ux')
+      ? map['/ux']
+      : map['/'];
     document.title = exact ?? pref;
   }, [location.pathname]);
 

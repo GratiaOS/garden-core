@@ -2,3 +2,4 @@
 @import 'tailwindcss';
 @import '@gratiaos/ui/styles/base.css' layer(components);
 @import '@gratiaos/ui/styles/pad.css';
+@import './styles/presence-dots.css';
