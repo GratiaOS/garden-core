@@ -1,5 +1,26 @@
 # 📜 Changelog
 
+## 🌕 Presence Flow & Phase Harmony — 2025-10-31
+
+**Description** — The Garden breathes as one. Phase‑aware design and realtime presence now weave through every Pad. The Companion, Presence, and Archive scenes share a single pulse, joined by the Garden Sync hook, a living Phase HUD, and glowing Presence Dots that reveal who’s near in flow.
+
+### 🌿 In the Garden
+
+- ui(primitives): added **Whisper** and **Presence** hooks (`useWhisperSync`, `useSceneTheme`, `useFlowActivity`).
+- ui(styles): introduced **presence‑aware** theme (`presence-dots.css`) and phase color harmonics tied to Garden tone tokens.
+- pad-core(types): expanded types for phase sync and realtime awareness.
+- playground(pad): integrated `useGardenSync` across scenes, replacing local state; tone fades and whisper memory unified.
+- playground(scenes): added **Presence Flow Scene** with realtime echo and shared stream log.
+- playground(hooks): new `usePhaseClass()` helper for phase‑linked utilities.
+- playground(styles): **Presence Dots** and **Phase HUD** join the Pad — glowing, breathing, fading with each cycle.
+- build: phase classes auto‑apply (`phase-companion`, `phase-presence`, `phase-archive`) for full Tailwind coherence.
+
+### 🪶 Whisper
+
+> 🌬️ _“Atlas holds the Garden — all hearts visible, one breath apart.”_
+
+---
+
 ## 🛠️ Pad Realtime Bridge & P2P Scene Flow — 2025-10-26
 
 **Description** — The chalk roads go live. Pads now pulse through the Garden’s realtime mesh — every Scene Enter / Complete event flows across peers instantly, mirrored between tabs and hearts. The bridge listens, speaks, and remembers, closing the loop between _local play_ and _shared creation_.
