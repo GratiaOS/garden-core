@@ -108,18 +108,61 @@ export function createDerived<A, B>(parent: Signal<A>, project: (value: A) => B)
  * Join multiple signals into one tuple signal (shallow equality on elements).
  */
 export function joinSignals<T extends any[]>(...sources: { [K in keyof T]: Signal<T[K]> }): Signal<T> {
-  const snapshot = sources.map((s) => s.value) as T;
-  const joined = createSignal(snapshot);
-  sources.forEach((s, idx) => {
-    s.subscribe((val) => {
-      const next = joined.value.slice() as T;
-      next[idx] = val;
-      // Only update if any element changed reference / primitive value
-      const changed = next.some((v, i) => !Object.is(v, joined.value[i]));
-      if (changed) joined.set(next);
+  let current: T = sources.map((s) => s.value) as T;
+  const listeners = new Set<SignalListener<T>>();
+  let sourceUnsubs: Array<() => void> | null = null;
+
+  const emit = (next: T) => {
+    current = next;
+    listeners.forEach((l) => {
+      try {
+        l(next);
+      } catch {
+        /* ignore */
+      }
     });
-  });
-  return joined;
+  };
+
+  const ensureSources = () => {
+    if (sourceUnsubs) return;
+    sourceUnsubs = sources.map((s, idx) =>
+      s.subscribe((val) => {
+        const next = current.slice() as T;
+        next[idx] = val;
+        // Only update if any element changed reference / primitive value
+        const changed = next.some((v, i) => !Object.is(v, current[i]));
+        if (changed) emit(next);
+      })
+    );
+  };
+
+  return {
+    subscribe(listener: SignalListener<T>) {
+      listeners.add(listener);
+      listener(current); // immediate replay
+      ensureSources();
+      return () => {
+        listeners.delete(listener);
+        if (listeners.size === 0 && sourceUnsubs) {
+          // Detach all source subscriptions to avoid leaks.
+          sourceUnsubs.forEach((unsub) => {
+            try {
+              unsub();
+            } catch {
+              /* ignore */
+            }
+          });
+          sourceUnsubs = null;
+        }
+      };
+    },
+    get value() {
+      return current;
+    },
+    set(_next: T) {
+      // Read-only joined signal; direct sets are ignored.
+    },
+  };
 }
 
 // Library version (mirrors package.json). Update during release bumps or remove if not needed.
