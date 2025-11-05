@@ -13,6 +13,8 @@
  *  • Keep usage simple: create → subscribe → set → unsubscribe
  */
 
+const isDevMode = typeof globalThis !== 'undefined' && (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !== 'production';
+
 export type SignalListener<T> = (value: T) => void;
 
 export interface Signal<T> {
@@ -98,7 +100,7 @@ export function createDerived<A, B>(parent: Signal<A>, project: (value: A) => B)
       return current;
     },
     set(_next: B) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (isDevMode) {
         console.warn('[signal] Ignored set() on derived signal. Derived values are read-only; update the parent signal instead.');
       }
     },
