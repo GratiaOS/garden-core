@@ -28,7 +28,11 @@ const filterFrequency = (type: BiquadFilterType) => {
   }
 };
 
-const hashCode = (input: string) => Array.from(input).reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 1), 0);
+const hashCode = (input: string) =>
+  Array.from(input).reduce(
+    (acc, char, index) => (acc + char.charCodeAt(0) * (index + 1)) % 2147483647,
+    0,
+  );
 
 // Cache per peer so we only compute hash + derived pan/detune once per id.
 // Peer IDs are stable for a session; memory footprint is minimal.
