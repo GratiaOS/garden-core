@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { phase$, pulse$ } from './index';
+import { phase$ } from './index';
 import { DEFAULT_SOUND_PROFILE, PHASE_SOUND_PROFILE, type PhaseSoundProfile } from './phase-sound-profile';
 
 type AudioWindow = Window & {
@@ -99,10 +99,6 @@ export function usePhaseSound(enableHaptics = false, enabled: boolean = true) {
       return true;
     };
 
-    const firePulse = () => {
-      pulse$.set(pulse$.value + 1);
-    };
-
     const playTone = (frequency: number, duration: number, delay: number, filter: BiquadFilterType) => {
       if (!readyRef.current && !ensureContext(false)) {
         pendingRef.current.push({ freq: frequency, duration, delay, filter });
@@ -119,7 +115,6 @@ export function usePhaseSound(enableHaptics = false, enabled: boolean = true) {
       }
       timerRef.current = window.setInterval(() => {
         playTone(profile.root, 0.18, 0, profile.filter);
-        firePulse();
       }, profile.interval);
     };
 
@@ -147,7 +142,6 @@ export function usePhaseSound(enableHaptics = false, enabled: boolean = true) {
         navigator.vibrate?.([30, 60, 30]);
       }
 
-      firePulse();
       scheduleBaseline(profile);
     });
 

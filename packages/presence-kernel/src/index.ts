@@ -147,6 +147,7 @@ export class PresenceKernel {
   }
 
   private tick() {
+    pulse$.set(pulse$.value + 1);
     const snap = this.snapshot;
     this.publish({ type: 'tick', snap });
     for (const adapter of this.adapters) adapter.onTick?.(snap);
