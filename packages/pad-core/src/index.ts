@@ -13,7 +13,15 @@
 
 export type * from './types.js';
 
-export { createRegistry, sortPads, registerAll, globalRegistry } from './registry.js';
+export {
+  createRegistry,
+  sortPads,
+  registerAll,
+  globalRegistry,
+  getPadManifest,
+  listPadManifests,
+  type PadRegistryChange,
+} from './registry.js';
 
 export { DEFAULT_HASH_KEY, getActivePadId, setActivePadId, clearActivePadId, hrefForPad, onPadRouteChange } from './route.js';
 
@@ -52,3 +60,17 @@ export * from './hooks/usePadMood';
 
 // Realtime registry (optional integration used by scene-events)
 export { setRealtimePort, getRealtimePort, getRealtimeCircleId, onRealtimePortChange } from './realtime/registry.js';
+
+export { createSignal, type Signal } from './signal.js';
+
+export {
+  padRegistry$,
+  activePadId$,
+  activeManifest$,
+  scene$,
+  flow$,
+  announceSceneEnter,
+  announceSceneLeave,
+  getActivePadManifest,
+  type FlowSnapshot,
+} from './state.js';

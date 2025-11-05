@@ -1,5 +1,14 @@
 # 🎡 Playground Changelog
 
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [03f5367]
+  - @gratiaos/presence-kernel@1.1.0
+  - @gratiaos/pad-core@1.0.5
+  - @gratiaos/ui@1.0.5
+
 ## 1.0.3
 
 ### Patch Changes

@@ -12,6 +12,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@gratiaos/ui': path.resolve(dirname, '../packages/ui/src'),
+      '@gratiaos/presence-kernel': path.resolve(dirname, '../packages/presence-kernel/src/index.ts'),
     },
   },
 });

@@ -65,6 +65,19 @@ Short purpose notes (see Playground for full demos):
 
 Each primitive maps to **global design tokens**, so themes and local contexts stay in sync.
 
+### 🪴 Reactive State (Signals)
+
+Garden UI stays headless; it does not bundle a state system. For tiny local reactive values (e.g. live counters, inline mood flags, demo toggles) use the micro primitive `@gratiaos/signal`:
+
+```ts
+import { createSignal } from '@gratiaos/signal';
+const count$ = createSignal(0);
+count$.subscribe((v) => console.log('count', v));
+count$.set(count$.value + 1);
+```
+
+Connect signals to primitives by reading their current value in render and subscribing in effects (or bridging through your own hooks). This keeps UI lean while enabling fine-grained reactivity without a large framework.
+
 ---
 
 ## 🔔 Toasts (quick start)

@@ -5,6 +5,7 @@ import LabPage from './pages/lab';
 import PadPage from './pages/pad';
 import UxPage from './pages/ux';
 import { ThemeToggle } from './components/ThemeToggle';
+import { Heartbeat, ConstellationHUD } from '@gratiaos/presence-kernel';
 
 function TopNav() {
   const base = 'inline-flex items-center gap-2 rounded-full border border-border bg-elev px-3 py-1.5 text-sm transition-colors';
@@ -84,6 +85,8 @@ export default function App() {
         <Route path="/ux" element={<UxPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <Heartbeat />
+      <ConstellationHUD />
     </>
   );
 }

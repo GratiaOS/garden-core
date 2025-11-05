@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - 'pkg-v*'
+      - 'v*'
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
@@ -16,8 +16,29 @@ jobs:
     env:
       NODE_AUTH_TOKEN: ''
     steps:
-      - name: Checkout repository
+      - name: Checkout repository (full history for tagging)
         uses: actions/checkout@v4
+        with:
+          # Full history ensures auto-tagging finds existing tags. For very large repos,
+          # consider reducing fetch-depth (e.g. 10) if only recent tags are needed.
+          fetch-depth: 0
+
+      - name: Auto-create semantic tag (workflow_dispatch only)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          set -euo pipefail
+          ROOT_VER=$(node -p "require('./package.json').version")
+          TAG="v${ROOT_VER}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists; skipping creation.";
+          else
+            echo "Creating tag $TAG";
+            git config user.name "github-actions"
+            git config user.email "github-actions@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "$TAG"
+          fi
+          echo "TAG_CREATED=$TAG" >> $GITHUB_ENV
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -53,6 +74,8 @@ jobs:
           npm view @gratiaos/ui versions --json || true
           npm view @gratiaos/tokens versions --json || true
           npm view @gratiaos/pad-core versions --json || true
+          npm view @gratiaos/presence-kernel versions --json || true
+          npm view @gratiaos/signal versions --json || true
 
       - name: Sanitize npmrc for OIDC (remove token auth)
         run: |
@@ -73,10 +96,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ''
 
-      - name: Publish each package if this version is missing
+      - name: Publish each package if this version is missing (icons, core libs, kernels, ui)
         run: |
           set -euo pipefail
-          for pkg in packages/icons packages/pad-core packages/tokens packages/ui; do
+          for pkg in packages/icons packages/pad-core packages/tokens packages/ui packages/presence-kernel packages/signal; do
             echo "── $pkg"
             pushd "$pkg" >/dev/null
             NAME=$(node -p "require('./package.json').name")

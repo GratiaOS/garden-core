@@ -37,6 +37,10 @@ importers:
         version: 5.9.3
 
   packages/pad-core:
+    dependencies:
+      '@gratiaos/presence-kernel':
+        specifier: workspace:*
+        version: link:../presence-kernel
     devDependencies:
       '@types/react':
         specifier: ^19.2.2
@@ -44,6 +48,34 @@ importers:
       react:
         specifier: ^19.2.0
         version: 19.2.0
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/presence-kernel:
+    dependencies:
+      '@gratiaos/signal':
+        specifier: workspace:*
+        version: link:../signal
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.2
+        version: 19.2.2
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+
+  packages/signal:
+    devDependencies:
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -83,6 +115,9 @@ importers:
       '@gratiaos/pad-core':
         specifier: workspace:*
         version: link:../packages/pad-core
+      '@gratiaos/presence-kernel':
+        specifier: workspace:*
+        version: link:../packages/presence-kernel
       '@gratiaos/tokens':
         specifier: workspace:*
         version: link:../packages/tokens

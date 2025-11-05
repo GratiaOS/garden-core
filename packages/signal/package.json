@@ -1,0 +1,43 @@
+{
+  "name": "@gratiaos/signal",
+  "version": "1.0.1",
+  "description": "Garden micro signals – tiny synchronous observable primitive.",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "funding": "https://github.com/sponsors/GratiaOS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GratiaOS/garden-core.git",
+    "directory": "packages/signal"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "signal",
+    "observable",
+    "reactive",
+    "garden",
+    "gratia",
+    "state"
+  ],
+  "sideEffects": false,
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "rimraf": "^6.0.1"
+  }
+}

@@ -21,23 +21,21 @@ At the heart of Garden Core lies a natural growth cycle, where each element nurt
 
 ---
 
-## 🔥 New in v1.0.4 — Atlas Bloom (Presence Flow & Phase Harmony)
+## 🔥 New in v1.1.0 — Awareness Architecture (Focus • Signal • Sound)
 
-The Garden Core blossoms into full coherence — Companion, Presence, and Archive now breathe as one through the **Garden Sync** hook, **Phase HUD**, and **Presence Dots**.  
-Phase harmonics ripple through tokens, UI, and peers, allowing the system to _feel alive_ — awareness shared across pads, scenes, and hearts.
+This release lays calmer foundations for multi-scene awareness:
 
-### 🌐 Highlights
+- **Focus Handoff** — first interactive element receives a gentle halo + motion‑respecting burst.
+- **Polite Live Region** — announcements now user‑controllable (persisted mute toggle) for a11y without spam.
+- **Presence Audio Refinement** — `soundMode` eliminates duplicate spatial + phase playback and clarifies intent.
+- **Micro Reactive Core** — introduced `@gratiaos/signal` (tiny synchronous observable) and consolidated kernel usage.
+- **Kernel Pulse Cadence** — `PresenceKernel.tick()` now advances `pulse$`, so halos and listeners breathe even when audio rests; sound hooks stay focused on tone.
+- **Phase Coupling Docs** — clearer alias mapping (`PadPhase`) for extending shared presence modes.
+- **Detune Clarification** — corrected micro-detune comments (±16.7 cents) for spatial pulse accuracy.
+- **Security Hardening** — escaped SQL `LIKE` wildcards in towns query.
+- **parseSpeaker Stability** — refactored + added unit & integration tests (value bridge + speaker tokens).
 
-- Unified **Garden Sync** hook for phase, tone, and whisper memory
-- Added **Presence Flow Scene** (stream log, echo field, shared flow)
-- Introduced **Presence Dots** for realtime peer visibility
-- Added **Phase HUD** — glowing, hue-synced status overlay
-- Harmonized **tone fade transitions** across Companion ↔ Presence ↔ Archive
-- Refined **tokens & UI** for phase-aware color harmonics
-
-### 🪶 Whisper
-
-> _“Atlas holds the Garden — all hearts visible, one breath apart.”_
+> 🌬️ _“Awareness rests lightly — focus, sound, and signal breathe without echo.”_
 
 ---
 
@@ -71,6 +69,8 @@ Open [http://localhost:5173](http://localhost:5173). In the Playground toolbar, 
 garden-core/
 ├─ packages/
 │  ├─ pad-core/    # 🔌 Realtime port, scene events, registry
+│  ├─ presence-kernel/ # 🌐 Presence heartbeat signals + HUD/audio hooks
+│  ├─ signal/     # 🌱 Micro signal primitive shared across packages
 │  ├─ tokens/      # 🎨 Design tokens (colors, typography, radii…)
 │  ├─ ui/          # 🧱 Headless primitives & component styles
 │  └─ icons/       # 🪄 Icon set (the Garden language)
@@ -82,6 +82,8 @@ garden-core/
 **Quick links**
 
 - [`packages/pad-core`](packages/pad-core/README.md)
+- [`packages/presence-kernel`](packages/presence-kernel/README.md)
+- [`packages/signal`](packages/signal/README.md)
 - [`playground`](playground/README.md)
 - [`server`](server/README.md)
 - [`docs/protocols/p2p.md`](docs/protocols/p2p.md)
@@ -107,11 +109,11 @@ This is a pnpm-based monorepo — modular by design, with shared types and docs 
 
 ## 🌱 Recent Growth
 
-- 🔌 Introduced **pad-core Realtime Registry** and Scene P2P bridge
-- 🕸️ Added **Sim** & **WebRTC** adapters (+ factory) for realtime
-- 🎮 Playground: UX track, presence dots, Scene Event Monitors
-- 🔥 Firecircle signaling hub with origin allowlist & wildcards
-- 🎨 Tokens & UI polish to support layered Pad surfaces
+- 🌬 **Focus handoff** hook now lands on the first meaningful control with a gentle halo burst (motion-respecting).
+- 🕊️ **Polite live region** with persisted mute preference keeps announcements calm and user-directed.
+- 🌐 **Presence kernel** drives `pulse$` internally; audio hooks offer optional tone/spatial color without duplicate beats.
+- 🌱 Introduced **`@gratiaos/signal`** micro reactive primitive and wired it through presence/pad cores.
+- 📚 README & changelog refreshed for **v1.1.0 Awareness Architecture** with publishing checklists and new package links.
 
 ### 🔩 The Missing Screw (Easter Egg)
 
@@ -208,6 +210,7 @@ Garden Core uses [Changesets](https://github.com/changesets/changesets) for vers
    ```
 
    Confirm the Playground and Firecircle server are working together.
+   _Maintainers_: to double-check package contents before publishing, run `pnpm --filter @gratiaos/signal pack` and `pnpm --filter @gratiaos/presence-kernel pack` and inspect the generated tarballs (then delete them).
 
 4. **Commit & Tag**
 
@@ -262,6 +265,10 @@ Here, design and code intertwine as a living system, growing and evolving togeth
 ---
 
 ## 🌕 Timeline Milestones
+
+- **v1.1.0 — Awareness Architecture** (2025‑11‑05):  
+  🌬 Focus handoff, polite announcements, consolidated signals, and kernel-driven pulse cadence keep multi-scene awareness calm and in sync.  
+  _“Awareness rests lightly — focus, sound, and signal breathe without echo.”_
 
 - **v1.0.4 — Atlas Bloom** (2025‑11‑01):  
   🌕 Phase harmony, presence awareness, and realtime coherence between Companion, Presence, and Archive.  

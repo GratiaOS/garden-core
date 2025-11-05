@@ -128,12 +128,16 @@ export function buildCatalogFromMany(registries: PadRegistry[], opts?: Parameter
     register: () => {
       throw new Error('immutable view');
     },
+    unregister: () => {
+      throw new Error('immutable view');
+    },
     get: (id: PadId) => merged.find((m) => m.id === id),
     list: () => [...merged],
     has: (id: PadId) => merged.some((m) => m.id === id),
     clear: () => {
       throw new Error('immutable view');
     },
+    subscribe: () => () => {},
   };
   return buildCatalog(fauxRegistry, opts);
 }

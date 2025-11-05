@@ -1,0 +1,56 @@
+{
+  "name": "@gratiaos/presence-kernel",
+  "version": "1.1.0",
+  "funding": "https://github.com/sponsors/GratiaOS",
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "description": "Shared presence kernel signals for Gratia OS surfaces.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GratiaOS/garden-core.git",
+    "directory": "packages/presence-kernel"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "./src/heartbeat.css",
+    "./src/constellation-hud.css"
+  ],
+  "peerDependencies": {
+    "react": "^18 || ^19"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@gratiaos/signal": "workspace:*"
+  },
+  "keywords": [
+    "presence",
+    "signals",
+    "realtime",
+    "kernel",
+    "gratia",
+    "garden",
+    "a11y"
+  ],
+  "devDependencies": {
+    "react": "^19.2.0",
+    "@types/react": "^19.2.2",
+    "typescript": "^5.9.2",
+    "rimraf": "^6.0.1"
+  }
+}
