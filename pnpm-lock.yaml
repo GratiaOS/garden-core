@@ -41,9 +41,6 @@ importers:
       '@gratiaos/presence-kernel':
         specifier: workspace:*
         version: link:../presence-kernel
-      '@gratiaos/signal':
-        specifier: workspace:*
-        version: link:../signal
     devDependencies:
       '@types/react':
         specifier: ^19.2.2
@@ -63,13 +60,13 @@ importers:
       '@gratiaos/signal':
         specifier: workspace:*
         version: link:../signal
-      react:
-        specifier: ^19.2.0
-        version: 19.2.0
     devDependencies:
       '@types/react':
         specifier: ^19.2.2
         version: 19.2.2
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
