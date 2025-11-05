@@ -123,4 +123,3 @@ export function joinSignals<T extends any[]>(...sources: { [K in keyof T]: Signa
 }
 
 // Library version (mirrors package.json). Update during release bumps or remove if not needed.
-export const version = '1.0.1';
