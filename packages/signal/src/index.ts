@@ -48,15 +48,60 @@ export function createSignal<T>(initial: T): Signal<T> {
 }
 
 /**
- * Derived signal: maps parent value through a projector.
- * Recomputes only when parent changes.
+ * createDerived(parent, project)
+ * --------------------------------
+ * Lazily subscribes to the parent on first listener and auto‑unsubscribes when
+ * the last derived listener detaches. This prevents perpetual subscriptions
+ * (memory leaks) when a derived value is short‑lived.
+ *
+ * Read‑only: external `set` calls are blocked to keep source of truth with parent.
  */
 export function createDerived<A, B>(parent: Signal<A>, project: (value: A) => B): Signal<B> {
-  const derived = createSignal(project(parent.value));
-  parent.subscribe((v) => {
-    derived.set(project(v));
-  });
-  return derived;
+  let current: B = project(parent.value);
+  const listeners = new Set<SignalListener<B>>();
+  let parentUnsub: (() => void) | null = null;
+
+  const emit = (next: B) => {
+    current = next;
+    listeners.forEach((l) => {
+      try {
+        l(next);
+      } catch {
+        /* ignore */
+      }
+    });
+  };
+
+  const ensureParent = () => {
+    if (parentUnsub) return;
+    parentUnsub = parent.subscribe((v) => {
+      const mapped = project(v);
+      if (Object.is(mapped, current)) return;
+      emit(mapped);
+    });
+  };
+
+  return {
+    subscribe(listener: SignalListener<B>) {
+      listeners.add(listener);
+      listener(current); // immediate replay
+      ensureParent();
+      return () => {
+        listeners.delete(listener);
+        if (listeners.size === 0 && parentUnsub) {
+          parentUnsub();
+          parentUnsub = null;
+        }
+      };
+    },
+    get value() {
+      return current;
+    },
+    set(_next: B) {
+      // Read‑only derived signal: direct sets are ignored to keep parent as source of truth.
+      // (Intentional no‑op; document if writable derived variants are needed later.)
+    },
+  };
 }
 
 /**
