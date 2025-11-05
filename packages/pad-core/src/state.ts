@@ -26,13 +26,13 @@ globalRegistry.subscribe(() => {
 
 export const activePadId$: Signal<PadId | null> = createSignal(getActivePadId());
 
-onPadRouteChange((id) => {
+onPadRouteChange((id: PadId | null) => {
   activePadId$.set(id);
 });
 
 export const activeManifest$: Signal<PadManifest | null> = createSignal(activePadId$.value ? getPadManifest(activePadId$.value) : null);
 
-activePadId$.subscribe((id) => {
+activePadId$.subscribe((id: PadId | null) => {
   activeManifest$.set(id ? getPadManifest(id) : null);
 });
 

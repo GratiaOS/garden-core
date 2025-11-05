@@ -169,3 +169,8 @@ export { ConstellationHUD } from './ConstellationHUD';
 
 export { usePhaseSound } from './usePhaseSound';
 export { usePhaseSpatialSound } from './usePhaseSpatialSound';
+
+// Re-export micro signal primitives to preserve historical import patterns
+// for downstream packages that previously consumed signals via presence-kernel.
+export { createSignal } from '@gratiaos/signal';
+export type { Signal, SignalListener } from '@gratiaos/signal';

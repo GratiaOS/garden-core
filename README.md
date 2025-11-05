@@ -41,7 +41,24 @@ Phase harmonics ripple through tokens, UI, and peers, allowing the system to _fe
 
 ---
 
-## 💖 Sponsors
+## � Unreleased — Awareness Architecture (Focus • Signal • Sound)
+
+This upcoming cycle lays calmer foundations for multi‑scene awareness:
+
+- **Focus Handoff** — first interactive element receives a gentle halo + motion‑respecting burst.
+- **Polite Live Region** — announcements now user‑controllable (persisted mute toggle) for a11y without spam.
+- **Presence Audio Refinement** — `soundMode` eliminates duplicate spatial + phase playback and clarifies intent.
+- **Micro Reactive Core** — introduced `@gratiaos/signal` (tiny synchronous observable) and consolidated kernel usage.
+- **Phase Coupling Docs** — clearer alias mapping (`PadPhase`) for extending shared presence modes.
+- **Detune Clarification** — corrected micro‑detune comments (±16.7 cents) for spatial pulse accuracy.
+- **Security Hardening** — escaped SQL `LIKE` wildcards in towns query.
+- **parseSpeaker Stability** — refactored + added unit & integration tests (value bridge + speaker tokens).
+
+> _“Awareness rests lightly — focus, sound, and signal breathe without echo.”_ 🌬️
+
+---
+
+## �💖 Sponsors
 
 If the Garden has helped you ship or smile, consider supporting its growth.  
 → **https://github.com/sponsors/GratiaOS**
