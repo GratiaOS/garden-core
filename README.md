@@ -39,7 +39,7 @@ This release lays calmer foundations for multi-scene awareness:
 
 ---
 
-## �💖 Sponsors
+## 💖 Sponsors
 
 If the Garden has helped you ship or smile, consider supporting its growth.  
 → **https://github.com/sponsors/GratiaOS**
@@ -109,11 +109,11 @@ This is a pnpm-based monorepo — modular by design, with shared types and docs 
 
 ## 🌱 Recent Growth
 
-- 🔌 Introduced **pad-core Realtime Registry** and Scene P2P bridge
-- 🕸️ Added **Sim** & **WebRTC** adapters (+ factory) for realtime
-- 🎮 Playground: UX track, presence dots, Scene Event Monitors
-- 🔥 Firecircle signaling hub with origin allowlist & wildcards
-- 🎨 Tokens & UI polish to support layered Pad surfaces
+- 🌬 **Focus handoff** hook now lands on the first meaningful control with a gentle halo burst (motion-respecting).
+- 🕊️ **Polite live region** with persisted mute preference keeps announcements calm and user-directed.
+- 🌐 **Presence kernel** drives `pulse$` internally; audio hooks offer optional tone/spatial color without duplicate beats.
+- 🌱 Introduced **`@gratiaos/signal`** micro reactive primitive and wired it through presence/pad cores.
+- 📚 README & changelog refreshed for **v1.1.0 Awareness Architecture** with publishing checklists and new package links.
 
 ### 🔩 The Missing Screw (Easter Egg)
 
