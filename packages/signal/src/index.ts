@@ -163,7 +163,9 @@ export function joinSignals<T extends any[]>(...sources: { [K in keyof T]: Signa
       return current;
     },
     set(_next: T) {
-      // Read-only joined signal; direct sets are ignored.
+      if (isDevMode) {
+        console.warn('[signal] Ignored set() on joined signal. Joined values are read-only; update one of the source signals instead.');
+      }
     },
   };
 }

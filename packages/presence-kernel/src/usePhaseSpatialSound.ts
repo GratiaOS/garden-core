@@ -39,7 +39,7 @@ const getPeerMetrics = (peerId: string) => {
   if (cached) return cached;
   const hash = hashCode(peerId);
   const pan = Math.max(-0.85, Math.min(0.85, Math.sin(hash)));
-  const semitone = (hash % 9) - 4; // discrete integral offset in [-4,4]
+  const semitone = (hash % 9) - 4; // 9 discrete steps in [-4, 4]
   // Micro‑detune per peer:
   //   Divide by 24 → range ≈ [-0.1667, +0.1667] semitones (± ~16.7 cents ≈ one sixth of a semitone).
   //   This is a subtle colorization — previously commented as "quarter‑tone" which would be ~50 cents; kept subtle.
