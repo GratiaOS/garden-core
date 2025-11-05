@@ -73,7 +73,7 @@ Garden UI stays headless; it does not bundle a state system. For tiny local reac
 import { createSignal } from '@gratiaos/signal';
 const count$ = createSignal(0);
 count$.subscribe((v) => console.log('count', v));
-count$.set((v) => v + 1);
+count$.set(count$.value + 1);
 ```
 
 Connect signals to primitives by reading their current value in render and subscribing in effects (or bridging through your own hooks). This keeps UI lean while enabling fine-grained reactivity without a large framework.

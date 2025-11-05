@@ -20,6 +20,8 @@ export type PadPhase = Phase;
 
 export const padRegistry$: Signal<PadManifest[]> = createSignal(listPadManifests());
 
+// Global registry lives for the lifetime of the app/test process, so we keep this
+// subscription active; tests rely on globalRegistry.clear() to reset state.
 globalRegistry.subscribe(() => {
   padRegistry$.set(listPadManifests());
 });

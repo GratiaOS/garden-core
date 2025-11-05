@@ -98,8 +98,9 @@ export function createDerived<A, B>(parent: Signal<A>, project: (value: A) => B)
       return current;
     },
     set(_next: B) {
-      // Read‑only derived signal: direct sets are ignored to keep parent as source of truth.
-      // (Intentional no‑op; document if writable derived variants are needed later.)
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('[signal] Ignored set() on derived signal. Derived values are read-only; update the parent signal instead.');
+      }
     },
   };
 }
