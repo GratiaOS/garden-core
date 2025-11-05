@@ -81,7 +81,7 @@ export function createRegistry(initial?: ReadonlyArray<PadManifest>): PadRegistr
       return map.has(id);
     },
     clear() {
-      // no-op when empty; listeners only fire when something actually clears
+      // No-op if already empty. Only emit a 'pad:clear' when at least one manifest was removed.
       if (map.size > 0) {
         map.clear();
         notify({ type: 'pad:clear' });
