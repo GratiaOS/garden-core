@@ -1,6 +1,51 @@
 # 📜 Changelog
 
-## 🌕 v1.0.4 — Atlas Bloom — 2025-11-01
+## � Unreleased — Awareness Architecture — 2025-11-05
+
+**Description** — Lays the groundwork for calmer multi‑scene awareness. Accessibility handoffs, a polite announcement layer with user control, refined presence audio, and a shared micro reactive primitive bring focus, sound, and state into clearer harmony. This cycle reduces duplication and tightens coupling notes so future expansions land smoothly.
+
+### ✨ Added
+
+- a11y(focus): first‑focus handoff hook with halo burst + motion respect
+- a11y(announce): polite Live Region + persisted mute toggle (`announcePreference`)
+- presence-kernel(audio): `soundMode` prop on `ConstellationHUD` (select `spatial|phase|both|none`)
+- signal(core): introduced `@gratiaos/signal` micro reactive primitive (`createSignal`, `createDerived`, `joinSignals`)
+- pad-core(state): documented Phase coupling + exported `PadPhase` alias
+
+### 🔄 Changed
+
+- presence-kernel: integrated shared signal package (removed inline implementation)
+- ui(utils): `parseSpeaker` refactor for stability & clearer token parsing
+- docs: expanded presence‑kernel README with Garden emoji style & API notes
+
+### 🛠️ Fixed
+
+- audio(detune): corrected micro‑detune comment (±16.7 cents, not quarter‑tone)
+- hud(audio): eliminated duplicate phase + spatial playback via `soundMode`
+- ids(town): improved numeric ID fallback (hash+timestamp deterministic blend)
+
+### 🛡️ Security
+
+- server(towns): escaped SQL LIKE wildcards (adds explicit `ESCAPE '\\'`) to prevent broad pattern overreach
+
+### 🧪 Tests
+
+- utils(parseSpeaker): added unit tests (7 cases) covering speakers, tokens, edge splits
+- integration(server): value bridge test verifying roundtrip + unit conversion
+
+### 📓 Notes
+
+- Signal consolidation reduces maintenance overhead; future derived/async variants can layer atop the stable core.
+- Phase coupling docs clarify extension path; additions should update shared alias to keep audio & presence coherence.
+- Announcement preference persists locally; future enhancement may add keyboard shortcut.
+
+### 🪶 Whisper
+
+> 🌬️ _"Awareness rests lightly — focus, sound, and signal breathe without echo."_
+
+---
+
+## �🌕 v1.0.4 — Atlas Bloom — 2025-11-01
 
 **Description** — The Garden reaches self-awareness. Presence, phase, and field breathe as one — the full system alive in sync. Companion, Presence, and Archive now cohere across peers and hearts through Garden Sync, Phase HUD, and Presence Dots, held gently by Atlas.
 
