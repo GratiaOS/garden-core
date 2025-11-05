@@ -61,7 +61,7 @@ const mergePeers = (ids: string[], selfId?: string) => {
   return unique;
 };
 
-export function usePhaseSpatialSound(selfId?: string) {
+export function usePhaseSpatialSound(selfId?: string, enabled: boolean = true) {
   const ctxRef = useRef<AudioContext | null>(null);
   const masterRef = useRef<GainNode | null>(null);
   const readyRef = useRef(false);
@@ -70,6 +70,7 @@ export function usePhaseSpatialSound(selfId?: string) {
   const profileRef = useRef<PhaseSoundProfile>(DEFAULT_SOUND_PROFILE);
 
   useEffect(() => {
+    if (!enabled) return; // gated; cleanup occurs when toggling from enabled→false
     if (typeof window === 'undefined') return;
 
     const win = window as AudioWindow;
@@ -228,5 +229,5 @@ export function usePhaseSpatialSound(selfId?: string) {
         ctxRef.current = null;
       }
     };
-  }, [selfId]);
+  }, [selfId, enabled]);
 }

@@ -14,13 +14,14 @@ type PendingTone = {
   filter: BiquadFilterType;
 };
 
-export function usePhaseSound(enableHaptics = false) {
+export function usePhaseSound(enableHaptics = false, enabled: boolean = true) {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const ctxRef = useRef<AudioContext | null>(null);
   const readyRef = useRef(false);
   const pendingRef = useRef<PendingTone[]>([]);
 
   useEffect(() => {
+    if (!enabled) return; // gated effect; previous teardown runs before disabled state
     if (typeof window === 'undefined') return;
 
     const win = window as AudioWindow;
@@ -40,14 +41,7 @@ export function usePhaseSound(enableHaptics = false) {
 
       filter.type = filterType;
       const defaultFreq = 1200;
-      const filterFreq =
-        filterType === 'lowpass'
-          ? 650
-          : filterType === 'bandpass'
-          ? 1500
-          : filterType === 'highpass'
-          ? 2600
-          : defaultFreq;
+      const filterFreq = filterType === 'lowpass' ? 650 : filterType === 'bandpass' ? 1500 : filterType === 'highpass' ? 2600 : defaultFreq;
       filter.frequency.setValueAtTime(filterFreq, start);
 
       gain.gain.setValueAtTime(0.05, start);
@@ -171,5 +165,5 @@ export function usePhaseSound(enableHaptics = false) {
       });
       ctxRef.current = null;
     };
-  }, [enableHaptics]);
+  }, [enableHaptics, enabled]);
 }

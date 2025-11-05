@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { phase$, peers$, pulse$, type Phase } from './index';
 import './constellation-hud.css';
-import { usePhaseSpatialSound } from './usePhaseSpatialSound';
-import { usePhaseSound } from './usePhaseSound';
+import { useConstellationAudio } from './useConstellationAudio';
 
 const BASE_RADIUS = 42;
 const RING_GAP = 18;
@@ -24,16 +23,8 @@ const hueFromId = (id: string, index: number) => {
  *  • 'both'             → preserves legacy behavior (two overlapping systems).
  *  • 'none'             → suppress audio entirely (visual only).
  */
-// Audio hook wrapper components so hooks are not invoked conditionally.
-// Conditional rendering of components is allowed and preserves Rules of Hooks.
-const SpatialAudio: React.FC<{ selfId?: string }> = ({ selfId }) => {
-  usePhaseSpatialSound(selfId);
-  return null;
-};
-const PhaseAudio: React.FC = () => {
-  usePhaseSound();
-  return null;
-};
+// Unified audio hook (replaces wrapper components). Underlying hooks are gated
+// via enabled flags; we avoid extra component indirection while keeping Rules of Hooks.
 
 export const ConstellationHUD: React.FC<{ selfId?: string; soundMode?: 'spatial' | 'phase' | 'both' | 'none' }> = ({
   selfId,
@@ -114,10 +105,11 @@ export const ConstellationHUD: React.FC<{ selfId?: string; soundMode?: 'spatial'
     });
   }, [peerIds]);
 
+  // Invoke unified audio hook (stable call order).
+  useConstellationAudio(soundMode, selfId);
+
   return (
     <div className="constellation-hud" data-count={peers.length} data-empty={peers.length === 0 || undefined}>
-      {(soundMode === 'spatial' || soundMode === 'both') && <SpatialAudio selfId={selfId} />}
-      {(soundMode === 'phase' || soundMode === 'both') && <PhaseAudio />}
       <div className={`peer-core ${pulseActive ? 'pulsing' : ''}`} style={{ background: `var(--color-${phase})` }} title={`local • ${phase}`} />
       {peers.map((peer) => (
         <div
