@@ -5,6 +5,18 @@ import { getPadManifest, listPadManifests, globalRegistry } from './registry.js'
 import { onSceneEnter } from './scene-events.js';
 import { onPadClose } from './events.js';
 import { phase$, pulse$, type Phase } from '@gratiaos/presence-kernel';
+/**
+ * Phase coupling note:
+ * pad-core consumes the Presence Kernel's `Phase` union directly so pad scene logic
+ * (e.g. flow snapshots, focus handoff + announcements) stays aligned with global
+ * presence semantics. If either package evolves its phase states, update *both*.
+ *
+ * Rationale: avoiding a second alias layer prevents silent divergence ("archive" vs
+ * "archived" etc.). If pad-core ever needs extra pad-only phases, extend here via:
+ *   export type PadPhase = Phase | 'pad-extra';
+ * and adjust downstream snapshots & UI affordances accordingly.
+ */
+export type PadPhase = Phase;
 
 export const padRegistry$: Signal<PadManifest[]> = createSignal(listPadManifests());
 
@@ -18,9 +30,7 @@ onPadRouteChange((id) => {
   activePadId$.set(id);
 });
 
-export const activeManifest$: Signal<PadManifest | null> = createSignal(
-  activePadId$.value ? getPadManifest(activePadId$.value) : null
-);
+export const activeManifest$: Signal<PadManifest | null> = createSignal(activePadId$.value ? getPadManifest(activePadId$.value) : null);
 
 activePadId$.subscribe((id) => {
   activeManifest$.set(id ? getPadManifest(id) : null);
@@ -63,8 +73,7 @@ const flow$Signal: Signal<FlowSnapshot> = createSignal({
   t: pulse$.value,
 });
 
-const flowEquals = (a: FlowSnapshot, b: FlowSnapshot) =>
-  a.pad === b.pad && a.scene === b.scene && a.phase === b.phase && a.t === b.t;
+const flowEquals = (a: FlowSnapshot, b: FlowSnapshot) => a.pad === b.pad && a.scene === b.scene && a.phase === b.phase && a.t === b.t;
 
 const refreshFlow = () => {
   const next: FlowSnapshot = {
