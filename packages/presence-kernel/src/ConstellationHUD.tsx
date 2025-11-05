@@ -24,6 +24,17 @@ const hueFromId = (id: string, index: number) => {
  *  • 'both'             → preserves legacy behavior (two overlapping systems).
  *  • 'none'             → suppress audio entirely (visual only).
  */
+// Audio hook wrapper components so hooks are not invoked conditionally.
+// Conditional rendering of components is allowed and preserves Rules of Hooks.
+const SpatialAudio: React.FC<{ selfId?: string }> = ({ selfId }) => {
+  usePhaseSpatialSound(selfId);
+  return null;
+};
+const PhaseAudio: React.FC = () => {
+  usePhaseSound();
+  return null;
+};
+
 export const ConstellationHUD: React.FC<{ selfId?: string; soundMode?: 'spatial' | 'phase' | 'both' | 'none' }> = ({
   selfId,
   soundMode = 'spatial',
@@ -33,13 +44,7 @@ export const ConstellationHUD: React.FC<{ selfId?: string; soundMode?: 'spatial'
   const [pulseActive, setPulseActive] = useState(false);
   const pulseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Conditionally engage audio system based on soundMode selection.
-  if (soundMode === 'spatial' || soundMode === 'both') {
-    usePhaseSpatialSound(selfId);
-  }
-  if (soundMode === 'phase' || soundMode === 'both') {
-    usePhaseSound();
-  }
+  // Render audio wrappers conditionally (hooks live inside wrapper components).
 
   useEffect(() => {
     const stopPhase = phase$.subscribe((nextPhase) => setPhase(nextPhase));
@@ -111,6 +116,8 @@ export const ConstellationHUD: React.FC<{ selfId?: string; soundMode?: 'spatial'
 
   return (
     <div className="constellation-hud" data-count={peers.length} data-empty={peers.length === 0 || undefined}>
+      {(soundMode === 'spatial' || soundMode === 'both') && <SpatialAudio selfId={selfId} />}
+      {(soundMode === 'phase' || soundMode === 'both') && <PhaseAudio />}
       <div className={`peer-core ${pulseActive ? 'pulsing' : ''}`} style={{ background: `var(--color-${phase})` }} title={`local • ${phase}`} />
       {peers.map((peer) => (
         <div
