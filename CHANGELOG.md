@@ -1,6 +1,6 @@
 # 📜 Changelog
 
-## � Unreleased — Awareness Architecture — 2025-11-05
+## 🌕 v1.1.0 — Awareness Architecture — 2025-11-05
 
 **Description** — Lays the groundwork for calmer multi‑scene awareness. Accessibility handoffs, a polite announcement layer with user control, refined presence audio, and a shared micro reactive primitive bring focus, sound, and state into clearer harmony. This cycle reduces duplication and tightens coupling notes so future expansions land smoothly.
 
@@ -15,6 +15,7 @@
 ### 🔄 Changed
 
 - presence-kernel: integrated shared signal package (removed inline implementation)
+- presence-kernel(core): `PresenceKernel.tick()` now advances `pulse$`; audio hooks no longer emit duplicate beats
 - ui(utils): `parseSpeaker` refactor for stability & clearer token parsing
 - docs: expanded presence‑kernel README with Garden emoji style & API notes
 
