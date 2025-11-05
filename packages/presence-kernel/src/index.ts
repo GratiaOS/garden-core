@@ -29,9 +29,9 @@ export interface PresenceAdapter {
 
 export type KernelPlugin = (kernel: PresenceKernel) => void;
 
-type SignalListener<T> = (value: T) => void;
+export type SignalListener<T> = (value: T) => void;
 
-type Signal<T> = {
+export type Signal<T> = {
   subscribe(listener: SignalListener<T>): () => void;
   readonly value: T;
   set(next: T): void;
