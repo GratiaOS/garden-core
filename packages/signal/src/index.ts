@@ -13,7 +13,10 @@
  *  • Keep usage simple: create → subscribe → set → unsubscribe
  */
 
-const isDevMode = typeof globalThis !== 'undefined' && (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !== 'production';
+const isDevMode =
+  typeof globalThis === 'undefined'
+    ? true
+    : ((globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV ?? 'development') !== 'production';
 
 export type SignalListener<T> = (value: T) => void;
 

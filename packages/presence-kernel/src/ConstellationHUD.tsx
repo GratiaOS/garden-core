@@ -23,6 +23,13 @@ const hueFromId = (id: string, index: number) => {
  *  • 'both'             → preserves legacy behavior (two overlapping systems).
  *  • 'none'             → suppress audio entirely (visual only).
  */
+/**
+ * @param soundMode Controls audio playback mode:
+ *  - 'spatial': spatial panning + micro-detune per peer (default)
+ *  - 'phase': single phase tone without spatial layering
+ *  - 'both': legacy behavior with spatial + phase layers stacked
+ *  - 'none': silence all audio, leaving visuals only
+ */
 // Unified audio hook (replaces wrapper components). Underlying hooks are gated
 // via enabled flags; we avoid extra component indirection while keeping Rules of Hooks.
 

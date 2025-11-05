@@ -63,6 +63,8 @@ export function createRegistry(initial?: ReadonlyArray<PadManifest>): PadRegistr
 
   return {
     register(m: PadManifest) {
+      // JS registries run on a single thread; capturing `existed` before `set`
+      // is safe and keeps notify semantics stable for listeners.
       const existed = map.has(m.id);
       map.set(m.id, m);
       notify({ type: existed ? 'pad:update' : 'pad:register', manifest: m });

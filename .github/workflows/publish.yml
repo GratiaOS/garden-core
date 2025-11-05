@@ -19,6 +19,8 @@ jobs:
       - name: Checkout repository (full history for tagging)
         uses: actions/checkout@v4
         with:
+          # Full history ensures auto-tagging finds existing tags. For very large repos,
+          # consider reducing fetch-depth (e.g. 10) if only recent tags are needed.
           fetch-depth: 0
 
       - name: Auto-create semantic tag (workflow_dispatch only)
