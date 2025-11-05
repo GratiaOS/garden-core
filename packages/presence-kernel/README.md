@@ -75,7 +75,8 @@ export function PresenceDecorations() {
 Signals are minimal synchronous observables:
 
 ```ts
-import { createSignal } from '@gratiaos/presence-kernel';
+// Use the dedicated micro reactive primitive package
+import { createSignal } from '@gratiaos/signal';
 const count$ = createSignal(0);
 const stop = count$.subscribe((v) => console.log(v));
 count$.set(1); // listener fires

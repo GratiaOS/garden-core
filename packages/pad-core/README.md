@@ -10,6 +10,20 @@ Now extended with **Realtime Presence**, **Scene Events**, and **P2P awareness**
 It’s framework-agnostic, DOM-optional, and designed to let Pads bloom in any app (Playground, M3 UI, future mirrors).  
 The package is side-effect free (`"sideEffects": false`) so bundlers can tree-shake unused helpers.
 
+### 🔩 Signals Interop
+
+Pad Core itself is not opinionated about reactivity; for local observable state (Pad mood, ephemeral counters, lab toggles) prefer the tiny `@gratiaos/signal` package:
+
+```ts
+import { createSignal } from '@gratiaos/signal';
+const mood$ = createSignal<'idle' | 'focused'>('idle');
+const stop = mood$.subscribe((m) => console.log('mood', m));
+mood$.set('focused');
+stop();
+```
+
+Use `@gratiaos/presence-kernel` for shared cross-pad presence/phase signals; use `@gratiaos/signal` when you just need a local synchronous observable.
+
 ---
 
 ## 🌠 Vision
