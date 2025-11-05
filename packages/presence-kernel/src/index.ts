@@ -67,6 +67,8 @@ export function createSignal<T>(initial: T): Signal<T> {
 
 export const phase$ = createSignal<Phase>('presence');
 export const mood$ = createSignal<Mood>('soft');
+export const peers$ = createSignal<string[]>([]);
+export const pulse$ = createSignal<number>(0);
 
 export const setPhase = (phase: Phase) => phase$.set(phase);
 export const setMood = (mood: Mood) => mood$.set(mood);
@@ -79,6 +81,10 @@ export class PresenceKernel {
   private listeners = new Set<(event: KernelEvent) => void>();
   private adapters = new Set<PresenceAdapter>();
   private timer: ReturnType<typeof setInterval> | null = null;
+
+  private syncPeers() {
+    peers$.set(Array.from(this.peers.keys()));
+  }
 
   constructor(private readonly intervalMs: number = 1000, private readonly now: () => number = () => Date.now()) {}
 
@@ -115,20 +121,29 @@ export class PresenceKernel {
   }
 
   upsertPeer(id: string) {
+    const isNew = !this.peers.has(id);
     this.peers.set(id, this.now());
+    if (isNew) this.syncPeers();
     this.publish({ type: 'peer:up', id, snap: this.snapshot });
   }
 
   dropPeer(id: string) {
     this.peers.delete(id);
+    this.syncPeers();
     this.publish({ type: 'peer:down', id, snap: this.snapshot });
   }
 
   activePeerCount(staleMs = 15_000) {
     const now = this.now();
-    for (const [id, seen] of this.peers) {
-      if (now - seen > staleMs) this.peers.delete(id);
+    let changed = false;
+    for (const [id, seen] of Array.from(this.peers)) {
+      if (now - seen > staleMs) {
+        this.peers.delete(id);
+        changed = true;
+        this.publish({ type: 'peer:down', id, snap: this.snapshot });
+      }
     }
+    if (changed) this.syncPeers();
     return this.peers.size;
   }
 
@@ -175,3 +190,9 @@ export class PresenceKernel {
     for (const adapter of this.adapters) adapter.emit?.(event);
   }
 }
+
+export { Heartbeat } from './Heartbeat';
+export { ConstellationHUD } from './ConstellationHUD';
+
+export { usePhaseSound } from './usePhaseSound';
+export { usePhaseSpatialSound } from './usePhaseSpatialSound';

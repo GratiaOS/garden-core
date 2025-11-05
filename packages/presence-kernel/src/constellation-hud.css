@@ -1,0 +1,101 @@
+.constellation-hud {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0.9;
+  backdrop-filter: blur(18px) saturate(115%);
+  animation: constellation-spin 60s linear infinite;
+  z-index: 95;
+}
+
+.constellation-hud::after {
+  content: '';
+  position: absolute;
+  inset: 10%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.12), transparent);
+}
+
+.constellation-hud[data-empty='true'] {
+  opacity: 0.6;
+}
+
+.peer-core {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  box-shadow: 0 0 14px currentColor;
+}
+
+.peer-core.pulsing {
+  animation: phase-core-pulse 0.8s ease-out;
+}
+
+.peer-dot {
+  --orbit-transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  transform: var(--orbit-transform);
+  box-shadow: 0 0 8px currentColor;
+  opacity: 0.75;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.peer-dot.pulsing {
+  animation: phase-dot-pulse 0.8s ease-out;
+}
+
+.constellation-hud:hover .peer-dot {
+  opacity: 1;
+}
+
+@keyframes constellation-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes phase-core-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 12px currentColor;
+  }
+  40% {
+    transform: scale(1.35);
+    box-shadow: 0 0 20px currentColor;
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 12px currentColor;
+  }
+}
+
+@keyframes phase-dot-pulse {
+  0% {
+    transform: var(--orbit-transform);
+    box-shadow: 0 0 8px currentColor;
+  }
+  40% {
+    transform: var(--orbit-transform) scale(1.25);
+    box-shadow: 0 0 16px currentColor;
+  }
+  100% {
+    transform: var(--orbit-transform);
+    box-shadow: 0 0 8px currentColor;
+  }
+}

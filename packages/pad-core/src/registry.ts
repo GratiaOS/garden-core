@@ -20,9 +20,17 @@
  */
 import type { PadId, PadManifest } from './types.js';
 
+export type PadRegistryChange =
+  | { type: 'pad:register'; manifest: PadManifest }
+  | { type: 'pad:update'; manifest: PadManifest }
+  | { type: 'pad:unregister'; id: PadId }
+  | { type: 'pad:clear' };
+
 export interface PadRegistry {
   /** Insert or replace a pad manifest by id. */
   register(manifest: PadManifest): void;
+  /** Remove a manifest by id (no-op if absent). */
+  unregister(id: PadId): void;
   /** Fetch a manifest by id (undefined if absent). */
   get(id: PadId): PadManifest | undefined;
   /** Return all manifests (unsorted). */
@@ -31,6 +39,8 @@ export interface PadRegistry {
   has(id: PadId): boolean;
   /** Remove all manifests. */
   clear(): void;
+  /** Listen for registry mutations. */
+  subscribe(listener: (change: PadRegistryChange) => void): () => void;
 }
 
 /**
@@ -39,11 +49,27 @@ export interface PadRegistry {
  */
 export function createRegistry(initial?: ReadonlyArray<PadManifest>): PadRegistry {
   const map = new Map<PadId, PadManifest>();
+  const listeners = new Set<(change: PadRegistryChange) => void>();
+  const notify = (change: PadRegistryChange) => {
+    listeners.forEach((fn) => {
+      try {
+        fn(change);
+      } catch {
+        // ignore listener errors to keep registry resilient
+      }
+    });
+  };
   for (const m of initial ?? []) map.set(m.id, m);
 
   return {
     register(m: PadManifest) {
+      const existed = map.has(m.id);
       map.set(m.id, m);
+      notify({ type: existed ? 'pad:update' : 'pad:register', manifest: m });
+    },
+    unregister(id: PadId) {
+      const existed = map.delete(id);
+      if (existed) notify({ type: 'pad:unregister', id });
     },
     get(id: PadId) {
       return map.get(id);
@@ -55,7 +81,16 @@ export function createRegistry(initial?: ReadonlyArray<PadManifest>): PadRegistr
       return map.has(id);
     },
     clear() {
-      map.clear();
+      if (map.size > 0) {
+        map.clear();
+        notify({ type: 'pad:clear' });
+      }
+    },
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
     },
   };
 }
@@ -76,3 +111,13 @@ export function registerAll(registry: PadRegistry, manifests: ReadonlyArray<PadM
  * Tests can import and call `globalRegistry.clear()` to isolate cases.
  */
 export const globalRegistry: PadRegistry = createRegistry();
+
+/** Helper: fetch a manifest by id from the shared registry. */
+export function getPadManifest(id: PadId | string): PadManifest | null {
+  return globalRegistry.get(id as PadId) ?? null;
+}
+
+/** Helper: list all manifests from the shared registry. */
+export function listPadManifests(): PadManifest[] {
+  return globalRegistry.list();
+}

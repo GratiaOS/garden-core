@@ -38,6 +38,9 @@ importers:
 
   packages/pad-core:
     devDependencies:
+      '@gratiaos/presence-kernel':
+        specifier: workspace:*
+        version: link:../presence-kernel
       '@types/react':
         specifier: ^19.2.2
         version: 19.2.2
@@ -50,6 +53,15 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+
+  packages/presence-kernel:
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.2
+        version: 19.2.2
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
 
   packages/tokens:
     devDependencies:
@@ -83,6 +95,9 @@ importers:
       '@gratiaos/pad-core':
         specifier: workspace:*
         version: link:../packages/pad-core
+      '@gratiaos/presence-kernel':
+        specifier: workspace:*
+        version: link:../packages/presence-kernel
       '@gratiaos/tokens':
         specifier: workspace:*
         version: link:../packages/tokens

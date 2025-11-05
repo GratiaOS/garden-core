@@ -13,6 +13,7 @@
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
     "@gratiaos/icons": "workspace:*",
+    "@gratiaos/presence-kernel": "workspace:*",
     "@gratiaos/tokens": "workspace:*",
     "@gratiaos/pad-core": "workspace:*",
     "@gratiaos/ui": "workspace:*",

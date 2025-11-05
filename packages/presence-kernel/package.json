@@ -22,5 +22,16 @@
     "src",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "sideEffects": [
+    "./src/heartbeat.css",
+    "./src/constellation-hud.css"
+  ],
+  "peerDependencies": {
+    "react": "^18 || ^19"
+  },
+  "devDependencies": {
+    "react": "^19.2.0",
+    "@types/react": "^19.2.2"
+  }
 }
