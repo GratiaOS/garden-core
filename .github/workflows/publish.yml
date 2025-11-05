@@ -53,6 +53,8 @@ jobs:
           npm view @gratiaos/ui versions --json || true
           npm view @gratiaos/tokens versions --json || true
           npm view @gratiaos/pad-core versions --json || true
+          npm view @gratiaos/presence-kernel versions --json || true
+          npm view @gratiaos/signal versions --json || true
 
       - name: Sanitize npmrc for OIDC (remove token auth)
         run: |
@@ -73,10 +75,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ''
 
-      - name: Publish each package if this version is missing
+      - name: Publish each package if this version is missing (icons, core libs, kernels, ui)
         run: |
           set -euo pipefail
-          for pkg in packages/icons packages/pad-core packages/tokens packages/ui; do
+          for pkg in packages/icons packages/pad-core packages/tokens packages/ui packages/presence-kernel packages/signal; do
             echo "── $pkg"
             pushd "$pkg" >/dev/null
             NAME=$(node -p "require('./package.json').name")
