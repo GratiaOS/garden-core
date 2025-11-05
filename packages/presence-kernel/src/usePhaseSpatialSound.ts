@@ -28,8 +28,7 @@ const filterFrequency = (type: BiquadFilterType) => {
   }
 };
 
-const hashCode = (input: string) =>
-  Array.from(input).reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 1), 0);
+const hashCode = (input: string) => Array.from(input).reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 1), 0);
 
 const panForPeer = (peerId: string) => {
   const hash = hashCode(peerId);
@@ -38,8 +37,11 @@ const panForPeer = (peerId: string) => {
 
 const detuneForPeer = (peerId: string) => {
   const hash = hashCode(peerId);
-  const semitone = (hash % 9) - 4; // discrete semitone steps (-4..4)
-  return semitone / 24; // subtle +/- quarter-tone drift
+  const semitone = (hash % 9) - 4; // discrete integral offset in [-4,4]
+  // Micro‑detune per peer:
+  //   Divide by 24 → range ≈ [-0.1667, +0.1667] semitones (± ~16.7 cents ≈ one sixth of a semitone).
+  //   This is a subtle colorization — previously commented as "quarter‑tone" which would be ~50 cents; kept subtle.
+  return semitone / 24;
 };
 
 const gainForPeer = (pan: number) => {
