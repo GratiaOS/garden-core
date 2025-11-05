@@ -23,28 +23,27 @@
    Future ideas
      • Additional tone swatches (e.g., grounded/alert) as the whisper library grows.
    ──────────────────────────────────────────────────────────── */
-[data-ui="whisper"] {
-  font-family: var(--font-body, inherit);
-  font-size: var(--text-sm, 0.9rem);
-  color: color-mix(in oklab, var(--color-accent) 70%, var(--color-text) 30%);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  display: inline-flex;
-  gap: 0.35em;
-  align-items: center;
-  opacity: 0.88;
-  transition: transform var(--duration-snug, 160ms) var(--ease-soft, ease), opacity 200ms var(--ease-soft, ease);
-}
+@layer components {
+  [data-ui="whisper"] {
+    font-size: var(--text-sm);
+    color: color-mix(in oklab, var(--color-accent) 70%, var(--color-text) 30%);
+    display: inline-flex;
+    align-items: center;
+    opacity: 0.88;
+    transition: transform var(--duration-snug, 160ms) var(--ease-soft, ease), opacity 200ms var(--ease-soft, ease);
+    font-style: italic;
+  }
 
-[data-ui="whisper"][data-tone="collaborative"] {
-  color: color-mix(in oklab, var(--color-positive) 70%, var(--color-text) 30%);
-}
+  [data-ui="whisper"][data-tone="collaborative"] {
+    color: color-mix(in oklab, var(--color-positive) 70%, var(--color-text) 30%);
+  }
 
-[data-ui="whisper"][data-tone="presence"] {
-  color: color-mix(in oklab, var(--color-accent) 80%, var(--color-surface) 20%);
-}
+  [data-ui="whisper"][data-tone="presence"] {
+    color: color-mix(in oklab, var(--color-accent) 80%, var(--color-surface) 20%);
+  }
 
-[data-ui="whisper"][data-pulsing="true"] {
-  transform: translateY(-2px);
-  opacity: 1;
+  [data-ui="whisper"][data-pulsing="true"] {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
 }
