@@ -38,7 +38,7 @@ const panForPeer = (peerId: string) => {
 
 const detuneForPeer = (peerId: string) => {
   const hash = hashCode(peerId);
-  const semitone = (hash % 9) - 4; // -4 .. 4
+  const semitone = (hash % 9) - 4; // discrete semitone steps (-4..4)
   return semitone / 24; // subtle +/- quarter-tone drift
 };
 

@@ -81,6 +81,7 @@ export function createRegistry(initial?: ReadonlyArray<PadManifest>): PadRegistr
       return map.has(id);
     },
     clear() {
+      // no-op when empty; listeners only fire when something actually clears
       if (map.size > 0) {
         map.clear();
         notify({ type: 'pad:clear' });

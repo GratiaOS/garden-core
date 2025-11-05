@@ -11,7 +11,8 @@ function resolveColor(color: string): [number, number, number] {
   document.body.appendChild(element);
   const computed = getComputedStyle(element).color;
   document.body.removeChild(element);
-  const match = computed.match(/\d+/g)?.map(Number) ?? [255, 255, 255];
+  const match = computed.match(/\d+/g)?.map(Number);
+  if (!match || match.length < 3) return [255, 255, 255];
   return [match[0] ?? 255, match[1] ?? 255, match[2] ?? 255];
 }
 

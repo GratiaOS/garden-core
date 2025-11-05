@@ -66,7 +66,7 @@ export function createSignal<T>(initial: T): Signal<T> {
 }
 
 export const phase$ = createSignal<Phase>('presence');
-export const mood$ = createSignal<Mood>('soft');
+export const mood$ = createSignal<Mood>('soft'); // phase can be vivid while mood stays gentle by default
 export const peers$ = createSignal<string[]>([]);
 export const pulse$ = createSignal<number>(0);
 
@@ -81,12 +81,17 @@ export class PresenceKernel {
   private listeners = new Set<(event: KernelEvent) => void>();
   private adapters = new Set<PresenceAdapter>();
   private timer: ReturnType<typeof setInterval> | null = null;
+  private readonly intervalMs: number;
+  private readonly now: () => number;
 
   private syncPeers() {
     peers$.set(Array.from(this.peers.keys()));
   }
 
-  constructor(private readonly intervalMs: number = 1000, private readonly now: () => number = () => Date.now()) {}
+  constructor(intervalMs: number = 1000, now: () => number = () => Date.now()) {
+    this.intervalMs = intervalMs;
+    this.now = now;
+  }
 
   start() {
     if (this.timer) return;
@@ -128,7 +133,8 @@ export class PresenceKernel {
   }
 
   dropPeer(id: string) {
-    this.peers.delete(id);
+    const existed = this.peers.delete(id);
+    if (!existed) return;
     this.syncPeers();
     this.publish({ type: 'peer:down', id, snap: this.snapshot });
   }

@@ -10,6 +10,9 @@
     "registry": "https://registry.npmjs.org/",
     "provenance": true
   },
+  "dependencies": {
+    "@gratiaos/presence-kernel": "workspace:*"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GratiaOS/garden-core.git",
@@ -35,8 +38,7 @@
     "LICENSE"
   ],
   "peerDependencies": {
-    "react": "^18 || ^19",
-    "@gratiaos/presence-kernel": "workspace:*"
+    "react": "^18 || ^19"
   },
   "scripts": {
     "build": "tsc -b",
@@ -46,7 +48,6 @@
     "@types/react": "^19.2.2",
     "react": "^19.2.0",
     "typescript": "^5.9.3",
-    "rimraf": "^6.0.1",
-    "@gratiaos/presence-kernel": "workspace:*"
+    "rimraf": "^6.0.1"
   }
 }
