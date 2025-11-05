@@ -13,14 +13,33 @@ const hueFromId = (id: string, index: number) => {
   return (sum + index * 37) % 360;
 };
 
-export const ConstellationHUD: React.FC<{ selfId?: string }> = ({ selfId }) => {
+/**
+ * ConstellationHUD — visual + optional audio pulse for presence peers.
+ *
+ * Audio duplication guard: previously both `usePhaseSpatialSound` and `usePhaseSound`
+ * were invoked unconditionally, causing layered playback on each pulse. We now gate
+ * invocation with `soundMode`:
+ *  • 'spatial' (default) → spatial panning + micro-detune per peer.
+ *  • 'phase'            → single phase tone without spatial layering.
+ *  • 'both'             → preserves legacy behavior (two overlapping systems).
+ *  • 'none'             → suppress audio entirely (visual only).
+ */
+export const ConstellationHUD: React.FC<{ selfId?: string; soundMode?: 'spatial' | 'phase' | 'both' | 'none' }> = ({
+  selfId,
+  soundMode = 'spatial',
+}) => {
   const [phase, setPhase] = useState<Phase>(phase$.value);
   const [peerIds, setPeerIds] = useState<string[]>(() => [...peers$.value]);
   const [pulseActive, setPulseActive] = useState(false);
   const pulseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  usePhaseSpatialSound(selfId);
-  usePhaseSound();
+  // Conditionally engage audio system based on soundMode selection.
+  if (soundMode === 'spatial' || soundMode === 'both') {
+    usePhaseSpatialSound(selfId);
+  }
+  if (soundMode === 'phase' || soundMode === 'both') {
+    usePhaseSound();
+  }
 
   useEffect(() => {
     const stopPhase = phase$.subscribe((nextPhase) => setPhase(nextPhase));
@@ -92,11 +111,7 @@ export const ConstellationHUD: React.FC<{ selfId?: string }> = ({ selfId }) => {
 
   return (
     <div className="constellation-hud" data-count={peers.length} data-empty={peers.length === 0 || undefined}>
-      <div
-        className={`peer-core ${pulseActive ? 'pulsing' : ''}`}
-        style={{ background: `var(--color-${phase})` }}
-        title={`local • ${phase}`}
-      />
+      <div className={`peer-core ${pulseActive ? 'pulsing' : ''}`} style={{ background: `var(--color-${phase})` }} title={`local • ${phase}`} />
       {peers.map((peer) => (
         <div
           key={peer.id}
