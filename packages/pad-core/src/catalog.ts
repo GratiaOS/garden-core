@@ -137,6 +137,10 @@ export function buildCatalogFromMany(registries: PadRegistry[], opts?: Parameter
     clear: () => {
       throw new Error('immutable view');
     },
+    // Intentionally returns a no-op unsubscribe to match registry helpers.
+    // Consumers can safely call subscribe() even on derived/immutable views,
+    // and the no-op keeps teardown code simple without extra guards.
+    // Immutable views don't emit updates, so the listener is never called.
     subscribe: () => () => {},
   };
   return buildCatalog(fauxRegistry, opts);
