@@ -30,18 +30,23 @@ const filterFrequency = (type: BiquadFilterType) => {
 
 const hashCode = (input: string) => Array.from(input).reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 1), 0);
 
-const panForPeer = (peerId: string) => {
-  const hash = hashCode(peerId);
-  return Math.max(-0.85, Math.min(0.85, Math.sin(hash)));
-};
+// Cache per peer so we only compute hash + derived pan/detune once per id.
+// Peer IDs are stable for a session; memory footprint is minimal.
+const peerMetricsCache = new Map<string, { hash: number; pan: number; detune: number }>();
 
-const detuneForPeer = (peerId: string) => {
+const getPeerMetrics = (peerId: string) => {
+  let cached = peerMetricsCache.get(peerId);
+  if (cached) return cached;
   const hash = hashCode(peerId);
+  const pan = Math.max(-0.85, Math.min(0.85, Math.sin(hash)));
   const semitone = (hash % 9) - 4; // discrete integral offset in [-4,4]
   // Micro‑detune per peer:
   //   Divide by 24 → range ≈ [-0.1667, +0.1667] semitones (± ~16.7 cents ≈ one sixth of a semitone).
   //   This is a subtle colorization — previously commented as "quarter‑tone" which would be ~50 cents; kept subtle.
-  return semitone / 24;
+  const detune = semitone / 24;
+  cached = { hash, pan, detune };
+  peerMetricsCache.set(peerId, cached);
+  return cached;
 };
 
 const gainForPeer = (pan: number) => {
@@ -147,9 +152,9 @@ export function usePhaseSpatialSound(selfId?: string) {
 
     const playPeerTone = (peerId: string, profile: PhaseSoundProfile, index: number) => {
       const base = profile.root;
-      const detune = detuneForPeer(peerId);
+      const { detune, pan: rawPan } = getPeerMetrics(peerId);
       const frequency = base * Math.pow(2, detune);
-      const pan = peerId === selfId ? 0 : panForPeer(peerId);
+      const pan = peerId === selfId ? 0 : rawPan;
       const gainAmount = gainForPeer(pan);
       const delay = index * 0.045;
 
