@@ -34,9 +34,11 @@
     "README.md",
     "LICENSE"
   ],
-  "peerDependencies": {
-    "react": "^18 || ^19",
+  "dependencies": {
     "@gratiaos/presence-kernel": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19"
   },
   "scripts": {
     "build": "tsc -b",
@@ -46,7 +48,6 @@
     "@types/react": "^19.2.2",
     "react": "^19.2.0",
     "typescript": "^5.9.3",
-    "rimraf": "^6.0.1",
-    "@gratiaos/presence-kernel": "workspace:*"
+    "rimraf": "^6.0.1"
   }
 }
