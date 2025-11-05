@@ -29,41 +29,8 @@ export interface PresenceAdapter {
 
 export type KernelPlugin = (kernel: PresenceKernel) => void;
 
-export type SignalListener<T> = (value: T) => void;
-
-export type Signal<T> = {
-  subscribe(listener: SignalListener<T>): () => void;
-  readonly value: T;
-  set(next: T): void;
-};
-
-export function createSignal<T>(initial: T): Signal<T> {
-  let current = initial;
-  const listeners = new Set<SignalListener<T>>();
-  return {
-    subscribe(listener: SignalListener<T>) {
-      listeners.add(listener);
-      listener(current);
-      return () => {
-        listeners.delete(listener);
-      };
-    },
-    get value() {
-      return current;
-    },
-    set(next: T) {
-      if (Object.is(next, current)) return;
-      current = next;
-      listeners.forEach((listener) => {
-        try {
-          listener(current);
-        } catch {
-          // ignore listener errors so the signal keeps breathing
-        }
-      });
-    },
-  };
-}
+import { createSignal, type Signal, type SignalListener } from '@gratiaos/signal';
+// Signals are now sourced from @gratiaos/signal (shared micro observable).
 
 export const phase$ = createSignal<Phase>('presence');
 export const mood$ = createSignal<Mood>('soft'); // phase can be vivid while mood stays gentle by default

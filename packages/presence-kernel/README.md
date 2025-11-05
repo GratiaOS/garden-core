@@ -4,9 +4,9 @@
  Purpose | API | Usage | Notes
 ────────────────────────────────────────────────────────── -->
 
-# `@gratiaos/presence-kernel`
+# 🌐 `@gratiaos/presence-kernel`
 
-Lightweight presence heartbeat + signals for Garden / Gratia OS surfaces.
+Lightweight presence heartbeat + signals for Garden / Gratia OS surfaces. 🌱
 Provides a tiny reactive core (`PresenceKernel`) and four shared signals:
 
 | Signal   | Purpose                                      |
@@ -24,7 +24,7 @@ pnpm add @gratiaos/presence-kernel
 npm install @gratiaos/presence-kernel
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 ```ts
 import { PresenceKernel, phase$, mood$, peers$, pulse$ } from '@gratiaos/presence-kernel';
@@ -49,7 +49,7 @@ stopPulse();
 kernel.stop();
 ```
 
-## React HUD / Audio Helpers
+## 🎧 React HUD / Audio Helpers
 
 The package ships optional UI + audio hooks:
 
@@ -66,11 +66,11 @@ export function PresenceDecorations() {
 }
 ```
 
-### `soundMode` (HUD)
+### 🔊 `soundMode` (HUD)
 
 `'spatial' | 'phase' | 'both' | 'none'` (default `'spatial'`). Use `'none'` to silence audio entirely; `'both'` retains overlapping legacy behavior.
 
-## Signals API
+## 🔩 Signals API
 
 Signals are minimal synchronous observables:
 
@@ -84,7 +84,7 @@ stop(); // unsubscribe
 
 They use structural equality (`Object.is`) and swallow listener errors to keep the pulse resilient.
 
-## PresenceKernel Lifecycle
+## ⏱️ PresenceKernel Lifecycle
 
 ```ts
 const kernel = new PresenceKernel(/* intervalMs= */ 1000);
@@ -94,7 +94,7 @@ kernel.start();
 kernel.stop();
 ```
 
-### Snapshot & Events
+### 🛰️ Snapshot & Events
 
 ```ts
 const unsub = kernel.on((evt) => {
@@ -106,7 +106,7 @@ const unsub = kernel.on((evt) => {
 
 Events include: `tick`, `phase:set`, `mood:set`, `whisper`, `peer:up`, `peer:down`.
 
-## Adapters
+## 🧩 Adapters
 
 Implement `PresenceAdapter` to bridge kernel ticks into external channels:
 
@@ -128,15 +128,15 @@ const loggingAdapter = {
 kernel.use(loggingAdapter);
 ```
 
-## Audio Notes
+## 🎼 Audio Notes
 
 Hooks (`usePhaseSpatialSound`, `usePhaseSound`) gently color pulse events. They respect browser autoplay policies: audio starts after user interaction. Spatial mode applies micro‑detune + panning per peer.
 
-## Type Coupling (Phase)
+## 🔗 Type Coupling (Phase)
 
 `pad-core` re‑uses this package's `Phase` union to keep UI focus + routing aligned. If you extend phases, update both packages (see pad‑core's `PadPhase` alias).
 
-## CSS Assets
+## 🎨 CSS Assets
 
 Side effects declare HUD/heartbeat CSS. Import somewhere globally:
 
@@ -145,18 +145,18 @@ import '@gratiaos/presence-kernel/src/heartbeat.css';
 import '@gratiaos/presence-kernel/src/constellation-hud.css';
 ```
 
-## Publishing
+## 📦 Publishing
 
 1. Build: `pnpm --filter @gratiaos/presence-kernel build`
 2. Version bump (workspace tooling or manual).
 3. `npm publish --access public` (registry respects `files` whitelist: `dist/`, `src/` CSS, README, LICENSE).
 4. Tag & changelog entry under Garden Core repo.
 
-## License
+## 📜 License
 
 AGPL-3.0-only — see `LICENSE` file. Commercial / dual licensing inquiries: open a discussion in the main repo.
 
-## Support & Sponsorship
+## ❤️ Support & Sponsorship
 
 If this kernel helps your project, sponsoring keeps the pulse healthy 🌱 <https://github.com/sponsors/GratiaOS>
 
