@@ -15,6 +15,7 @@ Provides a tiny reactive core (`PresenceKernel`) and four shared signals:
 | `mood$`  | Visual/interaction tone (`soft`, `focused`…) |
 | `peers$` | Active peer IDs (tab/session identities)     |
 | `pulse$` | Monotonic integer tick (heartbeats)          |
+| `kernelAuthority` | String constant identifying who currently conducts the shared kernel |
 
 ## Install
 
@@ -27,7 +28,9 @@ npm install @gratiaos/presence-kernel
 ## 🚀 Quick Start
 
 ```ts
-import { PresenceKernel, phase$, mood$, peers$, pulse$ } from '@gratiaos/presence-kernel';
+import { PresenceKernel, phase$, mood$, peers$, pulse$, kernelAuthority } from '@gratiaos/presence-kernel';
+
+console.log('🌬️ Presence Kernel Authority:', kernelAuthority);
 
 // Create + start kernel (1s heartbeat)
 const kernel = new PresenceKernel(1000).start();
