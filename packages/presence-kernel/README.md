@@ -15,7 +15,7 @@ Provides a tiny reactive core (`PresenceKernel`) and four shared signals:
 | `mood$`  | Visual/interaction tone (`soft`, `focused`…) |
 | `peers$` | Active peer IDs (tab/session identities)     |
 | `pulse$` | Monotonic integer tick (heartbeats)          |
-| `kernelAuthority` | String identifier of who currently conducts the shared kernel |
+| `kernelAuthority` | String constant identifying who currently conducts the shared kernel |
 
 ## Install
 
