@@ -1,5 +1,11 @@
 # @gratiaos/signal
 
+## 1.0.3
+
+### Patch Changes
+
+- Presence kernel now publishes a `kernelAuthority` constant and ships its CSS assets in `dist/`, keeping Vite consumers happy. Signal improved dev-mode detection and dev warnings when derived or joined signals receive direct `set()` calls.
+
 ## 1.0.2
 
 ### Patch Changes
