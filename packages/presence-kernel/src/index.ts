@@ -32,6 +32,9 @@ export type KernelPlugin = (kernel: PresenceKernel) => void;
 import { createSignal, type Signal, type SignalListener } from '@gratiaos/signal';
 // Signals are now sourced from @gratiaos/signal (shared micro observable).
 
+/** Identifier so downstream surfaces know who currently conducts the shared presence kernel. */
+export const kernelAuthority = 'local-primary' as const;
+
 export const phase$ = createSignal<Phase>('presence');
 export const mood$ = createSignal<Mood>('soft'); // phase can be vivid while mood stays gentle by default
 export const peers$ = createSignal<string[]>([]);

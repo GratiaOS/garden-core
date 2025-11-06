@@ -1,5 +1,11 @@
 # @gratiaos/signal
 
+## 1.0.2
+
+### Patch Changes
+
+- Presence kernel now publishes a `kernelAuthority` constant so downstream apps can log or coordinate who owns the shared heart. Signal gained portable dev-mode detection and clearer warnings when derived or joined signals are mutated directly.
+
 ## 1.0.1
 
 ### Patch Changes
