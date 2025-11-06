@@ -1,6 +1,6 @@
 {
   "name": "@gratiaos/presence-kernel",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
   "license": "AGPL-3.0-only",
@@ -32,7 +32,7 @@
     "react": "^18 || ^19"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node ./scripts/copy-assets.mjs",
     "clean": "rimraf dist"
   },
   "dependencies": {
