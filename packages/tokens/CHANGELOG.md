@@ -1,5 +1,14 @@
 # @gratiaos/tokens
 
+## 1.0.5
+
+### Patch Changes
+
+- - add garden protocol + broadcaster utilities in pad-core (with safer redaction handling)
+  - expose broadcaster-friendly entry points from presence-kernel
+  - tune OKLCH token mixes for smoother pad surfaces
+  - ship header/footer primitives + skins in the UI package (now depending on presence-kernel)
+
 ## 1.0.3
 
 ### Patch Changes

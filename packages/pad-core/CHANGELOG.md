@@ -1,5 +1,19 @@
 # @gratiaos/pad-core
 
+## 1.1.0
+
+### Minor Changes
+
+- - add garden protocol + broadcaster utilities in pad-core (with safer redaction handling)
+  - expose broadcaster-friendly entry points from presence-kernel
+  - tune OKLCH token mixes for smoother pad surfaces
+  - ship header/footer primitives + skins in the UI package (now depending on presence-kernel)
+
+### Patch Changes
+
+- Updated dependencies
+  - @gratiaos/presence-kernel@1.1.3
+
 ## 1.0.7
 
 ### Patch Changes
