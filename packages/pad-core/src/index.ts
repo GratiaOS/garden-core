@@ -74,3 +74,33 @@ export {
   getActivePadManifest,
   type FlowSnapshot,
 } from './state.js';
+
+export {
+  GARDEN_PROTOCOL_VERSION,
+  createGardenEnvelope,
+  parseGardenEnvelope,
+  encodeGardenEnvelope,
+  decodeGardenEnvelope,
+  isGardenEnvelope,
+  isGardenProtocolType,
+  type GardenEnvelope,
+  type GardenEnvelopeMeta,
+  type GardenProtocolType,
+  type GardenPacketType,
+  type GardenPayloadMap,
+  type GardenPulsePayload,
+  type GardenBreathPayload,
+  type GardenWeavePayload,
+  type GardenMomentPayload,
+  type GardenConsentPayload,
+} from './garden-protocol.js';
+
+export {
+  GardenBroadcaster,
+  createGardenBroadcaster,
+  type GardenBroadcasterListener,
+  type GardenBroadcasterOrigin,
+  type GardenBroadcasterOptions,
+  type GardenShareGate,
+  type GardenRedactFn,
+} from './garden-broadcaster.js';
