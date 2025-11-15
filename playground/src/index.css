@@ -3,3 +3,56 @@
 @import '@gratiaos/ui/styles/base.css' layer(components);
 @import '@gratiaos/ui/styles/pad.css';
 @import './styles/presence-dots.css';
+
+@layer components {
+  .app-sky {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(240px, 80vw);
+    opacity: 0.28;
+  }
+
+  .app-foot {
+    position: fixed;
+    bottom: 14px;
+    left: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0.92;
+    z-index: 96;
+    padding-right: 16px;
+  }
+
+  .app-foot [data-ui='conductor-chip'] {
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    background: color-mix(in oklab, var(--tone-accent) 22%, transparent);
+    border: 1px solid color-mix(in oklab, var(--tone-accent) 38%, transparent);
+    box-shadow: none;
+    animation: none;
+  }
+
+  .app-foot-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.015em;
+    color: color-mix(in oklab, var(--tone-ink) 85%, var(--color-text) 15%);
+    text-transform: uppercase;
+  }
+}
+
+@media (max-width: 720px) {
+  @layer components {
+    .app-foot {
+      left: 10px;
+      bottom: 12px;
+      gap: 10px;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}

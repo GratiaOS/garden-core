@@ -5,7 +5,9 @@ import LabPage from './pages/lab';
 import PadPage from './pages/pad';
 import UxPage from './pages/ux';
 import { ThemeToggle } from './components/ThemeToggle';
-import { Heartbeat, ConstellationHUD } from '@gratiaos/presence-kernel';
+import { Heartbeat, ConstellationHUD, authority$, mood$, phase$, pulse$ } from '@gratiaos/presence-kernel';
+import { ConductorChip, Constellation, PersonalPulse } from '@gratiaos/ui';
+import { GardenBroadcaster, type GardenShareGate } from '@gratiaos/pad-core';
 
 function TopNav() {
   const base = 'inline-flex items-center gap-2 rounded-full border border-border bg-elev px-3 py-1.5 text-sm transition-colors';
@@ -48,11 +50,52 @@ function TopNav() {
 
 export default function App() {
   const location = useLocation();
+  const broadcasterRef = React.useRef<GardenBroadcaster | null>(null);
   React.useEffect(() => {
     const bodyClasses = ['min-h-dvh', 'bg-surface', 'text-text'];
     document.body.classList.add(...bodyClasses);
     return () => {
       document.body.classList.remove(...bodyClasses);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    const stopAuthority = authority$.subscribe((value) => {
+      root.setAttribute('data-authority', value);
+    });
+    const stopMood = mood$.subscribe((value) => {
+      root.setAttribute('data-mood', value);
+    });
+    return () => {
+      stopAuthority();
+      stopMood();
+      root.removeAttribute('data-authority');
+      root.removeAttribute('data-mood');
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!broadcasterRef.current) {
+      const gate: GardenShareGate = (type) => type === 'pulse';
+      broadcasterRef.current = new GardenBroadcaster({ canShare: gate });
+    }
+    const broadcaster = broadcasterRef.current;
+    if (!broadcaster) return;
+    const unsubscribe = pulse$.subscribe((tick) => {
+      broadcaster.mirrorPulse({ tick, phase: phase$.value, mood: mood$.value });
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      broadcasterRef.current?.dispose();
+      broadcasterRef.current = null;
     };
   }, []);
 
@@ -77,6 +120,9 @@ export default function App() {
 
   return (
     <>
+      <header className="app-sky" aria-hidden="true">
+        <Constellation />
+      </header>
       <TopNav />
       <Routes>
         <Route path="/" element={<PadPage />} />
@@ -87,6 +133,11 @@ export default function App() {
       </Routes>
       <Heartbeat />
       <ConstellationHUD />
+      <footer className="app-foot" aria-label="Conductor status">
+        <ConductorChip />
+        <PersonalPulse />
+        <span className="app-foot-label">🌕 M3 · Garden Core Interface — synced to presence pulse</span>
+      </footer>
     </>
   );
 }
