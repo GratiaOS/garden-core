@@ -1,7 +1,7 @@
 {
   "name": "playground",
   "private": true,
-  "version": "1.0.7",
+  "version": "1.0.8",
   "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
   "scripts": {

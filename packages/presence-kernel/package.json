@@ -1,6 +1,6 @@
 {
   "name": "@gratiaos/presence-kernel",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
   "license": "AGPL-3.0-only",
