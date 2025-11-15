@@ -162,6 +162,49 @@
 
 /* === Runtime dark mapping (no duplicate @theme) === */
 @layer base {
+  :root {
+    --tone-accent: color-mix(in oklab, var(--color-accent) 82%, white 18%);
+    --tone-surface: color-mix(in oklab, var(--color-surface) 92%, var(--tone-accent) 8%);
+    --tone-ink: color-mix(in oklab, var(--color-text) 96%, white 4%);
+    --tone-glow: 0 0 24px color-mix(in oklab, var(--tone-accent) 32%, transparent);
+  }
+
+  :root[data-mood='soft'] {
+    --tone-surface: color-mix(in oklab, var(--color-surface) 92%, var(--tone-accent) 8%);
+    --tone-ink: color-mix(in oklab, var(--color-text) 96%, white 4%);
+    --tone-glow: 0 0 24px color-mix(in oklab, var(--tone-accent) 32%, transparent);
+  }
+
+  :root[data-mood='presence'] {
+    --tone-surface: color-mix(in oklab, var(--color-surface) 88%, var(--tone-accent) 12%);
+    --tone-ink: color-mix(in oklab, var(--color-text) 94%, white 6%);
+    --tone-glow: 0 0 28px color-mix(in oklab, var(--tone-accent) 38%, transparent);
+  }
+
+  :root[data-mood='focused'] {
+    --tone-surface: color-mix(in oklab, var(--color-surface) 84%, var(--tone-accent) 16%);
+    --tone-ink: color-mix(in oklab, var(--color-text) 92%, white 8%);
+    --tone-glow: 0 0 32px color-mix(in oklab, var(--tone-accent) 46%, transparent);
+  }
+
+  :root[data-mood='celebratory'] {
+    --tone-surface: color-mix(in oklab, var(--color-surface) 82%, var(--tone-accent) 18%);
+    --tone-ink: color-mix(in oklab, var(--color-text) 90%, white 10%);
+    --tone-glow: 0 0 36px color-mix(in oklab, var(--tone-accent) 54%, transparent);
+  }
+
+  :root[data-authority='local-primary'] {
+    --tone-accent: #9fc2ff;
+  }
+
+  :root[data-authority='remote-primary'] {
+    --tone-accent: #b2ffa8;
+  }
+
+  :root[data-authority='distributed'] {
+    --tone-accent: #ffd59e;
+  }
+
   :root[data-theme='dark'],
   :root.dark {
     --color-surface: oklch(21% 0.07 241);
@@ -220,11 +263,17 @@
       --inset-shadow-depth-3: inset 0 3px 6px rgb(0 0 0 / 0.3);
 
       --drop-shadow-depth-0: 0 0 0 rgb(0 0 0 / 0);
-      --drop-shadow-depth-1: 0 1px 1px rgb(0 0 0 / 0.25);
-      --drop-shadow-depth-2: 0 3px 3px rgb(0 0 0 / 0.32);
-      --drop-shadow-depth-3: 0 6px 6px rgb(0 0 0 / 0.42);
-    }
+    --drop-shadow-depth-1: 0 1px 1px rgb(0 0 0 / 0.25);
+    --drop-shadow-depth-2: 0 3px 3px rgb(0 0 0 / 0.32);
+    --drop-shadow-depth-3: 0 6px 6px rgb(0 0 0 / 0.42);
+
+    --tone-accent: color-mix(in oklab, var(--color-accent) 70%, white 30%);
+    --tone-surface: color-mix(in oklab, var(--color-surface) 88%, var(--tone-accent) 12%);
+    --tone-ink: color-mix(in oklab, var(--color-text) 98%, white 2%);
+    --tone-glow: 0 0 32px color-mix(in oklab, var(--tone-accent) 42%, transparent);
+    --constellation-dot: color-mix(in oklab, var(--tone-ink) 65%, transparent);
   }
+}
 
   /* Depth mapping helpers — set current depth variables from [data-depth] */
   :root {
@@ -256,11 +305,11 @@
     --glow-intensity: 0.08;
     --grain-strength: 0.1;
     --grain-size: 160px; /* larger tile -> softer grain geometry */
-    --track-glow: color-mix(in oklab, var(--color-accent) 45%, transparent);
-    --track-shadow: color-mix(in oklab, var(--color-text) 25%, transparent);
-    --scene-highlight: color-mix(in oklab, var(--color-accent) 55%, transparent);
-    --presence-dot-color: color-mix(in oklab, var(--color-accent) 65%, white 15%);
-    --ghost-trail-color: color-mix(in oklab, var(--color-accent) 18%, transparent);
+    --track-glow: color-mix(in oklab, var(--tone-accent) 45%, transparent);
+    --track-shadow: color-mix(in oklab, var(--tone-accent) 25%, transparent);
+    --scene-highlight: color-mix(in oklab, var(--tone-accent) 55%, transparent);
+    --presence-dot-color: color-mix(in oklab, var(--tone-accent) 65%, white 15%);
+    --ghost-trail-color: color-mix(in oklab, var(--tone-accent) 18%, transparent);
 
     /* calmer hero gradient and slower entrances */
     --pad-hero-start: color-mix(in oklab, var(--accent) 8%, var(--surface));
@@ -279,11 +328,11 @@
     --glow-intensity: 0.12;
     --grain-strength: 0.12;
     --grain-size: 130px; /* tighter tile -> slightly crisper grain */
-    --track-glow: color-mix(in oklab, var(--color-accent) 65%, transparent);
-    --track-shadow: color-mix(in oklab, var(--color-accent) 28%, transparent);
-    --scene-highlight: color-mix(in oklab, var(--color-accent) 70%, transparent);
-    --presence-dot-color: color-mix(in oklab, var(--color-accent) 78%, white 12%);
-    --ghost-trail-color: color-mix(in oklab, var(--color-accent) 24%, transparent);
+    --track-glow: color-mix(in oklab, var(--tone-accent) 65%, transparent);
+    --track-shadow: color-mix(in oklab, var(--tone-accent) 28%, transparent);
+    --scene-highlight: color-mix(in oklab, var(--tone-accent) 70%, transparent);
+    --presence-dot-color: color-mix(in oklab, var(--tone-accent) 78%, white 12%);
+    --ghost-trail-color: color-mix(in oklab, var(--tone-accent) 24%, transparent);
 
     --pad-hero-start: color-mix(in oklab, var(--accent) 16%, var(--surface));
     --pad-hero-end: color-mix(in oklab, var(--accent) 6%, var(--surface));
@@ -301,11 +350,11 @@
     --glow-intensity: 0.18;
     --grain-strength: 0.14;
     --grain-size: 120px; /* smallest tile -> more lively grain */
-    --track-glow: color-mix(in oklab, var(--color-accent) 90%, white 10%);
-    --track-shadow: color-mix(in oklab, var(--color-accent) 35%, transparent);
-    --scene-highlight: color-mix(in oklab, var(--color-accent) 92%, white 8%);
-    --presence-dot-color: color-mix(in oklab, var(--color-accent) 94%, white 12%);
-    --ghost-trail-color: color-mix(in oklab, var(--color-accent) 32%, transparent);
+    --track-glow: color-mix(in oklab, var(--tone-accent) 90%, white 10%);
+    --track-shadow: color-mix(in oklab, var(--tone-accent) 35%, transparent);
+    --scene-highlight: color-mix(in oklab, var(--tone-accent) 92%, white 8%);
+    --presence-dot-color: color-mix(in oklab, var(--tone-accent) 94%, white 12%);
+    --ghost-trail-color: color-mix(in oklab, var(--tone-accent) 32%, transparent);
 
     --pad-hero-start: color-mix(in oklab, var(--accent) 24%, var(--surface));
     --pad-hero-end: color-mix(in oklab, var(--accent) 12%, var(--surface));
@@ -363,11 +412,11 @@
   --ring-alpha: 0.18; /* 0–1 — whisper ring strength */
   --grain-strength: 0.12; /* 0–1 — ambient grain strength */
   --grain-size: 140px; /* px — grain tile size used by card grain overlay */
-  --track-glow: color-mix(in oklab, var(--color-accent) 55%, transparent);
-  --track-shadow: color-mix(in oklab, var(--color-text) 25%, transparent);
-  --scene-highlight: color-mix(in oklab, var(--color-accent) 60%, transparent);
-  --presence-dot-color: color-mix(in oklab, var(--color-accent) 70%, white 15%);
-  --ghost-trail-color: color-mix(in oklab, var(--color-accent) 22%, transparent);
+  --track-glow: color-mix(in oklab, var(--tone-accent) 55%, transparent);
+  --track-shadow: color-mix(in oklab, var(--tone-accent) 32%, transparent);
+  --scene-highlight: color-mix(in oklab, var(--tone-accent) 60%, transparent);
+  --presence-dot-color: color-mix(in oklab, var(--tone-accent) 70%, white 15%);
+  --ghost-trail-color: color-mix(in oklab, var(--tone-accent) 22%, transparent);
 }
 
 @layer utilities {
