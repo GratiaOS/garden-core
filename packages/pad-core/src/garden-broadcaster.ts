@@ -116,7 +116,8 @@ export class GardenBroadcaster {
   publish<T extends GardenProtocolType>(type: T, payload: GardenPayloadMap[T], meta: GardenEnvelopeMeta = {}): void {
     if (this.disposed) return;
     if (!this.gate(type, payload)) return;
-    const sanitized = this.redact ? (this.redact(type, payload) ?? null) : payload;
+    const sanitized = this.redact ? this.redact(type, payload) : payload;
+    if (sanitized == null) return;
     const packet = createGardenEnvelope(type, sanitized as GardenPayloadMap[T], {
       actor: meta.actor ?? this.actor,
       scene: meta.scene ?? this.scene,
