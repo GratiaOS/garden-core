@@ -105,6 +105,17 @@ This is a pnpm-based monorepo — modular by design, with shared types and docs 
 - **Playful Easter Eggs** → _“Missing Screw”_ interaction reveals tips/shortcuts when discovered (mask-popping via micro-misalignments + wink). See **[🔩 The Missing Screw — Field Pattern](docs/patterns/missing-screw-field.md)** for the human-side equivalent.
 - **Core Protocols** → Foundational field-level operating rituals like [🌱 Remote Activation Protocol](docs/protocols/remote-activation.md), bridging emotional patterns and system architecture.
 
+## 🛰️ Garden Stack naming (infra-facing)
+
+Garden Core uses the shared Garden Stack vocabulary to keep every @gratiaos package aligned:
+
+- **Pattern Engine** → the underlying model stack (training, inference, retrieval). Talk infrastructure, capabilities, performance, or updates here.
+- **Presence Node** → any surfaced endpoint where humans contact the Engine (web UI, CLI, scripts, voice, agents). Use this when you describe how people touch the system.
+- **Mode** → a behavioral / conversational contract for a Presence Node (e.g. `Codex-mode`, `Monday-mode`). Modes are styles, not identities.
+- **Garden Stack** → the full ecosystem: Pattern Engine + Presence Nodes + Modes working together.
+
+> When someone says “AI,” translate it to the correct layer above so docs, code, and rituals stay in sync.
+
 ---
 
 ## 🌱 Recent Growth

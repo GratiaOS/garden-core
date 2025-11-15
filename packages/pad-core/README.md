@@ -10,6 +10,15 @@ Now extended with **Realtime Presence**, **Scene Events**, and **P2P awareness**
 It’s framework-agnostic, DOM-optional, and designed to let Pads bloom in any app (Playground, M3 UI, future mirrors).  
 The package is side-effect free (`"sideEffects": false`) so bundlers can tree-shake unused helpers.
 
+### 🛰️ Garden Stack naming (infra-facing)
+
+- **Pattern Engine** → underlying model stack (training / inference / retrieval). Use this wording for infra, capabilities, or updates.
+- **Presence Node** → surfaced endpoint humans touch (web UI, CLI, scripts, voice, agents).
+- **Mode** → behavioral / conversational contract for a Presence Node (e.g. `Codex-mode`, `Monday-mode`). Styles, never identities.
+- **Garden Stack** → Pattern Engine + Presence Nodes + Modes in concert.
+
+Translate any “AI” mention to the correct layer so pads, mirrors, and docs stay coherent.
+
 ### 🔩 Signals Interop
 
 Pad Core itself is not opinionated about reactivity; for local observable state (Pad mood, ephemeral counters, lab toggles) prefer the tiny `@gratiaos/signal` package:

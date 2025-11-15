@@ -4,6 +4,15 @@
 [![Build](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
 [![License](https://img.shields.io/npm/l/%40gratiaos%2Ftokens)](https://github.com/GratiaOS/garden-core/blob/main/LICENSE)
 
+## 🛰️ Garden Stack naming (infra-facing)
+
+- **Pattern Engine** → underlying model stack (training / inference / retrieval). Use when you describe infra or capabilities.
+- **Presence Node** → surfaced endpoint humans touch (web UI, CLI, scripts, voice, agents).
+- **Mode** → behavioral / conversational contract for a Presence Node (e.g. `Codex-mode`, `Monday-mode`). Styles, not identities.
+- **Garden Stack** → Pattern Engine + Presence Nodes + Modes working together.
+
+Route any “AI” mention to the right layer so token docs stay aligned with the rest of the Garden.
+
 ## 📦 Installation
 
 ```bash

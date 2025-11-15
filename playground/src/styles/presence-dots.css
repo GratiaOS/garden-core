@@ -36,14 +36,15 @@
 }
 
 @utility presence-dot {
-  @apply rounded-full shadow-[var(--dot-glow)] opacity-90 transition-transform duration-300 ease-in-out;
+  @apply rounded-full shadow-[var(--dot-glow)] transition-transform duration-300 ease-in-out;
   width: var(--dot-size);
   height: var(--dot-size);
   --dot-phase-hue: var(--phase-presence-hue);
   /* Fallback first, then enhanced mix for capable browsers */
   background-color: hsl(var(--dot-phase-hue) 75% 62%);
-  background-color: color-mix(in oklab, hsl(var(--dot-phase-hue) 75% 62%) 55%, var(--dot-tint, hsl(var(--dot-phase-hue) 75% 62%)) 45%);
-  box-shadow: 0 0 8px color-mix(in oklab, hsl(var(--dot-phase-hue) 70% 68%) 70%, transparent 30%);
+  background-color: color-mix(in oklab, var(--presence-dot-color) 55%, var(--dot-tint, var(--tone-accent)) 45%);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--tone-accent) 68%, transparent 32%);
+  opacity: 0.28;
   animation: var(--dot-breathe);
 }
 
@@ -100,6 +101,14 @@
   .phase-archive .presence-dot {
     --dot-phase-hue: var(--phase-archive-hue);
     box-shadow: 0 0 8px hsl(var(--phase-archive-hue) 65% 70% / 0.5);
+  }
+
+  :root[data-authority='local-primary'] .presence-dot {
+    opacity: 0.25;
+  }
+
+  :root[data-authority='distributed'] .presence-dot {
+    opacity: 0.3;
   }
 
   .phase-companion .phase-hud {

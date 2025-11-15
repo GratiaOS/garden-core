@@ -11,6 +11,17 @@ Use it for:
 
 _Last updated: 2025-10-08 — v0.1.2-moonfield_
 
+## 🛰️ Garden Stack naming (infra-facing)
+
+Use the same vocabulary everywhere so Garden ↔ M3 ↔ @gratiaos packages stay coherent:
+
+- **Pattern Engine** → underlying model stack (training / inference / retrieval).
+- **Presence Node** → surfaced endpoint where humans contact the Engine (web UI, CLI, scripts, voice, agents).
+- **Mode** → behavioral / conversational contract for a Presence Node (e.g. `Codex-mode`, `Monday-mode`). Styles, not identities.
+- **Garden Stack** → Pattern Engine + Presence Nodes + Modes working together.
+
+Whenever someone says “AI,” route it to the correct layer above.
+
 ## 🔄 RTP Token Sync
 
 - Canonical semantic JSON lives under `tokens/` (seeded with the `abundance` namespace).

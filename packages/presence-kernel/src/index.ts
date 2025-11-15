@@ -1,5 +1,6 @@
 export type Phase = 'companion' | 'presence' | 'archive' | (string & {});
 export type Mood = 'soft' | 'presence' | 'focused' | 'celebratory' | (string & {});
+export type KernelAuthority = 'local-primary' | 'remote-primary' | 'distributed' | (string & {});
 
 export type PresenceSnapshot = Readonly<{
   t: number;
@@ -32,8 +33,22 @@ export type KernelPlugin = (kernel: PresenceKernel) => void;
 import { createSignal, type Signal, type SignalListener } from '@gratiaos/signal';
 // Signals are now sourced from @gratiaos/signal (shared micro observable).
 
-/** Identifier so downstream surfaces know who currently conducts the shared presence kernel. */
+/**
+ * Identifies who is currently "conducting" the shared presence kernel.
+ *
+ * - 'local-primary' (default): This process is the source-of-truth for presence state.
+ *   Everything else listens or mirrors from here.
+ *
+ * Future modes (not yet implemented) may include:
+ * - 'remote-primary' — presence conducted elsewhere (e.g., another browser/device)
+ * - 'distributed' — multiple equal peers co-conduct the field
+ *
+ * Surfaces can read this to understand how to interpret presence and pulse flow.
+ */
 export const kernelAuthority = 'local-primary' as const;
+export const authority$ = createSignal<KernelAuthority>(kernelAuthority);
+export const setAuthority = (next: KernelAuthority) => authority$.set(next);
+export const getAuthority = () => authority$.value;
 
 export const phase$ = createSignal<Phase>('presence');
 export const mood$ = createSignal<Mood>('soft'); // phase can be vivid while mood stays gentle by default
@@ -166,6 +181,74 @@ export class PresenceKernel {
     });
     for (const adapter of this.adapters) adapter.emit?.(event);
   }
+}
+
+const AUTHORITY_EXHALE_MS: Record<string, number> = {
+  'local-primary': 1200,
+  'remote-primary': 900,
+  distributed: 800,
+};
+
+const AUTHORITY_GLOWS: Record<string, string> = {
+  'local-primary': 'var(--tone-glow)',
+  'remote-primary': '0 0 18px color-mix(in oklab, var(--tone-accent) 26%, transparent)',
+  distributed: '0 0 16px color-mix(in oklab, var(--tone-accent) 22%, transparent)',
+};
+
+let valueSealTimer: ReturnType<typeof setTimeout> | null = null;
+
+export interface ValueSealOptions {
+  whisper?: string;
+}
+
+/**
+ * runValueSealRitual()
+ * ---------------------
+ * Helper for the Value Bridge "Seal" action.
+ *
+ * 1. Temporarily shifts the shared mood to 'soft' for the length of the exhale.
+ * 2. Emits a `value:sealed` CustomEvent so other surfaces can respond without direct wiring.
+ * 3. Applies a gentle glow to the body that falls back once the exhale completes.
+ */
+export function runValueSealRitual(options?: ValueSealOptions) {
+  const authority = authority$.value;
+  const previousMood = mood$.value;
+  const exhaleMs = AUTHORITY_EXHALE_MS[authority] ?? 900;
+  const glow = AUTHORITY_GLOWS[authority] ?? 'var(--tone-glow)';
+
+  setMood('soft');
+
+  if (typeof window !== 'undefined') {
+    const detail = {
+      t: Date.now(),
+      authority,
+      whisper: options?.whisper,
+    };
+    window.dispatchEvent(new CustomEvent('value:sealed', { detail }));
+  }
+
+  if (valueSealTimer) {
+    clearTimeout(valueSealTimer);
+    valueSealTimer = null;
+  }
+
+  let originalShadow: string | null = null;
+  if (typeof document !== 'undefined') {
+    originalShadow = document.body.style.boxShadow;
+    document.body.style.boxShadow = glow;
+  }
+
+  valueSealTimer = setTimeout(() => {
+    if (typeof document !== 'undefined') {
+      if (originalShadow !== null) {
+        document.body.style.boxShadow = originalShadow;
+      } else {
+        document.body.style.removeProperty('box-shadow');
+      }
+    }
+    setMood(previousMood);
+    valueSealTimer = null;
+  }, exhaleMs);
 }
 
 export { Heartbeat } from './Heartbeat';

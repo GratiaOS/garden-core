@@ -93,6 +93,10 @@ importers:
         version: 5.9.3
 
   packages/ui:
+    dependencies:
+      '@gratiaos/presence-kernel':
+        specifier: workspace:*
+        version: link:../presence-kernel
     devDependencies:
       '@types/react':
         specifier: ^19.2.2

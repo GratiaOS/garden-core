@@ -9,6 +9,15 @@
 Tiny synchronous observable primitive used across Garden / Gratia OS packages.
 It keeps state flow **explicit**, **headless**, and **framework‑agnostic**.
 
+## 🛰️ Garden Stack naming (infra-facing)
+
+- **Pattern Engine** → underlying model stack (training / inference / retrieval). Use for infra talk.
+- **Presence Node** → surfaced endpoint humans touch (web UI, CLI, scripts, voice, agents).
+- **Mode** → behavioral / conversational contract for a Presence Node (e.g. `Codex-mode`, `Monday-mode`). Styles, not identities.
+- **Garden Stack** → Pattern Engine + Presence Nodes + Modes working together.
+
+Swap “AI” with the precise layer above when you describe how signals support the stack.
+
 ## ✨ Features
 
 - **Immediate replay** — new subscribers receive the current value instantly.

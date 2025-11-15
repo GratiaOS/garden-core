@@ -1,17 +1,28 @@
 /* 1) Pad runtime mappings — inherit from global theme */
 @layer base {
   :root {
+    /* Tone alignment — sync Pad surfacing with main layout frequency mix */
+    --tone-surface: var(--color-surface, #0F1317);
+    --tone-ink: var(--color-ink, var(--color-text, #E6EDF5));
+    --tone-accent: var(--color-accent, #3ED0C8);
+
+    --pad-bg-0: color-mix(in oklch, var(--tone-surface) 94%, var(--tone-ink));
+    --pad-bg-1: color-mix(in oklch, var(--tone-surface) 90%, var(--tone-ink));
+    --pad-ink-muted: color-mix(in oklch, var(--tone-ink) 65%, var(--tone-surface));
+    --pad-border-soft: color-mix(in oklch, var(--tone-ink) 8%, var(--tone-surface));
+    --pad-focus-ring: color-mix(in oklch, var(--tone-accent) 70%, transparent);
+
     /* Surfaces & text */
-    --pad-surface: var(--color-surface);
-    --pad-elev: var(--color-elev);
-    --pad-border: var(--color-border);
-    --pad-text: var(--color-text);
-    --pad-text-muted: var(--color-muted);
+    --pad-surface: var(--pad-bg-0, var(--color-surface));
+    --pad-elev: var(--pad-bg-1, var(--color-elev));
+    --pad-border: var(--pad-border-soft, var(--color-border));
+    --pad-text: var(--tone-ink, var(--color-text));
+    --pad-text-muted: var(--pad-ink-muted, var(--color-muted));
     --pad-text-subtle: var(--color-subtle);
     --pad-text-faint: var(--color-faint);
 
     /* Accent system */
-    --pad-accent: var(--color-accent);
+    --pad-accent: var(--tone-accent);
     --pad-onaccent: var(--color-on-accent);
 
     /* Shape & depth */
@@ -43,6 +54,43 @@
 
   .pad-ring {
     box-shadow: 0 0 0 3px var(--pad-ring);
+  }
+
+  /* Tabs */
+  [data-pad-tabs] [role='tab'] {
+    background: transparent;
+    color: var(--pad-text-muted);
+    border: 0;
+    border-bottom: 1px solid var(--pad-border);
+    border-radius: 0;
+    padding-bottom: 0.4rem;
+  }
+  [data-pad-tabs] [role='tab'][aria-selected='true'] {
+    color: var(--pad-text);
+    border-bottom-color: var(--pad-accent);
+    box-shadow: 0 2px 0 0 color-mix(in oklch, var(--pad-accent) 55%, transparent);
+  }
+
+  /* Inputs */
+  .codex-portal,
+  .pad-input,
+  .pad-textarea {
+    background: var(--pad-elev);
+    color: var(--pad-text);
+    border: 1px solid var(--pad-border);
+    border-radius: var(--pad-radius);
+    transition: border-color var(--duration-snug, 160ms) var(--ease-soft),
+      box-shadow var(--duration-snug, 160ms) var(--ease-soft);
+  }
+  .codex-portal:focus,
+  .pad-input:focus,
+  .pad-textarea:focus {
+    outline: 0;
+    border-color: color-mix(in oklch, var(--pad-accent) 35%, var(--pad-border));
+    box-shadow: 0 0 0 2px var(--pad-focus-ring);
+  }
+  .pad-textarea::placeholder {
+    color: var(--pad-text-muted);
   }
 }
 

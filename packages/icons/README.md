@@ -7,6 +7,15 @@
 A small set of composable, theme-friendly SVG icons for Garden Core.  
 Icons are tree-shakable and inherit `currentColor` automatically.
 
+## 🛰️ Garden Stack naming (infra-facing)
+
+- **Pattern Engine** → underlying model stack (training / inference / retrieval). Use for infra discussions.
+- **Presence Node** → surfaced endpoints humans touch (web UI, CLI, scripts, voice, agents).
+- **Mode** → behavioral / conversational contract for a Presence Node (e.g. `Codex-mode`, `Monday-mode`). Styles, not identities.
+- **Garden Stack** → Pattern Engine + Presence Nodes + Modes working together.
+
+Keep icon docs honest: replace any “AI” mention with the precise layer above.
+
 ## 📦 Installation
 
 ```bash

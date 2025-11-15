@@ -92,6 +92,9 @@
   "peerDependencies": {
     "react": "^18 || ^19"
   },
+  "dependencies": {
+    "@gratiaos/presence-kernel": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^5.9.3",
     "react": "^19.2.0",
