@@ -1,0 +1,93 @@
+/* ─────────────────────────────────────────
+   Garden UI — ConductorChip skin (opt-in)
+   Whisper: "name the conductor softly." 🌬️
+   Purpose | Data API | Notes
+   ─────────────────────────────────────── */
+@layer components {
+  [data-ui='conductor-chip'] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.125rem 0.5625rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--tone-ink);
+    background: color-mix(in oklab, var(--tone-accent) 22%, transparent);
+    border: 1px solid color-mix(in oklab, var(--tone-accent) 38%, transparent);
+    box-shadow: var(--tone-glow, 0 0 24px color-mix(in oklab, var(--tone-accent) 30%, transparent));
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+    transition:
+      background var(--duration-snug, 160ms) var(--ease-soft, ease),
+      color var(--duration-snug, 160ms) var(--ease-soft, ease),
+      border-color var(--duration-snug, 160ms) var(--ease-soft, ease),
+      box-shadow var(--duration-snug, 160ms) var(--ease-soft, ease);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-ui='conductor-chip'] {
+      transition: none;
+    }
+  }
+
+  [data-ui='personal-pulse'] {
+    position: absolute;
+    bottom: 18px;
+    left: 72px;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--tone-accent);
+    opacity: 0.25;
+    will-change: transform, opacity;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-ui='personal-pulse'] {
+      animation: none !important;
+    }
+  }
+
+  @keyframes idle-pulse {
+    0%,
+    100% {
+      opacity: 0.18;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.4;
+      transform: scale(1.12);
+    }
+  }
+
+  :root {
+    --constellation-dot: color-mix(in oklab, var(--tone-ink) 55%, transparent);
+    --constellation-active: var(--tone-accent);
+  }
+
+  [data-ui='constellation'] {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    opacity: 0.32;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  [data-ui='constellation'] .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--constellation-dot);
+  }
+
+  [data-ui='constellation'] .dot.active {
+    background: var(--constellation-active);
+    opacity: 0.9;
+  }
+}

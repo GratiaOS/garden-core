@@ -7,3 +7,6 @@ export * from './primitives/badge.js';
 export * from './primitives/toast.js';
 export * from './primitives/whisper.js';
 export * from './hooks/index.js';
+export * from './header/ConductorChip.js';
+export * from './header/Constellation.js';
+export * from './footer/PersonalPulse.js';
