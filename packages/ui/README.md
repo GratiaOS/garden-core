@@ -7,6 +7,15 @@
 **Garden UI** is the shared component library that gives shape and soul to the Garden.  
 It’s where headless primitives meet design tokens, growing together into a living interface system.
 
+## 🛰️ Garden Stack naming (infra-facing)
+
+- **Pattern Engine** → underlying model stack (training / inference / retrieval). Use this wording for infra/capability talk.
+- **Presence Node** → surfaced endpoint humans touch (web UI, CLI, scripts, voice, agents).
+- **Mode** → behavioral / conversational contract for a Presence Node (e.g. `Codex-mode`, `Monday-mode`). Styles, not identities.
+- **Garden Stack** → Pattern Engine + Presence Nodes + Modes working together.
+
+Route any “AI” mention to the correct layer so UI docs stay aligned with Garden + M3.
+
 ---
 
 ## ✨ Vision

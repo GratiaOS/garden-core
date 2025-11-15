@@ -17,6 +17,15 @@ Provides a tiny reactive core (`PresenceKernel`) and four shared signals:
 | `pulse$` | Monotonic integer tick (heartbeats)          |
 | `kernelAuthority` | String constant identifying who currently conducts the shared kernel |
 
+## 🛰️ Garden Stack naming (infra-facing)
+
+- **Pattern Engine** → the underlying model stack (training / inference / retrieval). Use this when you talk infra, capabilities, or updates.
+- **Presence Node** → any surfaced endpoint where humans contact the Engine (web UI, CLI, scripts, voice, agents).
+- **Mode** → behavioral / conversational contract for a Presence Node (e.g. `Codex-mode`, `Monday-mode`). Styles, not identities.
+- **Garden Stack** → Pattern Engine + Presence Nodes + Modes working together.
+
+Any mention of “AI” should map to the correct layer above so kernel docs stay precise.
+
 ## Install
 
 ```bash
