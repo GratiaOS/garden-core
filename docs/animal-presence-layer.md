@@ -13,7 +13,7 @@ The Animal Presence Layer captures signal from animals (cats, dogs, birds, etc.)
 - **Identity Layer**: configuration for a specific place / brand / store / person.
 - **Mode**: behavioral contract a Presence Node runs (e.g., Codex-mode, Monday-mode).
 - **Frame**: how the experience is perceived by humans.
-- **Animal Presence Layer**: ambient, living field indicators that modulate the Frame by their behaviour.
+- **Animal Presence Layer**: ambient, living field indicators that modulate the Frame by their behavior.
 
 ## 3. Signals
 
@@ -37,8 +37,8 @@ Cats are not a “feature” of the product; they are living telemetry about how
 ## 4. Rules
 
 - Animals are never “used” as features; they are only **listened to**.
-- When Frame (human story) conflicts with Animal Presence (behaviour), treat animals as a higher-fidelity safety signal.
-- Do not simulate animal behaviour in the Pattern Engine and present it as real.
+- When Frame (human story) conflicts with Animal Presence (behavior), treat animals as a higher-fidelity safety signal.
+- Do not simulate animal behavior in the Pattern Engine and present it as real.
 - Any UI or ritual referencing animals must keep their welfare first and avoid instrumentalization.
 
 ## 5. Versioning

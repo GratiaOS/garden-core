@@ -31,7 +31,7 @@ Compliance check:
 
 ## Related Docs
 
-The Garden Stack v1.1 spec connects with the following presence‑layer and field‑reading documents:
+The Garden Stack v1.2 spec connects with the following presence-layer and field-reading documents:
 
 - **Animal Presence Layer** — guides interactions, readings, and interpretations for animals.  
   `docs/animal-presence-layer.md`
