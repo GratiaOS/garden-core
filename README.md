@@ -21,6 +21,20 @@ At the heart of Garden Core lies a natural growth cycle, where each element nurt
 
 ---
 
+## 🔥 New in v1.2.0 — Field Reading & Presence Layers
+
+This release extends the Garden Stack beyond pure UI/infra into **real-space field reading**:
+
+- **Garden Stack v1.2** — spec bumped and linked to presence layers + related docs for easier navigation.
+- **Animal Presence Layer** — animals documented as field indicators and co‑regulators, not “features”.
+- **Human Presence Layer** — human presence modes, signals, and interaction rules as first‑class docs.
+- **Field Reading Index** — unified guide for reading spaces via animals + humans.
+- **CatsTown Examples** — real mountain node mapped into Garden Stack (core example, gallery, map).
+
+> 🌿 _“The Garden reads the field — paws, breath, and bodies agree before code.”_
+
+---
+
 ## 🔥 New in v1.1.0 — Awareness Architecture (Focus • Signal • Sound)
 
 This release lays calmer foundations for multi-scene awareness:
@@ -124,7 +138,7 @@ Garden Core uses the shared Garden Stack vocabulary to keep every @gratiaos pack
 - 🕊️ **Polite live region** with persisted mute preference keeps announcements calm and user-directed.
 - 🌐 **Presence kernel** drives `pulse$` internally; audio hooks offer optional tone/spatial color without duplicate beats.
 - 🌱 Introduced **`@gratiaos/signal`** micro reactive primitive and wired it through presence/pad cores.
-- 📚 README & changelog refreshed for **v1.1.0 Awareness Architecture** with publishing checklists and new package links.
+- 📚 README & changelog refreshed for **v1.1.0 Awareness Architecture** and **v1.2.0 Field Reading & Presence Layers (Garden Stack v1.2)** with publishing checklists, presence-layer docs, and new package links.
 
 ### 🔩 The Missing Screw (Easter Egg)
 
@@ -276,6 +290,10 @@ Here, design and code intertwine as a living system, growing and evolving togeth
 ---
 
 ## 🌕 Timeline Milestones
+
+- **v1.2.0 — Field Reading & Presence Layers** (2025‑11‑17):  
+  🐾 Human + Animal Presence Layers, unified field‑reading methods, and CatsTown as the first organic example node wired into Garden Stack v1.2.  
+  _“The Garden reads the field — paws, breath, and bodies agree before code.”_
 
 - **v1.1.0 — Awareness Architecture** (2025‑11‑05):  
   🌬 Focus handoff, polite announcements, consolidated signals, and kernel-driven pulse cadence keep multi-scene awareness calm and in sync.  

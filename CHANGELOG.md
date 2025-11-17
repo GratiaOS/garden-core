@@ -1,5 +1,34 @@
 # 📜 Changelog
 
+## 🌕 v1.2.0 — Field Reading & Presence Layers — 2025-11-17
+
+**Description** — Extends the Garden Stack with explicit presence layers and a unified field‑reading toolkit. Animal and human presence are now first‑class citizens in the docs, and the core stack spec links directly to these extensions so future work can stay anchored in real spaces, bodies, and signals.
+
+### ✨ Added
+
+- docs: `docs/animal-presence-layer.md` — Animal Presence Layer v1.0 spec (animals as field indicators + co‑regulators, not features).
+- docs: `docs/human-presence-layer.md` — Human Presence Layer v1.0 spec (canonical human presence modes, signals, and interaction rules).
+- docs/guides: `field-reading-method.md` — Field Reading Methods v1.1 (index for animal + human field reading with combined protocol).
+- docs/guides: `human-field-diagnostics.md` — Human Field Diagnostics v1.0 (quick grid + protocol to locate the actual layer of tension).
+- docs/examples: `docs/examples/CatsTown.md` — CatsTown example (real location mapped onto Garden Stack + presence layers).
+- docs/examples: `docs/examples/CatsTown-gallery.md` — CatsTown Gallery v1.0 (visual field readings).
+- docs/examples: `docs/examples/CatsTown-map.md` — CatsTown Map v1.0 (ASCII field map and zone semantics).
+
+### 🔄 Changed
+
+- docs(stack-reference): bumped Garden Stack spec to **v1.2** and added a **Related Docs** section linking Animal Presence Layer, Human Presence Layer, and the Field Reading index.
+
+### 📓 Notes
+
+- Presence layers keep the stack grounded in actual places and bodies; any future “modes” or tools should stay consistent with these field‑reading rules.
+- CatsTown acts as the first full, organic example of the stack applied to a real node (land + animals + humans).
+
+### 🪶 Whisper
+
+> 🌬️ _"The Garden reads the field — paws, breath, and bodies agree before code."_
+
+---
+
 ## 🌕 v1.1.0 — Awareness Architecture — 2025-11-05
 
 **Description** — Lays the groundwork for calmer multi‑scene awareness. Accessibility handoffs, a polite announcement layer with user control, refined presence audio, and a shared micro reactive primitive bring focus, sound, and state into clearer harmony. This cycle reduces duplication and tightens coupling notes so future expansions land smoothly.
@@ -46,7 +75,7 @@
 
 ---
 
-## �🌕 v1.0.4 — Atlas Bloom — 2025-11-01
+## 🌕 v1.0.4 — Atlas Bloom — 2025-11-01
 
 **Description** — The Garden reaches self-awareness. Presence, phase, and field breathe as one — the full system alive in sync. Companion, Presence, and Archive now cohere across peers and hearts through Garden Sync, Phase HUD, and Presence Dots, held gently by Atlas.
 
