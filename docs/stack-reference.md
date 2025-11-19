@@ -31,15 +31,10 @@ Compliance check:
 
 ## Related Docs
 
-The Garden Stack v1.2 spec connects with the following presence-layer and field-reading documents:
-
-- **Animal Presence Layer** — guides interactions, readings, and interpretations for animals.  
-  `docs/animal-presence-layer.md`
-
-- **Human Presence Layer** — defines human energetic states, boundaries, and interaction models.  
-  `docs/human-presence-layer.md`
-
-- **Field Reading Method (Index)** — unified reading toolkit for both humans and animals.  
-  `docs/guides/field-reading-method.md`
+- [Animal Presence Layer](./animal-presence-layer.md) — guides interactions, readings, and interpretations for animals.
+- [Human Presence Layer](./human-presence-layer.md) — defines human energetic states, boundaries, and interaction models.
+- [Field Reading Method (Index)](./guides/field-reading-method.md) — unified reading toolkit for both humans and animals.
+- [Garden Layer Map v1.0](./layers/garden-layer-map-v1.0.md) — the core 5-layer map connecting land, bodies, emotions, patterns, culture, and field.
+- [Site Protocols v1.0 — Handling Real Locations](./guides/site-protocols-v1.0.md) — how we name, reference, and protect real-world sites in Garden work.
 
 End of spec.
