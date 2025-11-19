@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { phase$ } from './index';
+import { phase$, type Phase } from './index';
 import { DEFAULT_SOUND_PROFILE, PHASE_SOUND_PROFILE, type PhaseSoundProfile } from './phase-sound-profile';
 
 type AudioWindow = Window & {
@@ -130,7 +130,7 @@ export function usePhaseSound(enableHaptics = false, enabled: boolean = true) {
     // Try to initialize immediately in case interaction already happened
     ensureContext(false);
 
-    const stopPhase = phase$.subscribe((phase) => {
+    const stopPhase = phase$.subscribe((phase: Phase) => {
       const profile = PHASE_SOUND_PROFILE[phase as keyof typeof PHASE_SOUND_PROFILE] ?? DEFAULT_SOUND_PROFILE;
 
       profile.intervals.forEach((semi, index) => {

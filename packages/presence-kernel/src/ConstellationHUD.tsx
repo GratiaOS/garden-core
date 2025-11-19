@@ -45,8 +45,8 @@ export const ConstellationHUD: React.FC<{ selfId?: string; soundMode?: 'spatial'
   // Render audio wrappers conditionally (hooks live inside wrapper components).
 
   useEffect(() => {
-    const stopPhase = phase$.subscribe((nextPhase) => setPhase(nextPhase));
-    const stopPeers = peers$.subscribe((ids) => setPeerIds(ids));
+    const stopPhase = phase$.subscribe((nextPhase: Phase) => setPhase(nextPhase));
+    const stopPeers = peers$.subscribe((ids: string[]) => setPeerIds(ids));
 
     return () => {
       stopPhase();

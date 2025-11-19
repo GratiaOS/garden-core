@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { phase$, peers$, pulse$ } from './index';
+import { phase$, peers$, pulse$, type Phase } from './index';
 import { DEFAULT_SOUND_PROFILE, PHASE_SOUND_PROFILE, type PhaseSoundProfile } from './phase-sound-profile';
 
 type AudioWindow = Window & {
@@ -200,12 +200,12 @@ export function usePhaseSpatialSound(selfId?: string, enabled: boolean = true) {
       peers.forEach((peerId, index) => playPeerTone(peerId, profile, index));
     };
 
-    const phaseSub = phase$.subscribe((phase) => {
+    const phaseSub = phase$.subscribe((phase: Phase) => {
       const profile = PHASE_SOUND_PROFILE[phase as keyof typeof PHASE_SOUND_PROFILE] ?? DEFAULT_SOUND_PROFILE;
       profileRef.current = profile;
     });
 
-    const peersSub = peers$.subscribe((ids) => {
+    const peersSub = peers$.subscribe((ids: string[]) => {
       peersRef.current = mergePeers(ids, selfId);
     });
 
