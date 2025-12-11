@@ -6,6 +6,8 @@ export * from './primitives/field.js';
 export * from './primitives/badge.js';
 export * from './primitives/toast.js';
 export * from './primitives/whisper.js';
+export * from './primitives/select.js';
+export * from './primitives/toolbar.js';
 export * from './hooks/index.js';
 export * from './header/ConductorChip.js';
 export * from './header/Constellation.js';

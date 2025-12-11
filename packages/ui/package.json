@@ -46,6 +46,10 @@
       "types": "./dist/primitives/badge.d.ts",
       "import": "./dist/primitives/badge.js"
     },
+    "./primitives/Toolbar": {
+      "types": "./dist/primitives/toolbar.d.ts",
+      "import": "./dist/primitives/toolbar.js"
+    },
     "./styles/base.css": {
       "default": "./styles/base.css"
     },
@@ -72,6 +76,9 @@
     },
     "./styles/badge.css": {
       "default": "./styles/badge.css"
+    },
+    "./styles/toolbar.css": {
+      "default": "./styles/toolbar.css"
     }
   },
   "files": [
