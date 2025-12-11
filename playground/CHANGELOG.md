@@ -1,5 +1,15 @@
 # 🎡 Playground Changelog
 
+## 1.0.9
+
+### Patch Changes
+
+- Updated dependencies [9038f6e]
+- Updated dependencies [1ec2737]
+- Updated dependencies [1ec2737]
+  - @gratiaos/ui@1.2.0
+  - @gratiaos/tokens@1.0.6
+
 ## 1.0.8
 
 ### Patch Changes

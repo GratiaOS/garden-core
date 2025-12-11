@@ -1,5 +1,13 @@
 # @gratiaos/tokens
 
+## 1.0.6
+
+### Patch Changes
+
+- 1ec2737: Update token base to align select/toolbar skins and recent mark palette tweaks. No breaking changes; downstream UI picks up the refreshed CSS layers automatically.
+
+  whisper: the field feels smoother when the seeds match the petals.
+
 ## 1.0.5
 
 ### Patch Changes

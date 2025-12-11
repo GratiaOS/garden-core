@@ -1,0 +1,13 @@
+{
+  "name": "@gratiaos/kernel",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Experimental presence kernel tapes and examples for GratiaOS.",
+  "license": "AGPL-3.0-only",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src",
+    "examples"
+  ]
+}
