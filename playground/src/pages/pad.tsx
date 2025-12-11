@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { Button, Toaster, showToast, Badge, Card } from '@gratiaos/ui';
+import { Button, Toaster, showToast, Badge, Card, Select, Toolbar, ToolbarGroup } from '@gratiaos/ui';
 import {
   padEvents,
   usePadMood,
@@ -13,8 +13,9 @@ import {
 } from '@gratiaos/pad-core';
 import { createRealtime } from '@gratiaos/pad-core/realtime';
 import PromptCardNoOpinion from '../demos/PromptCardNoOpinion';
-import PresenceFlow, { type PresenceFlowEntry } from '../scenes/presence-flow';
+import PresenceFlow, { type PresenceFlowEntry, type PresenceFlowVariant } from '../scenes/presence-flow';
 import { useGardenSync, usePhaseClass } from '../pad/hooks/useGardenSync';
+import { useIdentityInstrument, useIdentityInstrumentOptions, type IdentityInstrumentState } from '../identity/useIdentityInstrument';
 
 /**
  * Garden Playground — Two‑scene Pad (Companion + Archive)
@@ -46,75 +47,88 @@ const PAD_ID = 'playground:two-scene';
 const MOODS = ['soft', 'presence', 'focused', 'celebratory'] as const;
 type PadMood = (typeof MOODS)[number];
 
-type SceneSwitcherProps = {
+type PadToolbarProps = {
   scene: SceneId;
   onSelectScene: (scene: SceneId) => void;
   mood: PadMood;
   onSelectMood: (mood: PadMood) => void;
   presencePing?: boolean;
+  instrument: IdentityInstrumentState;
 };
 
-function SceneSwitcher({ scene, onSelectScene, mood, onSelectMood, presencePing }: SceneSwitcherProps) {
-  return (
-    <div className="absolute top-4 right-4 z-40 flex flex-wrap items-center gap-3">
-      <div className="flex items-center gap-2">
-        <Badge tone="subtle" variant="soft">
-          Scenes
-        </Badge>
-        <Button
-          type="button"
-          density="snug"
-          variant={scene === 'companion' ? 'solid' : 'outline'}
-          tone="accent"
-          onClick={() => onSelectScene('companion')}
-          aria-pressed={scene === 'companion'}>
-          Companion
-        </Button>
-        <Button
-          type="button"
-          density="snug"
-          variant={scene === 'presence' ? 'solid' : 'outline'}
-          tone="positive"
-          onClick={() => onSelectScene('presence')}
-          aria-pressed={scene === 'presence'}>
-          <span className="inline-flex items-center gap-2">
-            Presence
-            {presencePing && scene !== 'presence' ? (
-              <span className="relative inline-flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70 opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
-              </span>
-            ) : null}
-          </span>
-        </Button>
-        <Button
-          type="button"
-          density="snug"
-          variant={scene === 'archive' ? 'solid' : 'outline'}
-          tone="accent"
-          onClick={() => onSelectScene('archive')}
-          aria-pressed={scene === 'archive'}>
-          Archive
-        </Button>
-      </div>
+function PadToolbar({ scene, onSelectScene, mood, onSelectMood, presencePing, instrument }: PadToolbarProps) {
+  const labelClass = 'text-[0.6rem] uppercase tracking-[0.18em] text-subtle/80';
+  const instrumentOptions = useIdentityInstrumentOptions();
+  const showInstrument = scene === 'presence';
+  const sceneButtons: { id: SceneId; label: string; tone: 'accent' | 'positive' }[] = [
+    { id: 'companion', label: 'Companion', tone: 'accent' },
+    { id: 'presence', label: 'Presence', tone: 'positive' },
+    { id: 'archive', label: 'Archive', tone: 'accent' },
+  ];
 
-      <div className="flex items-center gap-2">
-        <Badge tone="subtle" variant="soft">
-          Mood
-        </Badge>
-        {MOODS.map((m) => (
-          <Button
-            key={m}
-            type="button"
-            density="snug"
-            variant={mood === m ? 'solid' : 'outline'}
-            tone={m === 'celebratory' || m === 'presence' ? 'positive' : 'accent'}
-            onClick={() => onSelectMood(m as PadMood)}
-            aria-pressed={mood === m}>
-            {m.charAt(0).toUpperCase() + m.slice(1)}
-          </Button>
-        ))}
-      </div>
+  return (
+    <div className="absolute top-4 left-1/2 z-40 px-4 w-full max-w-5xl -translate-x-1/2 flex justify-center pointer-events-none">
+      <Toolbar
+        aria-label="Pad navigation"
+        density="snug"
+        className="pad-toolbar pointer-events-auto flex-wrap gap-3 w-full justify-between">
+        <ToolbarGroup className="flex items-center gap-2 flex-wrap">
+          <span className={labelClass}>Scenes</span>
+          {sceneButtons.map((button) => (
+            <Button
+              key={button.id}
+              type="button"
+              density="snug"
+              variant={scene === button.id ? 'soft' : 'ghost'}
+              tone={button.tone}
+              onClick={() => onSelectScene(button.id)}
+              aria-pressed={scene === button.id}>
+              <span className="inline-flex items-center gap-2">
+                {button.label}
+                {button.id === 'presence' && presencePing && scene !== 'presence' ? (
+                  <span className="relative inline-flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+                  </span>
+                ) : null}
+              </span>
+            </Button>
+          ))}
+        </ToolbarGroup>
+
+        <ToolbarGroup className="flex items-center gap-2 flex-wrap">
+          <span className={labelClass}>Mood</span>
+          {MOODS.map((m) => (
+            <Button
+              key={m}
+              type="button"
+              density="snug"
+              variant={mood === m ? 'soft' : 'ghost'}
+              tone={m === 'celebratory' || m === 'presence' ? 'positive' : 'accent'}
+              onClick={() => onSelectMood(m as PadMood)}
+              aria-pressed={mood === m}>
+              {m.charAt(0).toUpperCase() + m.slice(1)}
+            </Button>
+          ))}
+        </ToolbarGroup>
+
+        {showInstrument ? (
+          <ToolbarGroup className="flex items-center gap-2 flex-wrap min-w-[12rem]">
+            <span className={labelClass}>Instrument</span>
+            <Select
+              aria-label="Presence instrument"
+              value={instrument.instrumentId}
+              onChange={(event) => instrument.setInstrumentId(event.target.value as any)}
+              data-variant="ghost">
+              {instrumentOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+          </ToolbarGroup>
+        ) : null}
+      </Toolbar>
     </div>
   );
 }
@@ -247,10 +261,7 @@ function normalizePresenceEntry(raw: unknown, fallbackSource: PresenceFlowEntry[
         .filter((token): token is string => token.length > 0)
         .slice(0, 12)
     : [];
-  const source =
-    obj.source === 'local' || obj.source === 'peer'
-      ? (obj.source as PresenceFlowEntry['source'])
-      : fallbackSource;
+  const source = obj.source === 'local' || obj.source === 'peer' ? (obj.source as PresenceFlowEntry['source']) : fallbackSource;
   const ts = typeof obj.ts === 'number' && Number.isFinite(obj.ts) ? obj.ts : Date.now();
   return { id, text, tokens, source, ts };
 }
@@ -284,8 +295,6 @@ function mergePresenceFeeds(existing: PresenceFlowEntry[], incoming: PresenceFlo
     .slice(0, 24);
 }
 
-
-
 function normalizeSceneId(value: string | SceneId | undefined | null): SceneId | null {
   if (!value) return null;
   const lower = `${value}`.toLowerCase();
@@ -300,8 +309,7 @@ function parseCompanionCompletion(result: unknown): { archivedId?: string; text:
   const maybe = result as Record<string, unknown>;
   const text = typeof maybe.text === 'string' ? maybe.text.trim() : '';
   if (!text) return null;
-  const archivedId =
-    typeof maybe.archivedId === 'string' && maybe.archivedId.trim().length > 0 ? maybe.archivedId.trim() : undefined;
+  const archivedId = typeof maybe.archivedId === 'string' && maybe.archivedId.trim().length > 0 ? maybe.archivedId.trim() : undefined;
   return { archivedId, text };
 }
 
@@ -329,9 +337,7 @@ const FLOW_STOP_WORDS = new Set([
 
 function derivePresenceTokens(text: string, existing?: unknown): string[] {
   if (Array.isArray(existing)) {
-    const normalized = existing
-      .map((token) => (typeof token === 'string' ? token.trim() : ''))
-      .filter((token): token is string => token.length > 0);
+    const normalized = existing.map((token) => (typeof token === 'string' ? token.trim() : '')).filter((token): token is string => token.length > 0);
     if (normalized.length > 0) return normalized.slice(0, 6);
   }
   const counts = new Map<string, number>();
@@ -563,6 +569,8 @@ export default function PadPage() {
       return [];
     }
   });
+  const presenceVariant: PresenceFlowVariant = 'late-night';
+  const identityInstrumentState = useIdentityInstrument();
   useEffect(() => {
     try {
       localStorage.setItem('garden:pad:archive', JSON.stringify(archive));
@@ -1044,7 +1052,7 @@ export default function PadPage() {
       data-depth={depth}
       data-pad-mood={mood}
       className={`bg-surface text-text min-h-dvh relative overflow-hidden ${phaseClass}`}>
-      <SceneSwitcher scene={scene} onSelectScene={goToScene} mood={mood} onSelectMood={setMood} presencePing={presencePing} />
+      <PadToolbar scene={scene} onSelectScene={goToScene} mood={mood} onSelectMood={setMood} presencePing={presencePing} instrument={identityInstrumentState} />
 
       {/* Transition veil (Layer 2/3): lifts during scene switch, then fades */}
       <div
@@ -1199,7 +1207,11 @@ export default function PadPage() {
               placeholder="Whisper to the garden…"
               className="w-full h-12 px-4 bg-transparent outline-none"
             />
-            <Button tone="accent" className="mx-2 my-1 px-4 rounded-full whisper-ring" onMouseDown={() => pulseDepth(setDepth, 2 as Depth, 400)}>
+            <Button
+              type="button"
+              tone="accent"
+              className="mx-2 my-1 px-4 rounded-full whisper-ring"
+              onClick={() => pulseDepth(setDepth, 2 as Depth, 400)}>
               Send
             </Button>
           </div>
@@ -1215,7 +1227,13 @@ export default function PadPage() {
           scene === 'presence' ? 'opacity-100 translate-y-0 scene-enter' : 'opacity-0 translate-y-2 blur-xs pointer-events-none scene-exit'
         }`}
         data-scene="presence">
-        <PresenceFlow onSend={handlePresenceSend} onArchive={handlePresenceArchive} feed={presenceFeed} phase={scene} />
+        <PresenceFlow
+          onSend={handlePresenceSend}
+          onArchive={handlePresenceArchive}
+          feed={presenceFeed}
+          phase={scene}
+          variant={presenceVariant}
+        />
       </div>
 
       {/* Archive layer */}
@@ -1431,7 +1449,10 @@ export default function PadPage() {
       </div>
 
       {/* Phase HUD (debug) */}
-      <div className={`fixed left-3 bottom-3 z-[60] pointer-events-none select-none text-xs fade-in phase-hud phase-${scene}`} role="status" aria-live="polite">
+      <div
+        className={`fixed left-3 bottom-3 z-[60] pointer-events-none select-none text-xs fade-in phase-hud phase-${scene}`}
+        role="status"
+        aria-live="polite">
         <div className="rounded-lg border border-border/60 bg-surface/70 backdrop-blur-xs px-2.5 py-1.5 shadow-sm">
           <div>
             Phase: <span className="font-medium">{scene}</span>

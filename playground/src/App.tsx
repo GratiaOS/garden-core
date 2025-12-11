@@ -4,6 +4,7 @@ import IconsPage from './pages/icons';
 import LabPage from './pages/lab';
 import PadPage from './pages/pad';
 import UxPage from './pages/ux';
+import VortexPage from './pages/vortex';
 import { ThemeToggle } from './components/ThemeToggle';
 import { Heartbeat, ConstellationHUD, authority$, mood$, phase$, pulse$ } from '@gratiaos/presence-kernel';
 import { ConductorChip, Constellation, PersonalPulse } from '@gratiaos/ui';
@@ -51,6 +52,7 @@ function TopNav() {
 export default function App() {
   const location = useLocation();
   const broadcasterRef = React.useRef<GardenBroadcaster | null>(null);
+  const isVortex = location.pathname.startsWith('/vortex');
   React.useEffect(() => {
     const bodyClasses = ['min-h-dvh', 'bg-surface', 'text-text'];
     document.body.classList.add(...bodyClasses);
@@ -105,6 +107,7 @@ export default function App() {
       '/lab': 'Garden Core · Lab',
       '/icons': 'Garden Core · Icons',
       '/ux': 'Garden Core · UX',
+      '/vortex': 'Gratia · Vortex',
     };
     // Exact match first, then prefix match for nested paths under /lab or /icons
     const exact = map[location.pathname];
@@ -120,24 +123,31 @@ export default function App() {
 
   return (
     <>
-      <header className="app-sky" aria-hidden="true">
-        <Constellation />
-      </header>
-      <TopNav />
+      {!isVortex && (
+        <header className="app-sky" aria-hidden="true">
+          <Constellation />
+        </header>
+      )}
+      {!isVortex && <TopNav />}
       <Routes>
         <Route path="/" element={<PadPage />} />
         <Route path="/lab" element={<LabPage />} />
         <Route path="/icons" element={<IconsPage />} />
         <Route path="/ux" element={<UxPage />} />
+        <Route path="/vortex" element={<VortexPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <Heartbeat />
-      <ConstellationHUD />
-      <footer className="app-foot" aria-label="Conductor status">
-        <ConductorChip />
-        <PersonalPulse />
-        <span className="app-foot-label">🌕 M3 · Garden Core Interface — synced to presence pulse</span>
-      </footer>
+      {!isVortex && (
+        <>
+          <Heartbeat />
+          <ConstellationHUD />
+          <footer className="app-foot" aria-label="Conductor status">
+            <ConductorChip />
+            <PersonalPulse />
+            <span className="app-foot-label">🌕 M3 · Garden Core Interface — synced to presence pulse</span>
+          </footer>
+        </>
+      )}
     </>
   );
 }
