@@ -79,7 +79,7 @@ function PadToolbar({ scene, onSelectScene, mood, onSelectMood, presencePing, in
               key={button.id}
               type="button"
               density="snug"
-              variant={scene === button.id ? 'soft' : 'ghost'}
+              variant={scene === button.id ? 'subtle' : 'ghost'}
               tone={button.tone}
               onClick={() => onSelectScene(button.id)}
               aria-pressed={scene === button.id}>
@@ -103,7 +103,7 @@ function PadToolbar({ scene, onSelectScene, mood, onSelectMood, presencePing, in
               key={m}
               type="button"
               density="snug"
-              variant={mood === m ? 'soft' : 'ghost'}
+              variant={mood === m ? 'subtle' : 'ghost'}
               tone={m === 'celebratory' || m === 'presence' ? 'positive' : 'accent'}
               onClick={() => onSelectMood(m as PadMood)}
               aria-pressed={mood === m}>
