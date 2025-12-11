@@ -16,6 +16,7 @@ import PromptCardNoOpinion from '../demos/PromptCardNoOpinion';
 import PresenceFlow, { type PresenceFlowEntry, type PresenceFlowVariant } from '../scenes/presence-flow';
 import { useGardenSync, usePhaseClass } from '../pad/hooks/useGardenSync';
 import { useIdentityInstrument, useIdentityInstrumentOptions, type IdentityInstrumentState } from '../identity/useIdentityInstrument';
+import type { InstrumentId } from '../identity/identityInstruments';
 
 /**
  * Garden Playground — Two‑scene Pad (Companion + Archive)
