@@ -1,5 +1,7 @@
 # 🌿 Garden Core
 
+[![Heartware Compliant](docs/heartware/heartware-badge.svg)](HEARTWARE_MANIFEST.md)
+
 [![Sponsor GratiaOS](https://img.shields.io/badge/Sponsor-♥︎%20GratiaOS-ff69b4?logo=githubsponsors)](https://github.com/sponsors/GratiaOS)
 [![Version](https://img.shields.io/github/v/tag/GratiaOS/garden-core?label=version)](https://github.com/GratiaOS/garden-core/releases)
 [![CI](https://github.com/GratiaOS/garden-core/actions/workflows/ci.yml/badge.svg)](https://github.com/GratiaOS/garden-core/actions)
@@ -7,6 +9,18 @@
 
 **Garden Core** is the fertile bed where digital dreams take root — the foundational layer of the **Garden**, a frequency-first UI system and design environment that harmonizes **earthly grounding** with **crystalline clarity**.  
 It cultivates **tokens**, **primitives**, **icons**, and **patterns** that empower builders to craft interfaces that _breathe and bloom_ — serene, coherent, and infinitely adaptable.
+
+## 🫀 Heartware
+
+Garden Core is anchored by the Heartware Manifest — the emotional-state architecture behind every scene and ritual.
+
+→ [HEARTWARE_MANIFEST.md](HEARTWARE_MANIFEST.md)
+
+**TL;DR**
+
+- Everything begins with a state, not a screen.
+- Respect weighted transitions (Calm → Open → Vortex → Ritual → Flow → Integration → Calm).
+- Silence is allowed; whispers guide; UI follows.
 
 ## ✨ Vision
 
