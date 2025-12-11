@@ -55,9 +55,9 @@ The light sharpens.
 
 A phrase inscribed like a rune:
 
-### \*\*“In Gratia, you don’t build screens.
+### **“In Gratia, you don’t build screens.
 
-You build transitions of a person.”\*\*
+You build transitions of a person.”**
 
 On the right wall, a quiet diagram glows:
 
