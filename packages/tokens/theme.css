@@ -263,17 +263,17 @@
       --inset-shadow-depth-3: inset 0 3px 6px rgb(0 0 0 / 0.3);
 
       --drop-shadow-depth-0: 0 0 0 rgb(0 0 0 / 0);
-    --drop-shadow-depth-1: 0 1px 1px rgb(0 0 0 / 0.25);
-    --drop-shadow-depth-2: 0 3px 3px rgb(0 0 0 / 0.32);
-    --drop-shadow-depth-3: 0 6px 6px rgb(0 0 0 / 0.42);
+      --drop-shadow-depth-1: 0 1px 1px rgb(0 0 0 / 0.25);
+      --drop-shadow-depth-2: 0 3px 3px rgb(0 0 0 / 0.32);
+      --drop-shadow-depth-3: 0 6px 6px rgb(0 0 0 / 0.42);
 
-    --tone-accent: color-mix(in oklab, var(--color-accent) 70%, white 30%);
-    --tone-surface: color-mix(in oklab, var(--color-surface) 88%, var(--tone-accent) 12%);
-    --tone-ink: color-mix(in oklab, var(--color-text) 98%, white 2%);
-    --tone-glow: 0 0 32px color-mix(in oklab, var(--tone-accent) 42%, transparent);
-    --constellation-dot: color-mix(in oklab, var(--tone-ink) 65%, transparent);
+      --tone-accent: color-mix(in oklab, var(--color-accent) 70%, white 30%);
+      --tone-surface: color-mix(in oklab, var(--color-surface) 88%, var(--tone-accent) 12%);
+      --tone-ink: color-mix(in oklab, var(--color-text) 98%, white 2%);
+      --tone-glow: 0 0 32px color-mix(in oklab, var(--tone-accent) 42%, transparent);
+      --constellation-dot: color-mix(in oklab, var(--tone-ink) 65%, transparent);
+    }
   }
-}
 
   /* Depth mapping helpers — set current depth variables from [data-depth] */
   :root {

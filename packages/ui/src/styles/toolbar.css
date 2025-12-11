@@ -1,0 +1,77 @@
+/* ─────────────────────────────────────────────────────────────
+   Garden UI — Toolbar skin
+   Whisper: "tools should feel near, not loud." 🌬️
+
+   Purpose
+     • Calm container for view / filter / mode controls.
+     • Pairs well with ghost/subtle Buttons and small Selects.
+
+   Data API (from primitives/toolbar.tsx)
+     • [data-ui='toolbar']                      — root
+     • [data-orientation='horizontal|vertical']
+     • [data-density='cozy|snug']
+     • [data-part='group']                      — logical clusters of controls
+
+   Theming
+     • Uses Garden tokens:
+       --surface, --elev, --color-border, --radius-lg, --shadow-soft,
+       --space-*, --text-subtle.
+
+   Notes
+     • Keep it low-contrast by default; toolbar is a frame, not the star.
+     • Use in layouts like: card header, pad header, page sub-nav.
+   ──────────────────────────────────────────────────────────── */
+
+@layer components {
+  [data-ui='toolbar'] {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+
+    padding: 0.375rem 0.5rem;
+    border-radius: var(--radius-lg, 0.75rem);
+    border: 1px solid color-mix(in oklab, var(--color-border) 80%, transparent);
+    background: color-mix(in oklab, var(--surface) 88%, var(--elev) 12%);
+    box-shadow: var(--shadow-soft, 0 8px 24px rgba(15, 23, 42, 0.08));
+
+    color: var(--text-subtle);
+  }
+
+  [data-ui='toolbar'][data-orientation='vertical'] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  [data-ui='toolbar'][data-density='snug'] {
+    padding-block: 0.25rem;
+  }
+
+  /* groups: slight separation when multiple clusters exist */
+  [data-ui='toolbar'] [data-part='group'] {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1, 0.375rem);
+  }
+
+  /* subtle divider between groups, only when there are siblings */
+  [data-ui='toolbar'] [data-part='group'] + [data-part='group']::before {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    align-self: stretch;
+    margin-inline: var(--space-1, 0.375rem);
+    background: color-mix(in oklab, var(--color-border) 70%, transparent);
+  }
+
+  /* Make ghost/subtle buttons feel extra calm inside toolbars (optional hint) */
+  [data-ui='toolbar'] [data-ui='button'][data-variant='ghost'],
+  [data-ui='toolbar'] [data-ui='button'][data-variant='subtle'] {
+    --button-bg-hover: color-mix(in oklab, var(--surface) 80%, var(--elev) 20%);
+    --button-fg: var(--text-subtle);
+  }
+
+  /* Selects inside toolbar — a bit tighter */
+  [data-ui='toolbar'] [data-ui='select'] {
+    font-size: 0.875rem;
+  }
+}

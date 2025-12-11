@@ -4,6 +4,7 @@ import { FieldDemo } from '../demos/FieldDemo';
 import { ButtonDemo } from '../demos/ButtonDemo';
 import { ToastDemo } from '../demos/ToastDemo';
 import { BadgeDemo } from '../demos/BadgeDemo';
+import { SelectDemo } from '../demos/SelectDemo';
 
 export default function LabPage() {
   return (
@@ -19,6 +20,7 @@ export default function LabPage() {
         <CardDemo />
         <PillDemo />
         <FieldDemo />
+        <SelectDemo />
         <ToastDemo />
         <BadgeDemo />
       </div>

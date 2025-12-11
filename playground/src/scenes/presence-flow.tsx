@@ -38,11 +38,14 @@ type PresenceFlowPayload = {
   tokens: string[];
 };
 
+export type PresenceFlowVariant = 'default' | 'late-night';
+
 type PresenceFlowProps = {
   onSend?: (payload: PresenceFlowPayload) => void;
   onArchive?: (payload: Partial<PresenceFlowPayload>) => void;
   feed?: PresenceFlowEntry[];
   phase?: PresencePhase;
+  variant?: PresenceFlowVariant;
 };
 
 function PresenceDots({ phase = 'presence' }: { phase?: PresencePhase }) {
@@ -75,7 +78,7 @@ function PresenceDots({ phase = 'presence' }: { phase?: PresencePhase }) {
   );
 }
 
-export default function PresenceFlow({ onSend, onArchive, feed, phase = 'presence' }: PresenceFlowProps) {
+export default function PresenceFlow({ onSend, onArchive, feed, phase = 'presence', variant = 'default' }: PresenceFlowProps) {
   useSceneTheme('presence-flow', {
     base: 'var(--color-sky, #e6f6ff)',
     accent: 'var(--color-gold, #ffdd99)',
@@ -175,8 +178,11 @@ export default function PresenceFlow({ onSend, onArchive, feed, phase = 'presenc
 
   const phaseClass = `phase-${phase}`;
 
+  const isLateNight = variant === 'late-night';
+
   return (
-    <div className={`presence-flow mx-auto max-w-3xl px-4 py-10 space-y-6 ${phaseClass}`}>
+    <div className={`presence-shell ${isLateNight ? 'presence-shell--late' : 'presence-shell--day'}`} data-variant={variant}>
+      <div className={`presence-flow mx-auto max-w-3xl px-4 py-10 space-y-6 ${phaseClass}`}>
       <header className="space-y-3">
         <Whisper tone="presence">Let what you’ve kept start to move.</Whisper>
         <p className="text-sm text-subtle/80">Surface gently. Breathe, type, hum. Presence remembers every current.</p>
@@ -269,6 +275,7 @@ export default function PresenceFlow({ onSend, onArchive, feed, phase = 'presenc
           </div>
         </section>
       ) : null}
+      </div>
     </div>
   );
 }
