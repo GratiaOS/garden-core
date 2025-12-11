@@ -1,0 +1,145 @@
+/* ─────────────────────────────────────────────────────────────
+   Garden UI — Select skin
+   Whisper: "choices should feel gentle, never rushed." 🌬️
+
+   Purpose
+     • Visual skin for the headless Select primitive.
+     • Provides chrome for standalone <select>; yields to Field when nested.
+
+   Data API
+     • [data-ui='select']          — root hook
+     • [data-disabled]             — dim + block interaction
+     • [data-variant='ghost']      — minimal chrome, ideal for toolbars
+     • [data-state='invalid']      — highlight as error/invalid
+
+   Integration
+     • When placed inside [data-ui='field'] [data-part='control'],
+       the Field shell owns layout, border, and focus ring; this skin
+       strips its own chrome so the two don’t fight.
+
+   Notes
+     • Uses Garden tokens (surface, border, accent) — no hardcoded hex.
+     • Caret is drawn with CSS gradients; no external icon asset.
+   ──────────────────────────────────────────────────────────── */
+
+[data-ui='select'] {
+  appearance: none;
+  background: var(--surface-elevated, color-mix(in oklab, var(--color-surface) 90%, white 10%));
+  border-radius: var(--radius-lg, 0.85rem);
+  border: 1px solid var(--border-subtle, color-mix(in oklab, var(--color-accent) 15%, transparent 85%));
+  padding: 0.5rem 1.9rem 0.5rem 0.85rem;
+  font: inherit;
+  color: var(--text, inherit);
+  min-width: 8rem;
+  line-height: 1.4;
+  position: relative;
+  transition:
+    border-color 160ms var(--ease-soft, ease),
+    box-shadow 160ms var(--ease-soft, ease),
+    background 160ms var(--ease-soft, ease);
+}
+
+[data-ui='select'][data-variant='ghost'] {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  border-radius: var(--radius-md, 0.375rem);
+  padding-inline: 0.25rem 1.5rem; /* tighter, but keep room for caret */
+  min-width: 0;
+}
+
+[data-ui='select'][data-variant='ghost']:hover:not([data-disabled]) {
+  background: color-mix(in oklab, var(--color-accent) 10%, transparent 90%);
+  border-color: transparent;
+}
+
+[data-ui='select'][data-variant='ghost']:focus-visible {
+  outline: none;
+  border-color: transparent;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-accent) 35%, transparent 65%),
+    0 0 0 3px color-mix(in oklab, var(--color-accent) 12%, transparent 88%);
+}
+
+[data-ui='select']::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  top: 50%;
+  right: 0.85rem;
+  transform: translateY(-45%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid color-mix(in oklab, currentColor 75%, transparent);
+  opacity: 0.7;
+  transition:
+    transform 160ms var(--ease-soft, ease),
+    opacity 160ms var(--ease-soft, ease);
+}
+
+[data-ui='select']:hover:not([data-disabled])::after {
+  opacity: 0.9;
+}
+
+[data-ui='select']:focus-visible::after {
+  transform: translateY(-45%) scale(1.05);
+  opacity: 1;
+}
+
+[data-ui='select']:hover:not([data-disabled]) {
+  border-color: color-mix(in oklab, var(--color-accent) 35%, transparent 65%);
+}
+
+[data-ui='select']:focus-visible {
+  outline: 0;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-accent) 45%, transparent 55%),
+    0 0 0 4px color-mix(in oklab, var(--color-accent) 18%, transparent 82%);
+}
+
+[data-ui='select'][data-disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+[data-ui='select'][data-state='invalid'] {
+  border-color: var(--border-danger, color-mix(in oklab, var(--color-danger) 55%, transparent 45%));
+}
+
+/* ==========================================================================
+   Select inside Field
+   When used inside a Garden Field, the Select strips its own shell chrome
+   (background, border, etc.) but still renders its caret. The Field shell
+   provides the outer layout, border, and focus ring; Select only draws its
+   dropdown chevron inside.
+   ========================================================================== */
+
+[data-ui='field'] [data-part='control'] [data-ui='select'] {
+  /* let Field own the shell chrome; Select just draws its caret */
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  padding-right: 1.5rem; /* room for caret */
+  min-width: 0;
+  box-shadow: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, color-mix(in oklab, currentColor 70%, transparent) 50%),
+    linear-gradient(135deg, color-mix(in oklab, currentColor 70%, transparent) 50%, transparent 50%);
+  background-position:
+    right 0.75rem center,
+    right 0.55rem center;
+  background-repeat: no-repeat;
+  background-size: 6px 6px, 6px 6px;
+}
+
+[data-ui='field'] [data-part='control'] [data-ui='select']::after {
+  content: none;
+}
+
+[data-ui='field'] [data-part='control'] [data-ui='select']:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
