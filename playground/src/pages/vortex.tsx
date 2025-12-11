@@ -70,7 +70,7 @@ export default function VortexPage() {
               {whispers[line]}
             </motion.p>
           </AnimatePresence>
-          <p className="vortex-echo">Ritual lent, ton de portal. Gratia pulseaza in jurul tau.</p>
+          <p className="vortex-echo">Ritual lent, ton de portal. Gratia pulsează în jurul tău.</p>
           <div className="vortex-mister" aria-label="Mister breathing softly">
             <span className="vortex-mister-icon" aria-hidden="true">
               🐸

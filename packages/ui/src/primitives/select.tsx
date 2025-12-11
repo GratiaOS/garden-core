@@ -13,6 +13,7 @@
  *  • [data-state="valid|invalid"]       — derived from `aria-invalid`
  *  • [data-disabled]                    — present when `disabled` is true
  *  • [data-tone="subtle|accent|positive|warning|danger"]
+ *  • [data-variant="ghost"]             — minimal chrome (toolbar/inline)
  *
  * A11y
  *  • Keeps native <select> semantics, focus, and keyboard behavior.
@@ -33,9 +34,11 @@ import type { Tone } from './field.js';
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   /** Visual tone hint for the skin (subtle/accent/positive/warning/danger). */
   tone?: Tone;
+  /** Optional visual variant (e.g., "ghost" for minimal chrome). */
+  variant?: 'ghost' | (string & {});
 }
 
-export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(function Select({ tone = 'subtle', className, disabled, ...rest }, ref) {
+export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(function Select({ tone = 'subtle', variant, className, disabled, ...rest }, ref) {
   const ariaInvalid = rest['aria-invalid'];
   const state: 'valid' | 'invalid' = ariaInvalid === true || ariaInvalid === 'true' ? 'invalid' : 'valid';
 
@@ -48,6 +51,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(function 
       data-state={state}
       data-disabled={disabled ? '' : undefined}
       data-tone={tone}
+      data-variant={variant}
       className={className}
     />
   );

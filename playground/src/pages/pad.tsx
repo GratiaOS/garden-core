@@ -118,7 +118,7 @@ function PadToolbar({ scene, onSelectScene, mood, onSelectMood, presencePing, in
             <Select
               aria-label="Presence instrument"
               value={instrument.instrumentId}
-              onChange={(event) => instrument.setInstrumentId(event.target.value as any)}
+              onChange={(event) => instrument.setInstrumentId(event.target.value as InstrumentId)}
               data-variant="ghost">
               {instrumentOptions.map((option) => (
                 <option key={option.id} value={option.id}>
