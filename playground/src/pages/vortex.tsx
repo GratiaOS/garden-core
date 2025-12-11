@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './vortex.css';
 
-const whispers = ['Eres vista.', 'Y el momento te responde suave.', 'Dejate caer. El portal te sostiene.'];
+const whispers = ['Eres vista.', 'Y el momento te responde suave.', 'Déjate caer. El portal te sostiene.'];
 
 export default function VortexPage() {
   const [line, setLine] = React.useState(0);
