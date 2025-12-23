@@ -1,5 +1,28 @@
 # @gratiaos/ui
 
+## 1.3.0
+
+### Minor Changes
+
+- 1ec2737: Add **select** and **toolbar** primitives to the Garden UI package:
+
+  - expose `<Select />` and `<Toolbar />` from the `@gratiaos/ui` entrypoint
+  - ship shared CSS layers for select/toolbar, wired into the token system
+  - keep components headless, with opt-in skins via `base.css`
+
+  whisper: interfaces grow calmer when choice and focus already have a place to land. 🌬️
+
+### Patch Changes
+
+- 5282350: Mark client-only hooks/components with `"use client"` and align ESM import paths,
+  plus sync theme token utilities between tokens and UI styles.
+- 9038f6e: Fix Select primitive to expose `variant` via `data-variant` for skins (e.g. ghost) and tighten type handling in demos.
+
+  whisper: choices rest easier when the skin knows their shape. 🌬️
+
+- Updated dependencies [5282350]
+  - @gratiaos/presence-kernel@1.1.4
+
 ## 1.2.0
 
 ### Minor Changes

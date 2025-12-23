@@ -1,5 +1,15 @@
 # @gratiaos/tokens
 
+## 1.0.7
+
+### Patch Changes
+
+- 5282350: Mark client-only hooks/components with `"use client"` and align ESM import paths,
+  plus sync theme token utilities between tokens and UI styles.
+- 1ec2737: Update token base to align select/toolbar skins and recent mark palette tweaks. No breaking changes; downstream UI picks up the refreshed CSS layers automatically.
+
+  whisper: the field feels smoother when the seeds match the petals.
+
 ## 1.0.6
 
 ### Patch Changes

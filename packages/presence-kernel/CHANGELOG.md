@@ -1,5 +1,12 @@
 # @gratiaos/presence-kernel
 
+## 1.1.4
+
+### Patch Changes
+
+- 5282350: Mark client-only hooks/components with `"use client"` and align ESM import paths,
+  plus sync theme token utilities between tokens and UI styles.
+
 ## 1.1.3
 
 ### Patch Changes

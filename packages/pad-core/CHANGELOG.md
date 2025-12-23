@@ -1,5 +1,12 @@
 # @gratiaos/pad-core
 
+## 1.1.1
+
+### Patch Changes
+
+- Updated dependencies [5282350]
+  - @gratiaos/presence-kernel@1.1.4
+
 ## 1.1.0
 
 ### Minor Changes
