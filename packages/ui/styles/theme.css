@@ -14,24 +14,21 @@
   --text-xs: 0.75rem; /* 12px */
   --text-2xs: 0.6875rem; /* 11px — micro labels (Badge, meta) */
 
-  /* === Global semantics (light defaults) === */
-  --color-surface: oklch(97% 0.01 180);
-  --color-elev: oklch(96% 0.005 180);
+  /* === Core palette (generates bg-*, text-*, border-* utilities) === */
+  --color-surface: oklch(97% 0.01 95);
+  --color-elev: oklch(96% 0.008 95);
   --color-text: oklch(27% 0.02 275);
 
-  /* Accent & on-accent */
-  --color-accent: oklch(62% 0.09 150);
+  --color-accent: oklch(80% 0.14 80);
   --color-on-accent: oklch(15% 0.01 180);
+  --color-inverse: oklch(15% 0.01 180);
 
-  /* === Tone scale (semantic feedback colors) === */
-  --color-positive: oklch(62% 0.09 150); /* leaf / growth */
-  --color-warning: oklch(80% 0.14 80); /* amber / alert */
-  --color-danger: oklch(60% 0.18 27); /* red / stop */
+  --color-positive: oklch(62% 0.09 150);
+  --color-warning: oklch(82% 0.14 80);
+  --color-danger: oklch(60% 0.18 27);
 
-  /* Borders */
   --color-border: oklch(90% 0.02 155);
 
-  /* Text subtleties — expose as utilities: text-muted, text-subtle, text-faint */
   --color-muted: color-mix(in oklab, var(--color-text) 72%, transparent);
   --color-subtle: color-mix(in oklab, var(--color-text) 60%, transparent);
   --color-faint: color-mix(in oklab, var(--color-text) 45%, transparent);
@@ -39,8 +36,8 @@
   /* Tone fade neutrals (scene transitions) */
   --tone-transition-duration: 800ms;
   --tone-transition: background var(--tone-transition-duration) var(--ease-soft, ease), color var(--tone-transition-duration) var(--ease-soft, ease);
-  --tone-neutral-surface: color-mix(in oklab, var(--color-surface) 70%, var(--color-accent) 30%);
-  --tone-neutral-text: color-mix(in oklab, var(--color-text) 65%, var(--color-accent) 35%);
+  --tone-neutral-surface: color-mix(in oklab, var(--surface) 70%, var(--accent) 30%);
+  --tone-neutral-text: color-mix(in oklab, var(--text) 65%, var(--accent) 35%);
 
   /* Phase hues (used by presence dots + HUD) */
   --phase-companion-hue: 160; /* trust / green */
@@ -163,6 +160,68 @@
 /* === Runtime dark mapping (no duplicate @theme) === */
 @layer base {
   :root {
+    /* Runtime semantic palette defaults (used when no skin is set) */
+    --color-surface: oklch(97% 0.03 95);
+    --color-elev: oklch(98.6% 0.02 95);
+    --color-text: oklch(26% 0.05 70);
+
+    --color-accent: oklch(80% 0.14 80);
+    --color-on-accent: oklch(15% 0.01 180);
+    --color-inverse: var(--color-on-accent);
+
+    --color-positive: oklch(62% 0.09 150);
+    --color-warning: oklch(82% 0.14 80);
+    --color-danger: oklch(60% 0.18 27);
+
+    --color-border: oklch(88% 0.04 95);
+
+    /* Text subtleties */
+    --color-muted: color-mix(in oklab, var(--color-text) 72%, transparent);
+    --color-subtle: color-mix(in oklab, var(--color-text) 60%, transparent);
+    --color-faint: color-mix(in oklab, var(--color-text) 45%, transparent);
+
+    /* Runtime aliases for custom CSS & calc() (keep inside base for deterministic order) */
+    --surface: var(--color-surface);
+    --elev: var(--color-elev);
+    --text: var(--color-text);
+    --accent: var(--color-accent);
+    --on-accent: var(--color-on-accent);
+    --border: var(--color-border);
+
+    --text-muted: var(--color-muted);
+    --text-subtle: var(--color-subtle);
+    --text-faint: var(--color-faint);
+    --color-fill-subtle: color-mix(in oklab, var(--color-text) 8%, var(--color-surface));
+
+    --sheet-radius: var(--radius-2xl);
+    --shadow-card-ambient: var(--shadow-card);
+
+    /* Covenant & RTP-friendly defaults (read by UI; override via [data-mode]) */
+    --composer-privacy-default: public; /* flipped to `sealed` in RTP */
+    --capacity-units-per-day: 3; /* UI renders three capacity dots */
+    --rtp-hint-default: "ask, don't test"; /* language-interrupt default hint */
+    --rest-is-repair: 0; /* 1 when RTP mode is active */
+
+    /* Motion — durations */
+    --dur-pulse: 700ms; /* UI chip pulse duration */
+    --dur-toast: 5s; /* or 4800ms */
+
+    /* Pad hero gradient defaults (used by PadChrome) */
+    --pad-hero-start: color-mix(in oklab, var(--accent) 12%, var(--surface));
+    --pad-hero-end: color-mix(in oklab, var(--accent) 3%, var(--surface));
+
+    /* Pad mood tokens (default values; remapped by [data-pad-mood]) */
+    --accent-strength: 1; /* 0.0–1.2 — scales accent usage */
+    --glow-intensity: 0.1; /* 0–1 — subtle halo/glow */
+    --ring-alpha: 0.18; /* 0–1 — whisper ring strength */
+    --grain-strength: 0.12; /* 0–1 — ambient grain strength */
+    --grain-size: 140px; /* px — grain tile size used by card grain overlay */
+    --track-glow: color-mix(in oklab, var(--tone-accent) 55%, transparent);
+    --track-shadow: color-mix(in oklab, var(--tone-accent) 32%, transparent);
+    --scene-highlight: color-mix(in oklab, var(--tone-accent) 60%, transparent);
+    --presence-dot-color: color-mix(in oklab, var(--tone-accent) 70%, white 15%);
+    --ghost-trail-color: color-mix(in oklab, var(--tone-accent) 22%, transparent);
+
     --tone-accent: color-mix(in oklab, var(--color-accent) 82%, white 18%);
     --tone-surface: color-mix(in oklab, var(--color-surface) 92%, var(--tone-accent) 8%);
     --tone-ink: color-mix(in oklab, var(--color-text) 96%, white 4%);
@@ -205,24 +264,64 @@
     --tone-accent: #ffd59e;
   }
 
-  :root[data-theme='dark'],
-  :root.dark {
-    --color-surface: oklch(21% 0.07 241);
-    --color-elev: oklch(18% 0.02 200);
-    --color-text: oklch(97% 0.01 180);
+  /* ---------------------------------------------------------------------- */
+  /* Skins (explicit global palette switch)                                  */
+  /* ---------------------------------------------------------------------- */
 
-    /* Slightly cooler/glow accent at night */
-    --color-accent: oklch(78% 0.12 190);
-    --color-on-accent: oklch(16% 0.02 200);
+  /* ☀️ SUN — warm dawn/dusk paper, soft glare */
+  :root[data-skin-id='SUN'] {
+    color-scheme: light;
 
-    --color-positive: oklch(75% 0.12 150);
+    /* Firecircle parchment — dawn/dusk (less white, more soft warmth) */
+    --color-surface: oklch(92.8% 0.028 88);
+    --color-elev: oklch(94.2% 0.024 88);
+
+    /* Warm ink (deeper for readability, not harsh) */
+    --color-text: oklch(23% 0.045 70);
+
+    /* Ember accent (kept warm, slightly gentler) */
+    --color-accent: oklch(68% 0.145 55);
+    --color-on-accent: oklch(14% 0.02 70);
+
+    --color-positive: oklch(62% 0.09 150);
     --color-warning: oklch(82% 0.14 80);
-    --color-danger: oklch(68% 0.16 27);
+    --color-danger: oklch(60% 0.18 27);
 
-    --color-border: oklch(38% 0.03 180);
+    /* Softer, warmer borders */
+    --color-border: oklch(82% 0.03 88);
 
-    /* Darker card shadow */
+    /* Calmer interactive halo on bright skins */
+    --ring-alpha: 0.11;
+    --glow-intensity: 0.05;
+
+    /* Slightly warmer card shadow (reads nicer on parchment) */
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04), 0 10px 28px -12px rgb(0 0 0 / 0.14);
+  }
+
+  /* 🌙 MOON — deep forest night, full‑moon accent */
+  :root[data-skin-id='MOON'] {
+    color-scheme: dark;
+
+    /* Deep green night (no corporate blue) */
+    --color-surface: oklch(18% 0.02 150);
+    --color-elev: oklch(15% 0.015 150);
+    --color-text: oklch(95% 0.015 92); /* ivory ember text */
+
+    /* Full‑moon accent (soft warm lunar) */
+    --color-accent: oklch(84% 0.035 85);
+    --color-on-accent: oklch(16% 0.015 150);
+    --color-inverse: var(--color-on-accent);
+
+    --color-positive: oklch(72% 0.07 152); /* mint tea (cozy, not neon) */
+    --color-warning: oklch(78% 0.1 70); /* pumpkin pie amber (warm, softer) */
+    --color-danger: oklch(66% 0.12 30); /* flame red (alert, not neon) */
+
+    --color-border: oklch(32% 0.015 150);
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.12), 0 8px 18px -8px rgb(0 0 0 / 0.35);
+
+    /* Held-night interaction (present, not neon) */
+    --ring-alpha: 0.16; /* a touch more held */
+    --glow-intensity: 0.12; /* +1 semineu */
 
     /* Depth shadows tuned for dark */
     --shadow-depth-0: 0 0 0 0 rgb(0 0 0 / 0);
@@ -241,38 +340,47 @@
     --drop-shadow-depth-3: 0 6px 6px rgb(0 0 0 / 0.42);
   }
 
-  /* Respect system preference when no explicit choice */
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) {
-      --color-surface: oklch(21% 0.07 241);
-      --color-elev: oklch(18% 0.02 200);
-      --color-text: oklch(97% 0.01 180);
-      --color-accent: oklch(78% 0.12 190);
-      --color-on-accent: oklch(16% 0.02 200);
+  /* 🌿 GARDEN — soft daylight green */
+  :root[data-skin-id='GARDEN'] {
+    color-scheme: light;
+    --color-surface: oklch(97% 0.01 150);
+    --color-elev: oklch(96% 0.01 150);
+    --color-text: oklch(27% 0.02 160);
 
-      --color-positive: oklch(75% 0.12 150);
-      --color-warning: oklch(82% 0.14 80);
-      --color-danger: oklch(68% 0.16 27);
+    --color-accent: oklch(62% 0.09 150);
+    --color-on-accent: oklch(15% 0.01 180);
+    --color-inverse: var(--color-on-accent);
 
-      --color-border: oklch(38% 0.03 180);
-      --shadow-card: 0 1px 2px rgb(0 0 0 / 0.12), 0 8px 18px -8px rgb(0 0 0 / 0.35);
+    --color-positive: oklch(62% 0.09 150);
+    --color-warning: oklch(80% 0.14 80);
+    --color-danger: oklch(60% 0.18 27);
 
-      --inset-shadow-depth-0: inset 0 0 0 0 rgb(0 0 0 / 0);
-      --inset-shadow-depth-1: inset 0 1px 1px rgb(0 0 0 / 0.12);
-      --inset-shadow-depth-2: inset 0 2px 3px rgb(0 0 0 / 0.2);
-      --inset-shadow-depth-3: inset 0 3px 6px rgb(0 0 0 / 0.3);
+    --color-border: oklch(90% 0.02 155);
+  }
 
-      --drop-shadow-depth-0: 0 0 0 rgb(0 0 0 / 0);
-      --drop-shadow-depth-1: 0 1px 1px rgb(0 0 0 / 0.25);
-      --drop-shadow-depth-2: 0 3px 3px rgb(0 0 0 / 0.32);
-      --drop-shadow-depth-3: 0 6px 6px rgb(0 0 0 / 0.42);
+  /* 🟣 STELLAR — violet night */
+  :root[data-skin-id='STELLAR'] {
+    color-scheme: dark;
+    --color-surface: oklch(19% 0.05 290);
+    --color-elev: oklch(16% 0.03 290);
+    --color-text: oklch(97% 0.01 180);
 
-      --tone-accent: color-mix(in oklab, var(--color-accent) 70%, white 30%);
-      --tone-surface: color-mix(in oklab, var(--color-surface) 88%, var(--tone-accent) 12%);
-      --tone-ink: color-mix(in oklab, var(--color-text) 98%, white 2%);
-      --tone-glow: 0 0 32px color-mix(in oklab, var(--tone-accent) 42%, transparent);
-      --constellation-dot: color-mix(in oklab, var(--tone-ink) 65%, transparent);
-    }
+    --color-accent: oklch(70% 0.16 300);
+    --color-on-accent: oklch(16% 0.02 290);
+    --color-inverse: var(--color-on-accent);
+
+    --color-positive: oklch(75% 0.12 150);
+    --color-warning: oklch(82% 0.14 80);
+    --color-danger: oklch(68% 0.16 27);
+
+    --color-border: oklch(38% 0.03 290);
+
+    /* Reuse dark depth shadows */
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.12), 0 8px 18px -8px rgb(0 0 0 / 0.35);
+    --shadow-depth-0: 0 0 0 0 rgb(0 0 0 / 0);
+    --shadow-depth-1: 0 1px 2px rgb(0 0 0 / 0.12), 0 6px 14px -8px rgb(0 0 0 / 0.28);
+    --shadow-depth-2: 0 2px 8px rgb(0 0 0 / 0.18), 0 14px 30px -12px rgb(0 0 0 / 0.36);
+    --shadow-depth-3: 0 8px 20px rgb(0 0 0 / 0.28), 0 26px 54px -20px rgb(0 0 0 / 0.5);
   }
 
   /* Depth mapping helpers — set current depth variables from [data-depth] */
@@ -373,58 +481,21 @@
   }
 }
 
-/* === Aliases for custom CSS & calc() ===
-   These do not create utilities; they are convenience variables.
-*/
-:root {
-  --surface: var(--color-surface);
-  --elev: var(--color-elev);
-  --text: var(--color-text);
-  --accent: var(--color-accent);
-  --on-accent: var(--color-on-accent);
-  --border: var(--color-border);
-
-  --text-muted: var(--color-muted);
-  --text-subtle: var(--color-subtle);
-  --text-faint: var(--color-faint);
-  --color-fill-subtle: color-mix(in oklab, var(--color-text) 8%, var(--color-surface));
-
-  --sheet-radius: var(--radius-2xl);
-  --shadow-card-ambient: var(--shadow-card);
-
-  /* Covenant & RTP-friendly defaults (read by UI; override via [data-mode]) */
-  --composer-privacy-default: public; /* flipped to `sealed` in RTP */
-  --capacity-units-per-day: 3; /* UI renders three capacity dots */
-  --rtp-hint-default: "ask, don't test"; /* language-interrupt default hint */
-  --rest-is-repair: 0; /* 1 when RTP mode is active */
-
-  /* Motion — durations */
-  --dur-pulse: 700ms; /* UI chip pulse duration */
-  --dur-toast: 5s; /* or 4800ms */
-
-  /* Pad hero gradient defaults (used by PadChrome) */
-  --pad-hero-start: color-mix(in oklab, var(--accent) 12%, var(--surface));
-  --pad-hero-end: color-mix(in oklab, var(--accent) 3%, var(--surface));
-
-  /* Pad mood tokens (default values; remapped by [data-pad-mood]) */
-  --accent-strength: 1; /* 0.0–1.2 — scales accent usage */
-  --glow-intensity: 0.1; /* 0–1 — subtle halo/glow */
-  --ring-alpha: 0.18; /* 0–1 — whisper ring strength */
-  --grain-strength: 0.12; /* 0–1 — ambient grain strength */
-  --grain-size: 140px; /* px — grain tile size used by card grain overlay */
-  --track-glow: color-mix(in oklab, var(--tone-accent) 55%, transparent);
-  --track-shadow: color-mix(in oklab, var(--tone-accent) 32%, transparent);
-  --scene-highlight: color-mix(in oklab, var(--tone-accent) 60%, transparent);
-  --presence-dot-color: color-mix(in oklab, var(--tone-accent) 70%, white 15%);
-  --ghost-trail-color: color-mix(in oklab, var(--tone-accent) 22%, transparent);
-}
-
 @layer utilities {
   .border-transparent {
     border-color: transparent;
   }
   .text-2xs {
     font-size: var(--text-2xs);
+  }
+  .text-muted {
+    color: var(--text-muted);
+  }
+  .text-subtle {
+    color: var(--text-subtle);
+  }
+  .text-faint {
+    color: var(--text-faint);
   }
   .elev-1 {
     @apply shadow-depth-1;

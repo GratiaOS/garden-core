@@ -251,11 +251,11 @@ export function runValueSealRitual(options?: ValueSealOptions) {
   }, exhaleMs);
 }
 
-export { Heartbeat } from './Heartbeat';
-export { ConstellationHUD } from './ConstellationHUD';
+export { Heartbeat } from './Heartbeat.js';
+export { ConstellationHUD } from './ConstellationHUD.js';
 
-export { usePhaseSound } from './usePhaseSound';
-export { usePhaseSpatialSound } from './usePhaseSpatialSound';
+export { usePhaseSound } from './usePhaseSound.js';
+export { usePhaseSpatialSound } from './usePhaseSpatialSound.js';
 
 // Re-export micro signal primitives to preserve historical import patterns
 // for downstream packages that previously consumed signals via presence-kernel.

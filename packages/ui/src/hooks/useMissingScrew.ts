@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback, useEffect, useId, useMemo, useState } from 'react';
 
 type UseMissingScrewOptions = {

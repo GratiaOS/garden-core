@@ -1,6 +1,8 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
-import { phase$, peers$, pulse$, type Phase } from './index';
-import { DEFAULT_SOUND_PROFILE, PHASE_SOUND_PROFILE, type PhaseSoundProfile } from './phase-sound-profile';
+import { phase$, peers$, pulse$, type Phase } from './index.js';
+import { DEFAULT_SOUND_PROFILE, PHASE_SOUND_PROFILE, type PhaseSoundProfile } from './phase-sound-profile.js';
 
 type AudioWindow = Window & {
   AudioContext?: typeof AudioContext;

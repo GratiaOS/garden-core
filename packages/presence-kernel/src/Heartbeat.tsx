@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
-import { phase$, mood$, peers$, pulse$, type Phase, type Mood } from './index';
+import { phase$, mood$, peers$, pulse$, type Phase, type Mood } from './index.js';
 import './heartbeat.css';
 
 const DEFAULT_COLOR = '#ffffff';

@@ -1,5 +1,7 @@
-import { usePhaseSpatialSound } from './usePhaseSpatialSound';
-import { usePhaseSound } from './usePhaseSound';
+'use client';
+
+import { usePhaseSpatialSound } from './usePhaseSpatialSound.js';
+import { usePhaseSound } from './usePhaseSound.js';
 
 /**
  * useConstellationAudio — unified audio gating for Constellation HUD.

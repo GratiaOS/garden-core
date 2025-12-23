@@ -95,7 +95,7 @@ export default function PromptCardNoOpinion({ tags = [], storageKey = 'gc:no-opi
   };
 
   return (
-    <Card variant="elev" padding="lg" data-depth="inherit" className="space-y-6">
+    <Card variant="elev" padding="lg" data-depth="inherit" className="space-y-6 mt-10">
       <div className="flex items-center gap-2">
         <Badge tone="subtle" variant="soft" size="sm">
           Prompt

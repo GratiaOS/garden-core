@@ -1,7 +1,9 @@
+'use client';
+
 import React, { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { phase$, peers$, pulse$, type Phase } from './index';
+import { phase$, peers$, pulse$, type Phase } from './index.js';
 import './constellation-hud.css';
-import { useConstellationAudio } from './useConstellationAudio';
+import { useConstellationAudio } from './useConstellationAudio.js';
 
 const BASE_RADIUS = 42;
 const RING_GAP = 18;

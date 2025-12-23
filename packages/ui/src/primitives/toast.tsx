@@ -29,6 +29,8 @@
  *  • clearToast()                     // remove all
  *  • clearToast("sync")               // remove item(s) with key
  */
+'use client';
+
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 export type ToastVariant = 'neutral' | 'positive' | 'warning' | 'danger';

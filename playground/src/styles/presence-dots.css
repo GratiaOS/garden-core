@@ -32,7 +32,8 @@
 }
 
 @utility presence-dots-empty {
-  @apply text-[0.65rem] italic text-faint;
+  @apply text-[0.65rem] italic;
+  color: var(--text-faint);
 }
 
 @utility presence-dot {

@@ -69,10 +69,7 @@ function PadToolbar({ scene, onSelectScene, mood, onSelectMood, presencePing, in
 
   return (
     <div className="absolute top-4 left-1/2 z-40 px-4 w-full max-w-5xl -translate-x-1/2 flex justify-center pointer-events-none">
-      <Toolbar
-        aria-label="Pad navigation"
-        density="snug"
-        className="pad-toolbar pointer-events-auto flex-wrap gap-3 w-full justify-between">
+      <Toolbar aria-label="Pad navigation" density="snug" className="pad-toolbar pointer-events-auto flex-wrap gap-3 w-full justify-between">
         <ToolbarGroup className="flex items-center gap-2 flex-wrap">
           <span className={labelClass}>Scenes</span>
           {sceneButtons.map((button) => (
@@ -1053,7 +1050,14 @@ export default function PadPage() {
       data-depth={depth}
       data-pad-mood={mood}
       className={`bg-surface text-text min-h-dvh relative overflow-hidden ${phaseClass}`}>
-      <PadToolbar scene={scene} onSelectScene={goToScene} mood={mood} onSelectMood={setMood} presencePing={presencePing} instrument={identityInstrumentState} />
+      <PadToolbar
+        scene={scene}
+        onSelectScene={goToScene}
+        mood={mood}
+        onSelectMood={setMood}
+        presencePing={presencePing}
+        instrument={identityInstrumentState}
+      />
 
       {/* Transition veil (Layer 2/3): lifts during scene switch, then fades */}
       <div
@@ -1228,13 +1232,7 @@ export default function PadPage() {
           scene === 'presence' ? 'opacity-100 translate-y-0 scene-enter' : 'opacity-0 translate-y-2 blur-xs pointer-events-none scene-exit'
         }`}
         data-scene="presence">
-        <PresenceFlow
-          onSend={handlePresenceSend}
-          onArchive={handlePresenceArchive}
-          feed={presenceFeed}
-          phase={scene}
-          variant={presenceVariant}
-        />
+        <PresenceFlow onSend={handlePresenceSend} onArchive={handlePresenceArchive} feed={presenceFeed} phase={scene} variant={presenceVariant} />
       </div>
 
       {/* Archive layer */}
