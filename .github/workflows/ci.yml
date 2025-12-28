@@ -10,10 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: corepack enable
-      - run: corepack prepare pnpm@9 --activate
+      - run: corepack prepare pnpm@10.17.1 --activate
       - run: pnpm i --frozen-lockfile
+      - run: node scripts/check-changeset.mjs
+      - run: node scripts/check-workspace-deps.mjs
       - run: pnpm -r build
       - run: pnpm -C playground build
