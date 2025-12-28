@@ -66,9 +66,7 @@ jobs:
         run: node scripts/check-workspace-deps.mjs
 
       - name: Build packages
-        run: |
-          pnpm -r --filter @gratiaos/signal --filter @gratiaos/presence-kernel build
-          pnpm -r build
+        run: pnpm -r --sort --workspace-concurrency=1 build
 
       - name: Workspace vs Registry versions
         run: |
