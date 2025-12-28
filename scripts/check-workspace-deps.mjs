@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -21,6 +22,8 @@ for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
   const pkgPath = join(packagesDir, entry.name, 'package.json');
   try {
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
+    if (pkg.private === true) continue;
+
     for (const field of DEP_FIELDS) {
       const deps = pkg[field];
       if (!deps) continue;

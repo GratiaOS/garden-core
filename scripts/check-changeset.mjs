@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { execSync } from 'node:child_process';
 
 const eventName = process.env.GITHUB_EVENT_NAME || '';
@@ -42,9 +43,14 @@ const isPackageChange = (file) => {
 };
 
 const hasPackageChanges = files.some(isPackageChange);
-const hasChangeset = files.some(
-  (file) => file.startsWith('.changeset/') && file.endsWith('.md')
-);
+const hasChangeset = files.some((file) => {
+  if (!file.startsWith('.changeset/')) return false;
+  const filename = file.substring('.changeset/'.length);
+  if (!filename.endsWith('.md')) return false;
+  if (filename === 'README.md') return false;
+  if (filename.startsWith('_')) return false;
+  return true;
+});
 
 if (hasPackageChanges && !hasChangeset) {
   console.error(
