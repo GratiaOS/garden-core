@@ -19,5 +19,6 @@ jobs:
       - run: pnpm i --frozen-lockfile
       - run: node scripts/check-changeset.mjs
       - run: node scripts/check-workspace-deps.mjs
+      - run: pnpm -r --filter @gratiaos/signal --filter @gratiaos/presence-kernel build
       - run: pnpm -r build
       - run: pnpm -C playground build
