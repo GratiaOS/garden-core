@@ -1,5 +1,11 @@
 # @gratiaos/presence-kernel
 
+## 1.1.5
+
+### Patch Changes
+
+- 3e25bf5: Pin internal dependencies to published versions so npm installs don't break on workspace ranges.
+
 ## 1.1.4
 
 ### Patch Changes

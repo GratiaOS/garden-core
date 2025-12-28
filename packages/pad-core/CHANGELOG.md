@@ -1,5 +1,13 @@
 # @gratiaos/pad-core
 
+## 1.1.2
+
+### Patch Changes
+
+- 3e25bf5: Fix pad-core to depend on the published presence-kernel so npm installs don’t break on workspace:\*.
+- Updated dependencies [3e25bf5]
+  - @gratiaos/presence-kernel@1.1.5
+
 ## 1.1.1
 
 ### Patch Changes
