@@ -1,0 +1,35 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: ['**/*.md', 'docs/**']
+
+workflows:
+  - changed-files:
+      - any-glob-to-any-file: ['.github/workflows/**']
+
+ui:
+  - changed-files:
+      - any-glob-to-any-file: ['packages/ui/**']
+
+tokens:
+  - changed-files:
+      - any-glob-to-any-file: ['packages/tokens/**']
+
+pad-core:
+  - changed-files:
+      - any-glob-to-any-file: ['packages/pad-core/**']
+
+presence-kernel:
+  - changed-files:
+      - any-glob-to-any-file: ['packages/presence-kernel/**']
+
+signal:
+  - changed-files:
+      - any-glob-to-any-file: ['packages/signal/**']
+
+icons:
+  - changed-files:
+      - any-glob-to-any-file: ['packages/icons/**']
+
+playground:
+  - changed-files:
+      - any-glob-to-any-file: ['playground/**']
