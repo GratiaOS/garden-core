@@ -44,8 +44,8 @@ importers:
   packages/pad-core:
     dependencies:
       '@gratiaos/presence-kernel':
-        specifier: ^1.1.4
-        version: 1.1.4(react@19.2.0)
+        specifier: ^1.1.5
+        version: 1.1.5(react@19.2.0)
     devDependencies:
       '@types/react':
         specifier: ^19.2.2
@@ -100,8 +100,8 @@ importers:
   packages/ui:
     dependencies:
       '@gratiaos/presence-kernel':
-        specifier: ^1.1.4
-        version: 1.1.4(react@19.2.0)
+        specifier: ^1.1.5
+        version: 1.1.5(react@19.2.0)
     devDependencies:
       '@types/react':
         specifier: ^19.2.2
@@ -555,7 +555,7 @@ packages:
   '@fontsource-variable/inter@5.2.8':
     resolution: {integrity: sha512-kOfP2D+ykbcX/P3IFnokOhVRNoTozo5/JxhAIVYLpea/UBmCQ/YWPBfWIDuBImXX/15KH+eKh4xpEUyS2sQQGQ==}
 
-  '@gratiaos/presence-kernel@1.1.4':
+  '@gratiaos/presence-kernel@1.1.5':
     resolution: {integrity: sha512-O0Tpy5dnYdkk+9pKJvaoYbGrW9VM+2IkAUf9HBQ+fUeAKQw0jQqrLsIt31yKpiOhUmkrvItmf24UysZp70G6jQ==}
     peerDependencies:
       react: ^18 || ^19
@@ -2360,7 +2360,7 @@ snapshots:
 
   '@fontsource-variable/inter@5.2.8': {}
 
-  '@gratiaos/presence-kernel@1.1.4(react@19.2.0)':
+  '@gratiaos/presence-kernel@1.1.5(react@19.2.0)':
     dependencies:
       '@gratiaos/signal': link:packages/signal
       react: 19.2.0
