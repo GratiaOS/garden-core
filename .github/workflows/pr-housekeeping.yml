@@ -25,3 +25,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           IGNORED: 'package-lock.json yarn.lock pnpm-lock.yaml Cargo.lock'
+
+  welcome:
+    if: github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "Welcome to the garden. CI will tend the build, and labels will keep the path clear. 🌿"
+            })
