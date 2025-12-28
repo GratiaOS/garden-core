@@ -57,10 +57,13 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 10.19.0
+          version: 10.17.1
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Validate workspace dependency ranges
+        run: node scripts/check-workspace-deps.mjs
 
       - name: Build packages
         run: pnpm -r build

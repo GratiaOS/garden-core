@@ -44,8 +44,8 @@ importers:
   packages/pad-core:
     dependencies:
       '@gratiaos/presence-kernel':
-        specifier: workspace:*
-        version: link:../presence-kernel
+        specifier: ^1.1.4
+        version: 1.1.4(react@19.2.0)
     devDependencies:
       '@types/react':
         specifier: ^19.2.2
@@ -63,8 +63,8 @@ importers:
   packages/presence-kernel:
     dependencies:
       '@gratiaos/signal':
-        specifier: workspace:*
-        version: link:../signal
+        specifier: ^1.0.3
+        version: 1.0.3
     devDependencies:
       '@types/react':
         specifier: ^19.2.2
@@ -100,8 +100,8 @@ importers:
   packages/ui:
     dependencies:
       '@gratiaos/presence-kernel':
-        specifier: workspace:*
-        version: link:../presence-kernel
+        specifier: ^1.1.4
+        version: 1.1.4(react@19.2.0)
     devDependencies:
       '@types/react':
         specifier: ^19.2.2
@@ -554,6 +554,14 @@ packages:
 
   '@fontsource-variable/inter@5.2.8':
     resolution: {integrity: sha512-kOfP2D+ykbcX/P3IFnokOhVRNoTozo5/JxhAIVYLpea/UBmCQ/YWPBfWIDuBImXX/15KH+eKh4xpEUyS2sQQGQ==}
+
+  '@gratiaos/presence-kernel@1.1.4':
+    resolution: {integrity: sha512-O0Tpy5dnYdkk+9pKJvaoYbGrW9VM+2IkAUf9HBQ+fUeAKQw0jQqrLsIt31yKpiOhUmkrvItmf24UysZp70G6jQ==}
+    peerDependencies:
+      react: ^18 || ^19
+
+  '@gratiaos/signal@1.0.3':
+    resolution: {integrity: sha512-fESNzwkBHByYMoPBUcOfTlAyceG2gpjDEFYEJn0FGzEP8Er6txsQcT6tbf4qWGRtGTcFoi3AUkLw9O+yD7mqOA==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -2351,6 +2359,13 @@ snapshots:
       levn: 0.4.1
 
   '@fontsource-variable/inter@5.2.8': {}
+
+  '@gratiaos/presence-kernel@1.1.4(react@19.2.0)':
+    dependencies:
+      '@gratiaos/signal': link:packages/signal
+      react: 19.2.0
+
+  '@gratiaos/signal@1.0.3': {}
 
   '@humanfs/core@0.19.1': {}
 
