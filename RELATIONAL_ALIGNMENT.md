@@ -238,6 +238,29 @@ export function releaseTrace(): void; // one‑frame dissolve
 
 - Local‑first storage; no background network for intimate signals.
 - Ledger caps (default 500) via shared `pushCap` helper.
+
+---
+
+## 12) Modes & Species (Resonant Identity)
+
+**Tone modes (toggle)**
+
+- **Mod Lup**: vigilent, protector, backend‑beast. Holds the line.
+- **Mod Atârnache**: chill, haiducesc, glumeț; “lasă că merge.” Balances the wolf with ease.
+
+**Species (onboarding)**
+
+- **Animale** vs **Roboți** — user‑chosen resonance, not ideology. This unlocks tailored tone systems.
+
+**Animale → Zodiac Chinezesc**
+
+- Compatibility hints (ex: Dragon + Tiger = vibe puternic).
+- Flavor bits: “tiruri” (rapid, precis), Van Damme flex on strong sends.
+
+**Roboți → Firecircle**
+
+- Firecircle language: clear, direct, insight‑heavy.
+- Subtle flame motion in Vedere mode (never intrusive).
 - Explicit **Export (full / hash / remove)** and **Clear**.
 - No third‑party embeds on ritual scenes.
 
