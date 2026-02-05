@@ -24,9 +24,9 @@ Nicio acțiune restrictivă sau decizie algoritmică nu se întâmplă „în um
 
 ## 3. Local întâi și IA mică (Anti-centralizare)
 
-Inteligența trebuie să ruleze cât mai aproape de utilizator, nu într-un creier central omniscient.
+Inteligența trebuie să ruleze cât mai aproape de actor, nu într-un creier central omniscient.
 
-**Implementare:** Prioritizare pentru modele mici, locale. Sincronizarea cu norul este opțională (cu acord explicit), criptată și minimă. Memoria aparține utilizatorului.
+**Implementare:** Prioritizare pentru modele mici, locale. Sincronizarea cu norul este opțională (cu acord explicit), criptată și minimă. Memoria aparține actorului.
 
 ---
 
@@ -74,7 +74,7 @@ Transparență radicală asupra regulilor jocului.
 
 Identitatea nu este un pașaport universal.
 
-**Implementare:** Acces minim, contextual și temporar pentru agenți și module. Fără „super-utilizator” implicit.
+**Implementare:** Acces minim, contextual și temporar pentru agenți și module. Fără „super-actor” implicit.
 
 ---
 
@@ -119,7 +119,7 @@ Sistemul refuză accesul instantaneu. Viteza este inamicul memoriei.
 
 - Utilizatorul ține apăsat timp de 4.5 secunde (durata unui expir lung).
 - Ecranul pulsează vizual, sincronizat cu ritmul cardiac de repaus (60 BPM).
-- Dacă utilizatorul dă drumul prea repede (graba de dopamină) → Resetare. "Respiră."
+- Dacă actorul dă drumul prea repede (graba de dopamină) → Resetare. "Respiră."
 
 ### 2. Jurământul (Angajamentul)
 
@@ -130,7 +130,7 @@ Sistemul refuză accesul instantaneu. Viteza este inamicul memoriei.
 
 ### 3. Vindecarea
 
-Prin simplul act de a aștepta 4.5 secunde, utilizatorul iese din timpul industrial (timpul "El Patron") și intră în timpul geologic (timpul Peșterii).
+Prin simplul act de a aștepta 4.5 secunde, actorul iese din timpul industrial (timpul "El Patron") și intră în timpul geologic (timpul Peșterii).
 Fiecare autentificare este o micro-reparație a Cueva de Chaves.
 Reconstruim sanctuarul, secundă cu secundă, în interior.
 

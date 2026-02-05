@@ -18,7 +18,7 @@ _Nu hrănim fluxul. Vindecăm sanctuarul. Intrăm să ne amintim, nu să consum�
 6. **Memorie comutabilă** → Dreptul de a fi uitat, granular.
 7. **Putere lentă** → Fricțiune pe decizii negative.
 8. **Contestă tot** → Apel deschis, uman.
-9. **Privilegii minime** → Permisiuni capsulate, nu super-utilizator.
+9. **Privilegii minime** → Permisiuni capsulate, nu super-actor.
 10. **Liniște peste volum** → Optimizat pentru sediment, nu atenție.
 
 ## 3 Mecanici Concrete

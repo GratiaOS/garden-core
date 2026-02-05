@@ -13,7 +13,7 @@ Sistemul refuză accesul instantaneu. Viteza este inamicul memoriei.
 **Mecanica:**
 - Utilizatorul ține apăsat timp de 4.5 secunde (durata unui expir lung).
 - Ecranul pulsează vizual, sincronizat cu ritmul cardiac de repaus (60 BPM).
-- Dacă utilizatorul dă drumul prea repede (graba de dopamină) → Resetare. "Respiră."
+- Dacă actorul dă drumul prea repede (graba de dopamină) → Resetare. "Respiră."
 
 ### 2. Jurământul (Angajamentul)
 În timp ce membrana se dizolvă, textul care apare nu este "Bine ai venit", ci o reamintire a suveranității:
@@ -22,7 +22,7 @@ Sistemul refuză accesul instantaneu. Viteza este inamicul memoriei.
 > *Intru să-mi amintesc."*
 
 ### 3. Vindecarea
-Prin simplul act de a aștepta 4.5 secunde, utilizatorul iese din timpul industrial (timpul "El Patron") și intră în timpul geologic (timpul Peșterii).
+Prin simplul act de a aștepta 4.5 secunde, actorul iese din timpul industrial (timpul "El Patron") și intră în timpul geologic (timpul Peșterii).
 Fiecare autentificare este o micro-reparație a Cueva de Chaves.
 Reconstruim sanctuarul, secundă cu secundă, în interior.
 

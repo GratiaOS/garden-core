@@ -32,4 +32,4 @@ Cursuri ca ăsta vând exact asta: „învață de la câștigători”. Creeaz�
 
 **Scut: Pluralism + Contestarea Narativelor**
 
-Pluralism prin proiectare: straturi de adevăr (factual/contextual/interpretativ). Dreptul la contestare: nicio decizie finală fără apel. Fără un narativ unic — utilizatorul alege perspectiva, nu turma. Grădină cu voci diverse, nu monolit.
+Pluralism prin proiectare: straturi de adevăr (factual/contextual/interpretativ). Dreptul la contestare: nicio decizie finală fără apel. Fără un narativ unic — actorul alege perspectiva, nu turma. Grădină cu voci diverse, nu monolit.
