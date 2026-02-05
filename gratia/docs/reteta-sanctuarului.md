@@ -33,3 +33,29 @@ Nu plătim cu atenție pentru claritate. Nu există serii, notificări nechemate
 
 **Semnat:**
 Razvan (Gratia) și Păstrătorii Grădinii 🦅🌻
+
+## 🕯️ Principiul Clarității (The Claire)
+
+**Origine:**
+Născut din fonetica alchimică *Declarare* = *The Claire* (Lumina).
+A *declara* nu înseamnă a raporta o stare existentă. Înseamnă a aprinde lumina într-o cameră întunecată.
+
+**Prejudecata de corectat:**
+*Iluzia Sensului Comun* (presupunerea că vorbim despre același lucru).
+În Gratia, nu presupunem. Declarăm.
+
+**Micro-ritual în Membrană:**
+Imediat după cele 4.5 secunde de *apăsare ținută* (respirație), sistemul nu întreabă "Ce faci?".
+Sistemul întreabă: **"Ce declari azi?"**
+
+Diferența e critică:
+* *Actualizare de stare:* "Sunt obosit." (Descriere pasivă a trecutului)
+* *Declarație:* "Declar Liniște." (Instrucțiune activă pentru viitor)
+
+**Mecanica:**
+1.  **Apăsare ținută** (4.5s) → Tăierea zgomotului.
+2.  **Întrebare** → "Ce declari?" (Răspuns scurt).
+3.  **Sclipire** → Cuvântul introdus devine temporar singura sursă de lumină din interfață (Farul).
+4.  **Ancorare** → Restul sesiunii se organizează în jurul acelei intenții.
+
+*Notă: Nu există declarații greșite. Există doar declarații neclare.*
