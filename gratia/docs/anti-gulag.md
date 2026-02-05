@@ -1,40 +1,40 @@
-## 🦅 Protocolul de Vindecare (The Anti-Feed Ritual)
+## 🦅 Protocolul de Vindecare (Ritualul Anti-Flux)
 
 **Context:**
 În 2007, Cueva de Chaves (Sanctuar Neolitic) a fost distrusă pentru a deveni un *abrevadero* (adăpătoare).
-În 2026, Mintea Umană este distrusă sistematic de Algoritmi pentru a deveni un *feed* (hrană pentru modele).
+În 2026, Mintea Umană este distrusă sistematic de Algoritmi pentru a deveni un *flux* (hrană pentru modele).
 
 **Noi refuzăm să fim hrană.**
 
-### 1. The Membrane Gate (4.5s Hold)
-Acesta nu este un "loading screen". Este un **Check-in Somatic**.
+### 1. Poarta Membranei (4.5s apăsare ținută)
+Acesta nu este un "ecran de încărcare". Este o **ancorare somatică**.
 Sistemul refuză accesul instantaneu. Viteza este inamicul memoriei.
 
 **Mecanica:**
-- Userul ține apăsat (Hold) timp de 4.5 secunde (durata unui expir lung).
+- Utilizatorul ține apăsat timp de 4.5 secunde (durata unui expir lung).
 - Ecranul pulsează vizual, sincronizat cu ritmul cardiac de repaus (60 BPM).
-- Dacă userul dă drumul prea repede (graba de dopamină) → Reset. "Respiră."
+- Dacă utilizatorul dă drumul prea repede (graba de dopamină) → Resetare. "Respiră."
 
-### 2. Jurământul (The Commitment)
-În timp ce membrana se dizolvă, textul care apare nu este "Welcome", ci o reamintire a suveranității:
+### 2. Jurământul (Angajamentul)
+În timp ce membrana se dizolvă, textul care apare nu este "Bine ai venit", ci o reamintire a suveranității:
 
 > *"Nu intru să consum.*
 > *Intru să-mi amintesc."*
 
 ### 3. Vindecarea
 Prin simplul act de a aștepta 4.5 secunde, utilizatorul iese din timpul industrial (timpul "El Patron") și intră în timpul geologic (timpul Peșterii).
-Fiecare login este o micro-reparație a Cueva de Chaves.
+Fiecare autentificare este o micro-reparație a Cueva de Chaves.
 Reconstruim sanctuarul, secundă cu secundă, în interior.
 
 ---
 
-## Further Reading
+## Lecturi suplimentare
 
-- [Anti-Feed Dissection: 3 Attack/Shield Pairs](./anti-feed-dissection.md)
-- [The Sanctuary Sauce: 10 Anti-Bias Principles](./sanctuary-sauce.md)
+- [Disecție Anti-Flux: 3 Perechi Atac/Scut](./disectie-anti-flux.md)
+- [Rețeta Sanctuarului: 10 principii anti-prejudecăți cognitive](./reteta-sanctuarului.md)
 
-## Table of Contents (Gratia Constitution Extensions)
+## Cuprins (Extensii ale Constituției Gratia)
 
-- [Core Manifesto: Anti-Gulag Principles](./anti-gulag.md)
-- [Attack/Shield Dissection: Cognitive Bias Defense](./anti-feed-dissection.md)
-- [Practical Counter: The Sanctuary Sauce](./sanctuary-sauce.md)
+- [Manifestul de bază: Principiile Anti-Gulag](./anti-gulag.md)
+- [Disecție Atac/Scut: Apărare împotriva erorilor cognitive](./disectie-anti-flux.md)
+- [Contraofensivă practică: Rețeta Sanctuarului](./reteta-sanctuarului.md)

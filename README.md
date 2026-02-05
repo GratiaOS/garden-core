@@ -115,7 +115,7 @@ garden-core/
 - [`playground`](playground/README.md)
 - [`server`](server/README.md)
 - [`docs/protocols/p2p.md`](docs/protocols/p2p.md)
-- [`gratia/docs/gratia-constitution-v1.md`](gratia/docs/gratia-constitution-v1.md)
+- [`gratia/docs/gratia-constitutie-v1.md`](gratia/docs/gratia-constitutie-v1.md)
 
 This is a pnpm-based monorepo — modular by design, with shared types and docs across packages and apps.
 
