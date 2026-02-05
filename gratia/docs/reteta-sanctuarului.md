@@ -59,3 +59,31 @@ Diferența e critică:
 4.  **Ancorare** → Restul sesiunii se organizează în jurul acelei intenții.
 
 *Notă: Nu există declarații greșite. Există doar declarații neclare.*
+
+## 🕯️ Extensie: Claritatea Împărtășită (The Claire Shared)
+
+**Filozofie:**
+Lumina aprinsă în interior poate deveni semnal pentru alții, dar numai prin alegere explicită.
+Nu există "flux". Există doar "constelație de semnale".
+
+**Fluxul suveranității (eu-întâi, noi-apoi):**
+1.  **Intern:** Actorul scrie și confirmă Declarația. (Ego-ul social este absent).
+2.  **Sclipire:** Declarația se ancorează în sesiunea locală.
+3.  **Opțiune:** Doar după ancorare, apare opțiunea discretă: "Ridică felinarul?"
+
+**Specificații tehnice:**
+* **Limită:** Max 64 caractere. (Esență, nu zgomot).
+* **Vizibilitate:** Doar textul este partajat. Fără profil, fără istoric, fără "aprecieri".
+* **Revocare:** Dreptul de a stinge lumina este absolut și instantaneu (`revoked_at`).
+* **Închidere implicită:** Dacă rețeaua cade sau e nesigură, obloanele rămân închise automat.
+
+**Iconografie & stare:**
+* 🎧 **Închis (Frecvență privată):** Doar tu auzi muzica. "Sunt în studio."
+* 📻 **Deschis (Emisie):** Semnalul e în eter. "Sunt pe recepție."
+
+**Mesaj UI (indiciu):**
+> *"Emiți pe frecvența Grădinii. Doar semnalul se aude, sursa rămâne protejată."*
+
+**Scop:**
+Vindecarea izolării prin prezență paralelă, nu prin interacțiune forțată.
+Să știi că și alții veghează, fără să trebuiască să le vorbești.
