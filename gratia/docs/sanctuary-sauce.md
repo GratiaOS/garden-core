@@ -3,6 +3,11 @@
 **Jurământ:**
 _Nu hrănim feed-ul. Vindecăm sanctuarul. Intrăm să ne amintim, nu să consumăm._
 
+## Part of Gratia Constitution
+
+- Return to [Core Manifesto](./anti-gulag.md)
+- See also [Anti-Feed Dissection](./anti-feed-dissection.md)
+
 ## 10 Anti-Bias Principles (Gratia Protocol Remix)
 
 1. **No Intermittent Hooks** → Ritualuri fixe, predictibile.

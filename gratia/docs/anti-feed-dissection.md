@@ -2,6 +2,11 @@
 
 Acest document disecă trei mecanisme de manipulare cognitive și propune scuturi concrete în Firegate/Gratia.
 
+## Part of Gratia Constitution
+
+- Return to [Core Manifesto](./anti-gulag.md)
+- See also [The Sanctuary Sauce](./sanctuary-sauce.md)
+
 ## 1. Atac: Intermittent Reinforcement
 (Recompensa variabilă — slot machine-ul dopaminei)
 

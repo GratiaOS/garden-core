@@ -32,3 +32,9 @@ Reconstruim sanctuarul, secundă cu secundă, în interior.
 
 - [Anti-Feed Dissection: 3 Attack/Shield Pairs](./anti-feed-dissection.md)
 - [The Sanctuary Sauce: 10 Anti-Bias Principles](./sanctuary-sauce.md)
+
+## Table of Contents (Gratia Constitution Extensions)
+
+- [Core Manifesto: Anti-Gulag Principles](./anti-gulag.md)
+- [Attack/Shield Dissection: Cognitive Bias Defense](./anti-feed-dissection.md)
+- [Practical Counter: The Sanctuary Sauce](./sanctuary-sauce.md)
