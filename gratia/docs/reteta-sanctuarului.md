@@ -60,30 +60,51 @@ Diferența e critică:
 
 *Notă: Nu există declarații greșite. Există doar declarații neclare.*
 
-## 🕯️ Extensie: Claritatea Împărtășită (The Claire Shared)
+## 📻 Claritatea Împărtășită (The Claire Shared)
 
-**Filozofie:**
-Lumina aprinsă în interior poate deveni semnal pentru alții, dar numai prin alegere explicită.
-Nu există "flux". Există doar "constelație de semnale".
+**Origine:**
+Extensie a Principiului Clarității. Declarația personală poate deveni semnal pentru alții — doar dacă actorul alege, suveran.
 
-**Fluxul suveranității (eu-întâi, noi-apoi):**
-1.  **Intern:** Actorul scrie și confirmă Declarația. (Ego-ul social este absent).
-2.  **Sclipire:** Declarația se ancorează în sesiunea locală.
-3.  **Opțiune:** Doar după ancorare, apare opțiunea discretă: "Ridică felinarul?"
+**Prejudecata de corectat:**
+Izolarea digitală (fără să cădem în buclă de validare socială).
 
-**Specificații tehnice:**
-* **Limită:** Max 64 caractere. (Esență, nu zgomot).
-* **Vizibilitate:** Doar textul este partajat. Fără profil, fără istoric, fără "aprecieri".
-* **Revocare:** Dreptul de a stinge lumina este absolut și instantaneu (`revoked_at`).
-* **Închidere implicită:** Dacă rețeaua cade sau e nesigură, obloanele rămân închise automat.
+**Micro-ritual în Membrană (doar în seifuri comune):**
+După sclipirea declarației personale, apare un comutator discret pentru împărtășire.
+
+**Model de date (compatibil fgpack):**
+```json
+{
+  "session": {
+    "id": "uuid-v4",
+    "timestamp": "ISO-8601",
+    "declaration": {
+      "text": "Libertate",  // maxim 64 de caractere
+      "intent": "personal",  // sau "public" (comutator)
+      "revokable": true,
+      "revoked_at": null | "ISO-8601"
+    },
+    "context_tags": ["auto-generat din sesiune"]
+  }
+}
+```
+
+**Flux de interfață:**
+1. **Apăsare ținută 4.5s** → Întrebare: „Ce declari azi?” → Răspuns + Confirmare.
+2. **Sclipire** → Declarația devine centrul vizual.
+3. **Comutator discret** (doar în contexte comune):
+   📻 Faci această declarație audibilă pentru grădină?
+   (Implicit: oprit — respectăm liniștea)
+   Indiciu: „Emiți pe frecvența Grădinii. Doar semnalul se aude, sursa rămâne protejată.”
+4. **Confirmare ritualică** (dacă e pornit): întârziere scurtă (1s) + mesaj: „Declarat public. Semnalul tău ghidează și alții.”
+5. **Revocare:** În antetul sesiunii → buton „🔒 Revocă vizibilitatea publică” → instant + confirmare: „Semnal retras. Doar al tău acum.”
 
 **Iconografie & stare:**
 * 🎧 **Închis (Frecvență privată):** Doar tu auzi muzica. "Sunt în studio."
 * 📻 **Deschis (Emisie):** Semnalul e în eter. "Sunt pe recepție."
 
-**Mesaj UI (indiciu):**
-> *"Emiți pe frecvența Grădinii. Doar semnalul se aude, sursa rămâne protejată."*
+**Securitate și suveranitate:**
+- Public = doar citire (fără editări/reacții).
+- Export fgpack include starea comutatorului + istoricul revocării.
+- Fără rețea → comutatorul public este oprit automat.
 
-**Scop:**
-Vindecarea izolării prin prezență paralelă, nu prin interacțiune forțată.
-Să știi că și alții veghează, fără să trebuiască să le vorbești.
+*Notă: Claritatea împărtășită nu cere validare. Doar prezență.*
