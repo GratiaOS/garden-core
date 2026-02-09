@@ -39,13 +39,6 @@ pub struct Prediction {
 }
 
 impl Prediction {
-    pub fn should_fade(&self) -> bool {
-        self.top
-            .first()
-            .map(|label| label.category == SoundCategory::Fade)
-            .unwrap_or(false)
-    }
-
     pub fn summary(&self) -> String {
         let mut out = String::new();
         for (i, label) in self.top.iter().enumerate() {
@@ -80,8 +73,8 @@ impl InferenceEngine {
 
 #[cfg(feature = "tflite-inference")]
 mod runtime {
-    use std::sync::Arc;
     use std::cmp::Ordering;
+    use std::sync::Arc;
 
     use tflite::ops::builtin::BuiltinOpResolver;
     use tflite::{FlatBufferModel, Interpreter, InterpreterBuilder};

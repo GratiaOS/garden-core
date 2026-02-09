@@ -1,4 +1,5 @@
 mod buffer;
+mod fade;
 mod inference;
 
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -11,6 +12,7 @@ use buffer::{AudioWindow, CircularAudioBuffer};
 use clap::Parser;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{Device, SampleFormat, SampleRate, Stream, StreamConfig};
+use fade::{FadeConfig, FadeEngine, FadeState};
 use inference::InferenceEngine;
 use tracing::{info, warn};
 
@@ -61,6 +63,26 @@ struct Args {
     /// Number of top classes to report.
     #[arg(long, default_value_t = 3)]
     top_k: usize,
+
+    /// Threshold for entering DeepQuiet state (0.0-1.0).
+    #[arg(long, default_value_t = 0.70)]
+    fade_deep_threshold: f32,
+
+    /// Threshold for entering GentleFilter state (0.0-1.0).
+    #[arg(long, default_value_t = 0.35)]
+    fade_gentle_threshold: f32,
+
+    /// Night sensitivity multiplier for thresholds (0.0-1.0).
+    #[arg(long, default_value_t = 0.70)]
+    fade_night_factor: f32,
+
+    /// Night start hour (local time, 0-23).
+    #[arg(long, default_value_t = 20)]
+    fade_night_start: u32,
+
+    /// Night end hour (local time, 0-23).
+    #[arg(long, default_value_t = 6)]
+    fade_night_end: u32,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -284,6 +306,7 @@ fn main() -> Result<()> {
     stream.play().context("failed to start input stream")?;
 
     let mut inference = init_inference_engine(&args)?;
+    let fade_engine = FadeEngine::with_config(build_fade_config(&args));
 
     let running = Arc::new(AtomicBool::new(true));
     {
@@ -336,17 +359,29 @@ fn main() -> Result<()> {
             if let Some(engine) = inference.as_mut() {
                 match engine.predict(window) {
                     Ok(prediction) => {
-                        let should_fade = prediction.should_fade();
-                        if abrupt_candidate || should_fade {
+                        let decision = fade_engine.decide(&prediction);
+                        let final_state =
+                            elevate_with_abrupt_candidate(decision.state, abrupt_candidate);
+
+                        if abrupt_candidate || final_state != FadeState::Normal {
                             if let Some(top) = prediction.top.first() {
                                 warn!(
                                     top_label = %top.label,
                                     top_index = top.index,
                                     top_score = format_args!("{:.3}", top.score),
                                     top_category = %top.category,
-                                    action = if should_fade { "fade" } else { "observe" },
+                                    action = match final_state {
+                                        FadeState::DeepQuiet => "deep_quiet",
+                                        FadeState::GentleFilter => "gentle_filter",
+                                        FadeState::Normal => "observe",
+                                    },
+                                    fade_state = ?final_state,
+                                    fade_confidence = format_args!("{:.3}", decision.confidence),
+                                    fade_triggered_by = %decision.triggered_by.as_deref().unwrap_or("<none>"),
+                                    fade_reason = %decision.reason,
+                                    abrupt_candidate,
                                     top = %prediction.summary(),
-                                    "inference-window"
+                                    "fade-decision"
                                 );
                             }
                         }
@@ -636,4 +671,29 @@ fn report_window_stats(snapshot: &WindowStats) {
 
 fn db_to_linear(db: f32) -> f32 {
     10.0_f32.powf(db / 20.0)
+}
+
+fn build_fade_config(args: &Args) -> FadeConfig {
+    let deep_threshold = args.fade_deep_threshold.clamp(0.01, 1.0);
+    let gentle_threshold = args.fade_gentle_threshold.clamp(0.0, deep_threshold);
+
+    FadeConfig {
+        deep_quiet_threshold: deep_threshold,
+        gentle_filter_threshold: gentle_threshold,
+        night_sensitivity_factor: args.fade_night_factor.clamp(0.05, 1.0),
+        night_start_hour: args.fade_night_start % 24,
+        night_end_hour: args.fade_night_end % 24,
+        ..FadeConfig::default()
+    }
+}
+
+fn elevate_with_abrupt_candidate(base: FadeState, abrupt_candidate: bool) -> FadeState {
+    if !abrupt_candidate {
+        return base;
+    }
+
+    match base {
+        FadeState::DeepQuiet => FadeState::DeepQuiet,
+        FadeState::GentleFilter | FadeState::Normal => FadeState::GentleFilter,
+    }
 }

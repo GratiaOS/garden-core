@@ -11,6 +11,7 @@ Local audio ingester for Cuib Quiet Node (Pi 5 first target).
 5. Flags abrupt-event candidates after calibration using baseline-aware thresholding.
 6. Runs optional local TFLite inference and returns top-k labels per window.
 7. Marks top classes into `organic | fade | neutral` categories.
+8. Applies a fade state machine (`DeepQuiet | GentleFilter | Normal`) with quiet-hour sensitivity.
 
 Calibration threshold:
 
@@ -52,7 +53,12 @@ cargo run --release -- \
   --min-margin-db 6.0 \
   --model-path assets/yamnet_edgetpu.tflite \
   --labels-path assets/yamnet_class_map.csv \
-  --top-k 3
+  --top-k 3 \
+  --fade-deep-threshold 0.70 \
+  --fade-gentle-threshold 0.35 \
+  --fade-night-factor 0.70 \
+  --fade-night-start 20 \
+  --fade-night-end 6
 ```
 
 Inference-enabled run:
@@ -71,6 +77,7 @@ cargo run --release --features tflite-inference -- \
 - If `--sample-rate` is omitted, the ingester prefers `16000 Hz` when supported.
 - Auto-calibration can be disabled with `--calibration-secs 0`.
 - Inference is enabled only when both `--model-path` and `--labels-path` are provided.
+- Fade thresholds can be tuned from CLI without code changes.
 - `Ctrl+C` stops the stream cleanly.
 
 ## Next steps
