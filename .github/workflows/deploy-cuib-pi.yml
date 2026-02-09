@@ -73,7 +73,8 @@ jobs:
 
       - name: Build release (TFLite feature path)
         env:
-          TFLITE_RS_MAKE_EXTRA_CXXFLAGS: "-include cstdint -std=gnu++17"
+          TFLITE_RS_MAKE_EXTRA_CFLAGS: "-include stdint.h"
+          TFLITE_RS_MAKE_EXTRA_CXXFLAGS: "-include stdint.h -std=c++17"
         run: cargo build --release --features tflite-inference
 
       - name: Restart user service (optional)
