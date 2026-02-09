@@ -105,14 +105,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn emits_exact_960ms_window_at_16k() {
-        let mut buffer = CircularAudioBuffer::new(16_000, 1, 0.96).expect("buffer");
-        let input = vec![0.25f32; 15_360];
+    fn emits_exact_975ms_window_at_16k() {
+        let mut buffer = CircularAudioBuffer::new(16_000, 1, 0.975).expect("buffer");
+        let input = vec![0.25f32; 15_600];
         let mut out = Vec::new();
         buffer.push_interleaved(&input, &mut out);
 
         assert_eq!(out.len(), 1);
-        assert_eq!(out[0].samples.len(), 15_360);
+        assert_eq!(out[0].samples.len(), 15_600);
         assert_eq!(out[0].sample_rate, 16_000);
     }
 

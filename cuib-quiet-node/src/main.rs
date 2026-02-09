@@ -1,4 +1,5 @@
 mod buffer;
+mod inference;
 
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
@@ -10,6 +11,7 @@ use buffer::{AudioWindow, CircularAudioBuffer};
 use clap::Parser;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{Device, SampleFormat, SampleRate, Stream, StreamConfig};
+use inference::InferenceEngine;
 use tracing::{info, warn};
 
 #[derive(Debug, Parser)]
@@ -20,7 +22,7 @@ struct Args {
     #[arg(long)]
     device: Option<String>,
 
-    /// Requested sample rate in Hz. Default targets 16000 for future YAMNet path.
+    /// Requested sample rate in Hz. Default targets 16000 for YAMNet path.
     #[arg(long)]
     sample_rate: Option<u32>,
 
@@ -33,7 +35,7 @@ struct Args {
     report_ms: u64,
 
     /// Fixed window length in seconds for classifier-ready chunks.
-    #[arg(long, default_value_t = 0.96)]
+    #[arg(long, default_value_t = 0.975)]
     window_secs: f32,
 
     /// Calibration duration in seconds. Set 0 to disable.
@@ -47,6 +49,18 @@ struct Args {
     /// Minimum dB margin above baseline RMS for abrupt-event threshold.
     #[arg(long, default_value_t = 6.0)]
     min_margin_db: f32,
+
+    /// Path to .tflite model. Requires --labels-path.
+    #[arg(long)]
+    model_path: Option<String>,
+
+    /// Path to class-map csv. Requires --model-path.
+    #[arg(long)]
+    labels_path: Option<String>,
+
+    /// Number of top classes to report.
+    #[arg(long, default_value_t = 3)]
+    top_k: usize,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -269,6 +283,8 @@ fn main() -> Result<()> {
     let stream = build_input_stream(&device, &selected, Arc::clone(&shared_state))?;
     stream.play().context("failed to start input stream")?;
 
+    let mut inference = init_inference_engine(&args)?;
+
     let running = Arc::new(AtomicBool::new(true));
     {
         let running = Arc::clone(&running);
@@ -300,9 +316,11 @@ fn main() -> Result<()> {
                 );
             }
 
+            let mut abrupt_candidate = false;
             if let Some(profile) = calibration_state.profile() {
                 let threshold = profile.threshold_rms(args.abrupt_sigma, args.min_margin_db);
                 if window.rms >= threshold {
+                    abrupt_candidate = true;
                     warn!(
                         rms = format_args!("{:.5}", window.rms),
                         threshold = format_args!("{:.5}", threshold),
@@ -314,12 +332,60 @@ fn main() -> Result<()> {
                     );
                 }
             }
+
+            if let Some(engine) = inference.as_mut() {
+                match engine.predict(window) {
+                    Ok(prediction) => {
+                        let should_fade = prediction.should_fade();
+                        if abrupt_candidate || should_fade {
+                            if let Some(top) = prediction.top.first() {
+                                warn!(
+                                    top_label = %top.label,
+                                    top_index = top.index,
+                                    top_score = format_args!("{:.3}", top.score),
+                                    top_category = %top.category,
+                                    action = if should_fade { "fade" } else { "observe" },
+                                    top = %prediction.summary(),
+                                    "inference-window"
+                                );
+                            }
+                        }
+                    }
+                    Err(err) => {
+                        warn!(error = %err, "inference failed for current window");
+                    }
+                }
+            }
         }
     }
 
     drop(stream);
     info!("audio ingester stopped");
     Ok(())
+}
+
+fn init_inference_engine(args: &Args) -> Result<Option<InferenceEngine>> {
+    match (&args.model_path, &args.labels_path) {
+        (None, None) => {
+            info!("inference disabled: no model path provided");
+            Ok(None)
+        }
+        (Some(_), None) | (None, Some(_)) => Err(anyhow!(
+            "both --model-path and --labels-path are required to enable inference"
+        )),
+        (Some(model_path), Some(labels_path)) => {
+            let engine =
+                InferenceEngine::new(model_path, labels_path, args.top_k).with_context(|| {
+                    format!("failed initializing inference from model={model_path}")
+                })?;
+            info!(
+                expected_samples = engine.expected_input_samples(),
+                top_k = args.top_k,
+                "inference engine ready"
+            );
+            Ok(Some(engine))
+        }
+    }
 }
 
 fn select_input_device(host: &cpal::Host, device_query: Option<&str>) -> Result<Device> {
