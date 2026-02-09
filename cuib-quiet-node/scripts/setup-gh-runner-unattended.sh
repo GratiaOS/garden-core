@@ -10,6 +10,7 @@ set -euo pipefail
 #   RUNNER_VERSION=2.331.0
 #   RUNNER_ROOT=/opt/actions-runner
 #   RUNNER_USER=<linux_user>
+#   RUNNER_UNIX_GROUP=<linux_group_for_chown>
 #   RUNNER_NAME=<hostname-based-name>
 #   RUNNER_LABELS="self-hosted,linux,ARM64,pi5,cuib"
 #   RUNNER_GROUP=Default
@@ -27,6 +28,13 @@ require_cmd curl
 require_cmd tar
 require_cmd sudo
 require_cmd sha256sum
+
+os_name="$(uname -s)"
+if [[ "${os_name}" != "Linux" ]]; then
+  echo "unsupported OS: ${os_name}" >&2
+  echo "this script targets Linux (Pi). Run it on the Raspberry Pi host." >&2
+  exit 1
+fi
 
 if [[ -z "${RUNNER_URL:-}" ]]; then
   echo "RUNNER_URL is required (example: https://github.com/GratiaOS/garden-core)" >&2
@@ -51,6 +59,7 @@ esac
 RUNNER_VERSION="${RUNNER_VERSION:-2.331.0}"
 RUNNER_ROOT="${RUNNER_ROOT:-/opt/actions-runner}"
 RUNNER_USER="${RUNNER_USER:-$USER}"
+RUNNER_UNIX_GROUP="${RUNNER_UNIX_GROUP:-$(id -gn "${RUNNER_USER}" 2>/dev/null || true)}"
 RUNNER_NAME="${RUNNER_NAME:-$(hostname)-cuib}"
 RUNNER_LABELS="${RUNNER_LABELS:-self-hosted,linux,ARM64,pi5,cuib}"
 RUNNER_GROUP="${RUNNER_GROUP:-Default}"
@@ -62,7 +71,11 @@ download_url="https://github.com/actions/runner/releases/download/v${RUNNER_VERS
 
 echo "Preparing runner in ${RUNNER_ROOT}"
 sudo mkdir -p "${RUNNER_ROOT}"
-sudo chown "${RUNNER_USER}:${RUNNER_USER}" "${RUNNER_ROOT}"
+if [[ -n "${RUNNER_UNIX_GROUP}" ]]; then
+  sudo chown "${RUNNER_USER}:${RUNNER_UNIX_GROUP}" "${RUNNER_ROOT}"
+else
+  sudo chown "${RUNNER_USER}" "${RUNNER_ROOT}"
+fi
 
 cd "${RUNNER_ROOT}"
 
