@@ -37,11 +37,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Ensure Rust toolchain
+        run: |
+          set -euo pipefail
+          if ! command -v rustup >/dev/null 2>&1; then
+            curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain stable
+          fi
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          "$HOME/.cargo/bin/rustup" toolchain install stable --profile minimal
+          "$HOME/.cargo/bin/rustup" default stable
+
       - name: Show runner context
         run: |
           uname -a
           rustc --version
           cargo --version
+          rustup show active-toolchain
 
       - name: Detect Coral USB (non-blocking)
         run: |
