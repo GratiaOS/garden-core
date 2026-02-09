@@ -64,6 +64,10 @@ struct Args {
     #[arg(long, default_value_t = 3)]
     top_k: usize,
 
+    /// Fail startup if inference initialization fails.
+    #[arg(long, default_value_t = false)]
+    require_inference: bool,
+
     /// Threshold for entering DeepQuiet state (0.0-1.0).
     #[arg(long, default_value_t = 0.70)]
     fade_deep_threshold: f32,
@@ -409,16 +413,30 @@ fn init_inference_engine(args: &Args) -> Result<Option<InferenceEngine>> {
             "both --model-path and --labels-path are required to enable inference"
         )),
         (Some(model_path), Some(labels_path)) => {
-            let engine =
-                InferenceEngine::new(model_path, labels_path, args.top_k).with_context(|| {
-                    format!("failed initializing inference from model={model_path}")
-                })?;
-            info!(
-                expected_samples = engine.expected_input_samples(),
-                top_k = args.top_k,
-                "inference engine ready"
-            );
-            Ok(Some(engine))
+            match InferenceEngine::new(model_path, labels_path, args.top_k)
+                .with_context(|| format!("failed initializing inference from model={model_path}"))
+            {
+                Ok(engine) => {
+                    info!(
+                        expected_samples = engine.expected_input_samples(),
+                        top_k = args.top_k,
+                        "inference engine ready"
+                    );
+                    Ok(Some(engine))
+                }
+                Err(err) => {
+                    if args.require_inference {
+                        return Err(err);
+                    }
+                    warn!(
+                        error = %err,
+                        model_path = %model_path,
+                        labels_path = %labels_path,
+                        "inference init failed; continuing in audio-only mode (pass --require-inference to fail startup)"
+                    );
+                    Ok(None)
+                }
+            }
         }
     }
 }

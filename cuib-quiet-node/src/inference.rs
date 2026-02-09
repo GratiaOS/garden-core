@@ -108,6 +108,8 @@ mod runtime {
             labels: Vec<String>,
             top_k: usize,
         ) -> Result<Self> {
+            validate_tflite_flatbuffer(model_path.as_ref())?;
+
             let model =
                 FlatBufferModel::build_from_file(model_path.as_ref()).with_context(|| {
                     format!("failed to load model {}", model_path.as_ref().display())
@@ -117,6 +119,16 @@ mod runtime {
                 .context("failed to construct tflite interpreter builder")?;
             let mut interpreter = builder
                 .build()
+                .map_err(|err| {
+                    let detail = err.to_string();
+                    if detail.contains("Op builtin_code out of range") {
+                        anyhow!(
+                            "{detail}. model likely requires newer TensorFlow Lite than bundled runtime (tflite crate 0.9.8)"
+                        )
+                    } else {
+                        err.into()
+                    }
+                })
                 .context("failed to build tflite interpreter")?;
             interpreter
                 .allocate_tensors()
@@ -266,6 +278,22 @@ mod runtime {
         Err(anyhow!(
             "unsupported output tensor type; expected f32 or u8 at index {index}"
         ))
+    }
+
+    fn validate_tflite_flatbuffer(path: &Path) -> Result<()> {
+        let mut header = [0u8; 8];
+        let mut file =
+            File::open(path).with_context(|| format!("failed to open model {}", path.display()))?;
+        file.read_exact(&mut header)
+            .with_context(|| format!("failed to read model header {}", path.display()))?;
+
+        if &header[4..8] != b"TFL3" {
+            return Err(anyhow!(
+                "model file is not a valid .tflite flatbuffer (missing TFL3 magic at bytes 4..8)"
+            ));
+        }
+
+        Ok(())
     }
 }
 
