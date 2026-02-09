@@ -1,0 +1,74 @@
+name: Deploy Cuib On Pi
+
+on:
+  push:
+    branches:
+      - main
+      - feature/cuib-audio-ingest
+    paths:
+      - "cuib-quiet-node/**"
+      - ".github/workflows/deploy-cuib-pi.yml"
+  workflow_dispatch:
+    inputs:
+      restart_service:
+        description: "Restart cuib-quiet-node service after successful build"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-cuib-pi
+  cancel-in-progress: true
+
+jobs:
+  build-on-pi:
+    runs-on:
+      - self-hosted
+      - linux
+      - ARM64
+    defaults:
+      run:
+        shell: bash
+        working-directory: cuib-quiet-node
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show runner context
+        run: |
+          uname -a
+          rustc --version
+          cargo --version
+
+      - name: Detect Coral USB (non-blocking)
+        run: |
+          if command -v lsusb >/dev/null 2>&1; then
+            lsusb | grep -i "Global Unichip" || echo "Coral TPU not detected on USB bus"
+          else
+            echo "lsusb not available"
+          fi
+
+      - name: Check format
+        run: cargo fmt --all --check
+
+      - name: Run tests
+        run: cargo test
+
+      - name: Build release (CPU path)
+        run: cargo build --release
+
+      - name: Build release (TFLite feature path)
+        run: cargo build --release --features tflite-inference
+
+      - name: Restart user service (optional)
+        if: ${{ github.event_name == 'workflow_dispatch' && (inputs.restart_service == true || inputs.restart_service == 'true') }}
+        run: |
+          if systemctl --user list-unit-files | grep -q '^cuib-quiet-node.service'; then
+            systemctl --user restart cuib-quiet-node.service
+            systemctl --user --no-pager status cuib-quiet-node.service || true
+          else
+            echo "cuib-quiet-node.service not found in user scope; skipping restart"
+          fi
