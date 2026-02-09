@@ -1,9 +1,12 @@
+mod buffer;
+
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use anyhow::{Context, Result, anyhow};
+use buffer::{AudioWindow, CircularAudioBuffer};
 use clap::Parser;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{Device, SampleFormat, SampleRate, Stream, StreamConfig};
@@ -28,6 +31,22 @@ struct Args {
     /// Report interval for level telemetry in milliseconds.
     #[arg(long, default_value_t = 1000)]
     report_ms: u64,
+
+    /// Fixed window length in seconds for classifier-ready chunks.
+    #[arg(long, default_value_t = 0.96)]
+    window_secs: f32,
+
+    /// Calibration duration in seconds. Set 0 to disable.
+    #[arg(long, default_value_t = 300)]
+    calibration_secs: u64,
+
+    /// Sigma multiplier for abrupt-event threshold after calibration.
+    #[arg(long, default_value_t = 3.0)]
+    abrupt_sigma: f32,
+
+    /// Minimum dB margin above baseline RMS for abrupt-event threshold.
+    #[arg(long, default_value_t = 6.0)]
+    min_margin_db: f32,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -61,10 +80,155 @@ impl WindowStats {
     }
 }
 
+#[derive(Debug)]
+struct SharedAudioState {
+    report_stats: WindowStats,
+    window_buffer: CircularAudioBuffer,
+    ready_windows: Vec<AudioWindow>,
+}
+
+impl SharedAudioState {
+    fn new(sample_rate: u32, channels: u16, window_secs: f32) -> Result<Self> {
+        Ok(Self {
+            report_stats: WindowStats::default(),
+            window_buffer: CircularAudioBuffer::new(sample_rate, channels, window_secs)
+                .context("failed to initialize circular audio window buffer")?,
+            ready_windows: Vec::new(),
+        })
+    }
+
+    fn ingest_interleaved(&mut self, interleaved: &[f32]) {
+        for &sample in interleaved {
+            self.report_stats.observe(sample);
+        }
+
+        self.window_buffer
+            .push_interleaved(interleaved, &mut self.ready_windows);
+    }
+
+    fn take_snapshot(&mut self) -> (WindowStats, Vec<AudioWindow>) {
+        (
+            std::mem::take(&mut self.report_stats),
+            std::mem::take(&mut self.ready_windows),
+        )
+    }
+}
+
 #[derive(Debug, Clone)]
 struct SelectedConfig {
     config: StreamConfig,
     sample_format: SampleFormat,
+}
+
+#[derive(Debug, Clone)]
+struct CalibrationProfile {
+    window_count: u64,
+    mean_rms: f32,
+    std_rms: f32,
+    peak_max: f32,
+    clip_total: u64,
+}
+
+impl CalibrationProfile {
+    fn threshold_rms(&self, sigma: f32, min_margin_db: f32) -> f32 {
+        let sigma_term = self.mean_rms + sigma.max(0.0) * self.std_rms;
+        let db_factor = db_to_linear(min_margin_db.max(0.0));
+        let db_term = self.mean_rms * db_factor;
+        sigma_term.max(db_term).max(0.01)
+    }
+}
+
+#[derive(Debug, Clone, Default)]
+struct CalibrationAccumulator {
+    window_count: u64,
+    mean_rms: f64,
+    m2_rms: f64,
+    peak_max: f32,
+    clip_total: u64,
+}
+
+impl CalibrationAccumulator {
+    fn observe(&mut self, window: &AudioWindow) {
+        self.window_count += 1;
+        let rms = window.rms as f64;
+        let delta = rms - self.mean_rms;
+        self.mean_rms += delta / self.window_count as f64;
+        let delta2 = rms - self.mean_rms;
+        self.m2_rms += delta * delta2;
+
+        if window.peak > self.peak_max {
+            self.peak_max = window.peak;
+        }
+        self.clip_total += window.clip_count;
+    }
+
+    fn finalize(self) -> CalibrationProfile {
+        let variance = if self.window_count > 1 {
+            self.m2_rms / (self.window_count as f64 - 1.0)
+        } else {
+            0.0
+        };
+
+        CalibrationProfile {
+            window_count: self.window_count,
+            mean_rms: self.mean_rms as f32,
+            std_rms: variance.max(0.0).sqrt() as f32,
+            peak_max: self.peak_max,
+            clip_total: self.clip_total,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+enum CalibrationState {
+    Disabled,
+    Running {
+        started: Instant,
+        duration: Duration,
+        acc: CalibrationAccumulator,
+    },
+    Complete(CalibrationProfile),
+}
+
+impl CalibrationState {
+    fn new(calibration_secs: u64) -> Self {
+        if calibration_secs == 0 {
+            return CalibrationState::Disabled;
+        }
+
+        CalibrationState::Running {
+            started: Instant::now(),
+            duration: Duration::from_secs(calibration_secs),
+            acc: CalibrationAccumulator::default(),
+        }
+    }
+
+    fn observe_window(&mut self, window: &AudioWindow) -> Option<CalibrationProfile> {
+        match self {
+            CalibrationState::Running {
+                started,
+                duration,
+                acc,
+            } => {
+                acc.observe(window);
+                if started.elapsed() >= *duration {
+                    let profile = acc.clone().finalize();
+                    *self = CalibrationState::Complete(profile.clone());
+                    return Some(profile);
+                }
+            }
+            CalibrationState::Disabled | CalibrationState::Complete(_) => {}
+        }
+
+        None
+    }
+
+    fn profile(&self) -> Option<&CalibrationProfile> {
+        match self {
+            CalibrationState::Complete(profile) => Some(profile),
+            CalibrationState::Disabled | CalibrationState::Running { .. } => None,
+        }
+    }
 }
 
 fn main() -> Result<()> {
@@ -88,11 +252,21 @@ fn main() -> Result<()> {
         sample_rate = selected.config.sample_rate.0,
         channels = selected.config.channels,
         format = ?selected.sample_format,
+        window_secs = args.window_secs,
+        calibration_secs = args.calibration_secs,
         "input stream selected"
     );
 
-    let window_stats = Arc::new(Mutex::new(WindowStats::default()));
-    let stream = build_input_stream(&device, selected, Arc::clone(&window_stats))?;
+    let shared_state = Arc::new(Mutex::new(
+        SharedAudioState::new(
+            selected.config.sample_rate.0,
+            selected.config.channels,
+            args.window_secs,
+        )
+        .context("failed to build shared audio state")?,
+    ));
+
+    let stream = build_input_stream(&device, &selected, Arc::clone(&shared_state))?;
     stream.play().context("failed to start input stream")?;
 
     let running = Arc::new(AtomicBool::new(true));
@@ -104,38 +278,43 @@ fn main() -> Result<()> {
         .context("failed to install ctrl-c handler")?;
     }
 
+    let mut calibration_state = CalibrationState::new(args.calibration_secs);
     let report_every = Duration::from_millis(args.report_ms.max(100));
+
     info!("audio ingester started");
     while running.load(Ordering::Relaxed) {
         thread::sleep(report_every);
-        let snapshot = take_and_reset_stats(&window_stats);
-        if snapshot.sample_count == 0 {
-            warn!("no audio samples captured in current interval");
-            continue;
+
+        let (snapshot, windows) = take_audio_snapshot(&shared_state);
+        report_window_stats(&snapshot);
+
+        for window in &windows {
+            if let Some(profile) = calibration_state.observe_window(window) {
+                info!(
+                    windows = profile.window_count,
+                    mean_rms = format_args!("{:.5}", profile.mean_rms),
+                    std_rms = format_args!("{:.5}", profile.std_rms),
+                    peak = format_args!("{:.5}", profile.peak_max),
+                    clips = profile.clip_total,
+                    "auto-calibration complete"
+                );
+            }
+
+            if let Some(profile) = calibration_state.profile() {
+                let threshold = profile.threshold_rms(args.abrupt_sigma, args.min_margin_db);
+                if window.rms >= threshold {
+                    warn!(
+                        rms = format_args!("{:.5}", window.rms),
+                        threshold = format_args!("{:.5}", threshold),
+                        peak = format_args!("{:.5}", window.peak),
+                        clips = window.clip_count,
+                        samples = window.samples.len(),
+                        sample_rate = window.sample_rate,
+                        "abrupt-event-candidate"
+                    );
+                }
+            }
         }
-
-        let rms = snapshot.rms();
-        let peak = snapshot.peak;
-        let rms_db = if rms > 0.0 {
-            20.0 * rms.log10()
-        } else {
-            f32::NEG_INFINITY
-        };
-        let peak_db = if peak > 0.0 {
-            20.0 * peak.log10()
-        } else {
-            f32::NEG_INFINITY
-        };
-
-        info!(
-            samples = snapshot.sample_count,
-            clipped = snapshot.clip_count,
-            rms = format_args!("{rms:.5}"),
-            rms_dbfs = format_args!("{rms_db:.2}"),
-            peak = format_args!("{peak:.5}"),
-            peak_dbfs = format_args!("{peak_db:.2}"),
-            "audio window"
-        );
     }
 
     drop(stream);
@@ -152,7 +331,7 @@ fn select_input_device(host: &cpal::Host, device_query: Option<&str>) -> Result<
         if let Some(found) = devices.find(|device| {
             device
                 .name()
-                .map(|n| n.to_ascii_lowercase().contains(&query_lower))
+                .map(|name| name.to_ascii_lowercase().contains(&query_lower))
                 .unwrap_or(false)
         }) {
             return Ok(found);
@@ -176,7 +355,7 @@ fn list_input_device_names(host: &cpal::Host) -> Result<String> {
     let names = host
         .input_devices()
         .context("failed to enumerate input devices")?
-        .map(|d| d.name().unwrap_or_else(|_| "<unknown>".to_string()))
+        .map(|device| device.name().unwrap_or_else(|_| "<unknown>".to_string()))
         .collect::<Vec<_>>();
     Ok(names.join(", "))
 }
@@ -248,16 +427,16 @@ fn sample_format_priority(sample_format: SampleFormat) -> u8 {
 
 fn build_input_stream(
     device: &Device,
-    selected: SelectedConfig,
-    stats: Arc<Mutex<WindowStats>>,
+    selected: &SelectedConfig,
+    shared_state: Arc<Mutex<SharedAudioState>>,
 ) -> Result<Stream> {
     let err_fn = |err| warn!(error = %err, "input stream error");
 
     let stream = match selected.sample_format {
-        SampleFormat::F32 => build_stream_f32(device, &selected.config, stats, err_fn),
-        SampleFormat::F64 => build_stream_f64(device, &selected.config, stats, err_fn),
-        SampleFormat::I16 => build_stream_i16(device, &selected.config, stats, err_fn),
-        SampleFormat::U16 => build_stream_u16(device, &selected.config, stats, err_fn),
+        SampleFormat::F32 => build_stream_f32(device, &selected.config, shared_state, err_fn),
+        SampleFormat::F64 => build_stream_f64(device, &selected.config, shared_state, err_fn),
+        SampleFormat::I16 => build_stream_i16(device, &selected.config, shared_state, err_fn),
+        SampleFormat::U16 => build_stream_u16(device, &selected.config, shared_state, err_fn),
         unsupported => {
             return Err(anyhow!(
                 "unsupported sample format: {unsupported:?}. supported in this build: f32,f64,i16,u16"
@@ -272,12 +451,12 @@ fn build_input_stream(
 fn build_stream_f32(
     device: &Device,
     config: &StreamConfig,
-    stats: Arc<Mutex<WindowStats>>,
+    shared_state: Arc<Mutex<SharedAudioState>>,
     err_fn: impl FnMut(cpal::StreamError) + Send + 'static,
 ) -> Result<Stream> {
     Ok(device.build_input_stream(
         config,
-        move |data: &[f32], _| update_stats_f32(data, &stats),
+        move |data: &[f32], _| ingest_samples(&shared_state, data),
         err_fn,
         None,
     )?)
@@ -286,17 +465,16 @@ fn build_stream_f32(
 fn build_stream_f64(
     device: &Device,
     config: &StreamConfig,
-    stats: Arc<Mutex<WindowStats>>,
+    shared_state: Arc<Mutex<SharedAudioState>>,
     err_fn: impl FnMut(cpal::StreamError) + Send + 'static,
 ) -> Result<Stream> {
+    let mut scratch = Vec::<f32>::new();
     Ok(device.build_input_stream(
         config,
         move |data: &[f64], _| {
-            if let Ok(mut window) = stats.lock() {
-                for &sample in data {
-                    window.observe(sample as f32);
-                }
-            }
+            scratch.clear();
+            scratch.extend(data.iter().map(|&sample| sample as f32));
+            ingest_samples(&shared_state, &scratch);
         },
         err_fn,
         None,
@@ -306,17 +484,16 @@ fn build_stream_f64(
 fn build_stream_i16(
     device: &Device,
     config: &StreamConfig,
-    stats: Arc<Mutex<WindowStats>>,
+    shared_state: Arc<Mutex<SharedAudioState>>,
     err_fn: impl FnMut(cpal::StreamError) + Send + 'static,
 ) -> Result<Stream> {
+    let mut scratch = Vec::<f32>::new();
     Ok(device.build_input_stream(
         config,
         move |data: &[i16], _| {
-            if let Ok(mut window) = stats.lock() {
-                for &sample in data {
-                    window.observe(sample as f32 / i16::MAX as f32);
-                }
-            }
+            scratch.clear();
+            scratch.extend(data.iter().map(|&sample| sample as f32 / i16::MAX as f32));
+            ingest_samples(&shared_state, &scratch);
         },
         err_fn,
         None,
@@ -326,35 +503,71 @@ fn build_stream_i16(
 fn build_stream_u16(
     device: &Device,
     config: &StreamConfig,
-    stats: Arc<Mutex<WindowStats>>,
+    shared_state: Arc<Mutex<SharedAudioState>>,
     err_fn: impl FnMut(cpal::StreamError) + Send + 'static,
 ) -> Result<Stream> {
+    let mut scratch = Vec::<f32>::new();
     Ok(device.build_input_stream(
         config,
         move |data: &[u16], _| {
-            if let Ok(mut window) = stats.lock() {
-                for &sample in data {
-                    let normalized = (sample as f32 / u16::MAX as f32) * 2.0 - 1.0;
-                    window.observe(normalized);
-                }
-            }
+            scratch.clear();
+            scratch.extend(
+                data.iter()
+                    .map(|&sample| (sample as f32 / u16::MAX as f32) * 2.0 - 1.0),
+            );
+            ingest_samples(&shared_state, &scratch);
         },
         err_fn,
         None,
     )?)
 }
 
-fn update_stats_f32(data: &[f32], stats: &Arc<Mutex<WindowStats>>) {
-    if let Ok(mut window) = stats.lock() {
-        for &sample in data {
-            window.observe(sample);
-        }
+fn ingest_samples(shared_state: &Arc<Mutex<SharedAudioState>>, interleaved: &[f32]) {
+    if let Ok(mut lock) = shared_state.lock() {
+        lock.ingest_interleaved(interleaved);
     }
 }
 
-fn take_and_reset_stats(stats: &Arc<Mutex<WindowStats>>) -> WindowStats {
-    if let Ok(mut lock) = stats.lock() {
-        return std::mem::take(&mut *lock);
+fn take_audio_snapshot(
+    shared_state: &Arc<Mutex<SharedAudioState>>,
+) -> (WindowStats, Vec<AudioWindow>) {
+    if let Ok(mut lock) = shared_state.lock() {
+        return lock.take_snapshot();
     }
-    WindowStats::default()
+
+    (WindowStats::default(), Vec::new())
+}
+
+fn report_window_stats(snapshot: &WindowStats) {
+    if snapshot.sample_count == 0 {
+        warn!("no audio samples captured in current interval");
+        return;
+    }
+
+    let rms = snapshot.rms();
+    let peak = snapshot.peak;
+    let rms_db = if rms > 0.0 {
+        20.0 * rms.log10()
+    } else {
+        f32::NEG_INFINITY
+    };
+    let peak_db = if peak > 0.0 {
+        20.0 * peak.log10()
+    } else {
+        f32::NEG_INFINITY
+    };
+
+    info!(
+        samples = snapshot.sample_count,
+        clipped = snapshot.clip_count,
+        rms = format_args!("{rms:.5}"),
+        rms_dbfs = format_args!("{rms_db:.2}"),
+        peak = format_args!("{peak:.5}"),
+        peak_dbfs = format_args!("{peak_db:.2}"),
+        "audio window"
+    );
+}
+
+fn db_to_linear(db: f32) -> f32 {
+    10.0_f32.powf(db / 20.0)
 }
