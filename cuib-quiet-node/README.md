@@ -80,6 +80,31 @@ cargo run --release --features tflite-inference -- \
 - Fade thresholds can be tuned from CLI without code changes.
 - `Ctrl+C` stops the stream cleanly.
 
+## Pi Runner Bootstrap (Unattended)
+
+Use this when you want reproducible GitHub Actions self-hosted setup on Pi.
+
+1. Create an ephemeral registration token:
+
+```bash
+gh api -X POST repos/GratiaOS/garden-core/actions/runners/registration-token --jq .token
+```
+
+2. Run unattended setup on Pi:
+
+```bash
+RUNNER_URL="https://github.com/GratiaOS/garden-core" \
+RUNNER_TOKEN="<paste_token_here>" \
+./cuib-quiet-node/scripts/setup-gh-runner-unattended.sh
+```
+
+3. Confirm runner state (from any machine with `gh` auth):
+
+```bash
+gh api repos/GratiaOS/garden-core/actions/runners \
+  --jq '.runners[] | [.name,.status,.busy] | @tsv'
+```
+
 ## Next steps
 
 1. Add EdgeTPU delegate wiring (`libedgetpu`) for Coral execution path.
