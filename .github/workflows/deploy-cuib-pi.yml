@@ -72,6 +72,8 @@ jobs:
         run: cargo build --release
 
       - name: Build release (TFLite feature path)
+        env:
+          TFLITE_RS_MAKE_EXTRA_CXXFLAGS: "-include cstdint"
         run: cargo build --release --features tflite-inference
 
       - name: Restart user service (optional)
