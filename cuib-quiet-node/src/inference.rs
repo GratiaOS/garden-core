@@ -8,6 +8,7 @@ use csv::ReaderBuilder;
 
 use crate::buffer::AudioWindow;
 
+#[cfg_attr(not(any(feature = "tflite-inference", test)), allow(dead_code))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SoundCategory {
     Organic,
@@ -381,6 +382,7 @@ fn select_label_field(record: &csv::StringRecord) -> String {
         .unwrap_or_default()
 }
 
+#[cfg_attr(not(any(feature = "tflite-inference", test)), allow(dead_code))]
 pub fn categorize_label(label: &str) -> SoundCategory {
     let lowered = label.to_ascii_lowercase();
 
