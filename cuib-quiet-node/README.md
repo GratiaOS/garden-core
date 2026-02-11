@@ -24,12 +24,15 @@ Expected paths:
 - Model: `assets/yamnet.tflite`
 - Labels: `assets/yamnet_class_map.csv`
 
-For now, this module uses TFLite inference directly. EdgeTPU delegate wiring is a separate step.
+Inference backends:
 
-To enable inference build path:
+- `v2` (recommended): `tflite-dyn` + system `libtensorflowlite_c` runtime.
+- `legacy` (rollback only): `tflite` crate `0.9.8`.
+
+To build with v2 runtime:
 
 ```bash
-cargo run --release --features tflite-inference -- ...
+cargo run --release --features tflite-runtime-v2 -- ...
 ```
 
 ## Run
@@ -61,24 +64,26 @@ cargo run --release -- \
   --fade-night-end 6
 ```
 
-Inference-enabled run:
+Inference-enabled run (v2):
 
 ```bash
-cargo run --release --features tflite-inference -- \
+cargo run --release --features tflite-runtime-v2 -- \
   --sample-rate 16000 \
   --window-secs 0.975 \
   --model-path assets/yamnet.tflite \
-  --labels-path assets/yamnet_class_map.csv
+  --labels-path assets/yamnet_class_map.csv \
+  --inference-backend v2
 ```
 
 Strict startup (fail if inference cannot initialize):
 
 ```bash
-cargo run --release --features tflite-inference -- \
+cargo run --release --features tflite-runtime-v2 -- \
   --sample-rate 16000 \
   --window-secs 0.975 \
   --model-path assets/yamnet.tflite \
   --labels-path assets/yamnet_class_map.csv \
+  --inference-backend v2 \
   --require-inference
 ```
 
@@ -89,6 +94,7 @@ cargo run --release --features tflite-inference -- \
 - Auto-calibration can be disabled with `--calibration-secs 0`.
 - Inference is enabled only when both `--model-path` and `--labels-path` are provided.
 - If inference init fails and `--require-inference` is not passed, the node continues in audio-only mode.
+- `--inference-backend` supports `legacy | v2 | auto` (default: `legacy` for now).
 - Fade thresholds can be tuned from CLI without code changes.
 - `Ctrl+C` stops the stream cleanly.
 
@@ -111,6 +117,16 @@ Expected SHA-256:
 - `yamnet_class_map.csv`: `cdf24d193e196d9e95912a2667051ae203e92a2ba09449218ccb40ef787c6df2`
 
 If you see `Op builtin_code out of range`, the model requires newer TensorFlow Lite than the bundled runtime in `tflite` crate `0.9.8`.
+
+Use `v2` backend to avoid that incompatibility.
+
+## Pi TFLite Runtime Setup
+
+Install `libtensorflowlite_c` on Pi before running `--inference-backend v2`:
+
+```bash
+./scripts/setup-tflite-runtime-pi.sh
+```
 
 ## Pi Runner Bootstrap (Unattended)
 

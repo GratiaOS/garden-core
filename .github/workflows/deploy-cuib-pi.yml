@@ -71,11 +71,24 @@ jobs:
       - name: Build release (CPU path)
         run: cargo build --release
 
-      - name: Build release (TFLite feature path)
+      - name: Check TFLite C runtime (required for v2)
+        run: |
+          if ! ldconfig -p | grep -q 'libtensorflowlite_c'; then
+            echo "libtensorflowlite_c not found on runner."
+            echo "Run once on Pi: ./cuib-quiet-node/scripts/setup-tflite-runtime-pi.sh"
+            exit 1
+          fi
+          ldconfig -p | grep 'libtensorflowlite_c'
+
+      - name: Build release (TFLite v2 runtime path)
+        run: cargo build --release --features tflite-runtime-v2
+
+      - name: Build release (TFLite legacy rollback path)
+        continue-on-error: true
         env:
           TFLITE_RS_MAKE_EXTRA_CFLAGS: "-include stdint.h"
           TFLITE_RS_MAKE_EXTRA_CXXFLAGS: "-include stdint.h -std=c++17"
-        run: cargo build --release --features tflite-inference
+        run: cargo build --release --features tflite-legacy
 
       - name: Restart user service (optional)
         if: ${{ github.event_name == 'workflow_dispatch' && (inputs.restart_service == true || inputs.restart_service == 'true') }}

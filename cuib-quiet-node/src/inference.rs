@@ -8,7 +8,10 @@ use csv::ReaderBuilder;
 
 use crate::buffer::AudioWindow;
 
-#[cfg_attr(not(any(feature = "tflite-inference", test)), allow(dead_code))]
+#[cfg_attr(
+    not(any(feature = "tflite-inference", feature = "tflite-runtime-v2", test)),
+    allow(dead_code)
+)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SoundCategory {
     Organic,
@@ -109,17 +112,22 @@ impl InferenceEngine {
     }
 }
 
-#[cfg(feature = "tflite-inference")]
+#[cfg(any(feature = "tflite-inference", feature = "tflite-runtime-v2"))]
 mod runtime {
     use std::cmp::Ordering;
-    use std::sync::Arc;
-
-    use tflite::ops::builtin::BuiltinOpResolver;
-    use tflite::{FlatBufferModel, Interpreter, InterpreterBuilder};
-    use tracing::warn;
 
     use super::*;
 
+    #[cfg(feature = "tflite-inference")]
+    use std::sync::Arc;
+    #[cfg(feature = "tflite-inference")]
+    use tflite::ops::builtin::BuiltinOpResolver;
+    #[cfg(feature = "tflite-inference")]
+    use tflite::{FlatBufferModel, Interpreter, InterpreterBuilder};
+    #[cfg(feature = "tflite-inference")]
+    use tracing::warn;
+
+    #[cfg(feature = "tflite-inference")]
     type TfInterpreter = Interpreter<'static, Arc<BuiltinOpResolver>>;
 
     #[derive(Debug, Clone, Copy)]
@@ -129,10 +137,12 @@ mod runtime {
     }
 
     pub enum EngineRuntime {
+        #[cfg(feature = "tflite-inference")]
         Legacy(LegacyRuntime),
         V2(V2Runtime),
     }
 
+    #[cfg(feature = "tflite-inference")]
     pub struct LegacyRuntime {
         interpreter: TfInterpreter,
         labels: Vec<String>,
@@ -156,17 +166,35 @@ mod runtime {
 
             match backend {
                 BackendKind::Legacy => {
-                    Ok(Self::Legacy(LegacyRuntime::new(model_path, labels, top_k)?))
+                    #[cfg(feature = "tflite-inference")]
+                    {
+                        Ok(Self::Legacy(LegacyRuntime::new(model_path, labels, top_k)?))
+                    }
+                    #[cfg(not(feature = "tflite-inference"))]
+                    {
+                        Err(anyhow!(
+                            "legacy inference backend is not compiled. rebuild with `--features tflite-inference`"
+                        ))
+                    }
                 }
                 BackendKind::V2 => Ok(Self::V2(V2Runtime::new(model_path, labels, top_k)?)),
                 BackendKind::Auto => match V2Runtime::new(model_path, labels.clone(), top_k) {
                     Ok(v2) => Ok(Self::V2(v2)),
-                    Err(error) => {
-                        warn!(
-                            error = %error,
-                            "inference backend auto: v2 unavailable, falling back to legacy"
-                        );
-                        Ok(Self::Legacy(LegacyRuntime::new(model_path, labels, top_k)?))
+                    Err(v2_error) => {
+                        #[cfg(feature = "tflite-inference")]
+                        {
+                            warn!(
+                                error = %v2_error,
+                                "inference backend auto: v2 unavailable, falling back to legacy"
+                            );
+                            Ok(Self::Legacy(LegacyRuntime::new(model_path, labels, top_k)?))
+                        }
+                        #[cfg(not(feature = "tflite-inference"))]
+                        {
+                            Err(anyhow!(
+                                "inference backend auto failed; v2 unavailable and legacy not compiled: {v2_error}"
+                            ))
+                        }
                     }
                 },
             }
@@ -174,6 +202,7 @@ mod runtime {
 
         pub fn expected_input_samples(&self) -> usize {
             match self {
+                #[cfg(feature = "tflite-inference")]
                 Self::Legacy(runtime) => runtime.expected_input_samples(),
                 Self::V2(runtime) => runtime.expected_input_samples(),
             }
@@ -181,12 +210,14 @@ mod runtime {
 
         pub fn predict(&mut self, window: &AudioWindow) -> Result<Prediction> {
             match self {
+                #[cfg(feature = "tflite-inference")]
                 Self::Legacy(runtime) => runtime.predict(window),
                 Self::V2(runtime) => runtime.predict(window),
             }
         }
     }
 
+    #[cfg(feature = "tflite-inference")]
     impl LegacyRuntime {
         pub fn new<P: AsRef<Path>>(
             model_path: P,
@@ -262,35 +293,7 @@ mod runtime {
                 .context("failed invoking tflite interpreter")?;
             let scores = self.read_scores()?;
 
-            let count = scores.len().min(self.output_len);
-            if count == 0 {
-                return Err(anyhow!("output tensor is empty"));
-            }
-
-            let mut indices: Vec<usize> = (0..count).collect();
-            indices.sort_by(|a, b| {
-                scores[*b]
-                    .partial_cmp(&scores[*a])
-                    .unwrap_or(Ordering::Equal)
-            });
-
-            let mut top = Vec::new();
-            for idx in indices.into_iter().take(self.top_k.min(count)) {
-                let label = self
-                    .labels
-                    .get(idx)
-                    .cloned()
-                    .unwrap_or_else(|| format!("class_{idx}"));
-                let category = categorize_label(&label);
-                top.push(ClassifiedLabel {
-                    index: idx,
-                    label,
-                    score: scores[idx],
-                    category,
-                });
-            }
-
-            Ok(Prediction { top })
+            build_prediction(&self.labels, &scores, self.top_k, self.output_len)
         }
 
         fn write_input(&mut self, window: &AudioWindow) -> Result<()> {
@@ -333,8 +336,149 @@ mod runtime {
         }
     }
 
+    #[cfg(feature = "tflite-runtime-v2")]
+    pub struct V2Runtime {
+        _runtime: tflite_dyn::TfLite,
+        interpreter: tflite_dyn::Interpreter,
+        labels: Vec<String>,
+        input_len: usize,
+        output_len: usize,
+        input_encoding: TensorEncoding,
+        output_encoding: TensorEncoding,
+        top_k: usize,
+    }
+
+    #[cfg(feature = "tflite-runtime-v2")]
+    impl V2Runtime {
+        pub fn new<P: AsRef<Path>>(
+            model_path: P,
+            labels: Vec<String>,
+            top_k: usize,
+        ) -> Result<Self> {
+            use tflite_dyn::sys::TfLiteType;
+
+            validate_tflite_flatbuffer(model_path.as_ref())?;
+
+            let runtime = load_tflite_runtime()?;
+            let model_bytes = std::fs::read(model_path.as_ref()).with_context(|| {
+                format!("failed to read model {}", model_path.as_ref().display())
+            })?;
+            let model = runtime
+                .model_create(model_bytes)
+                .map_err(|err| anyhow!("failed to create tflite model: {err:?}"))?;
+
+            let mut options = runtime.interpreter_options_create();
+            options.set_num_threads(2);
+            let mut interpreter = runtime.interpreter_create(model, options);
+            interpreter
+                .allocate_tensors()
+                .map_err(|err| anyhow!("failed to allocate v2 tensors: {err:?}"))?;
+
+            let input_tensor = interpreter
+                .input_tensor(0)
+                .ok_or_else(|| anyhow!("model has no input tensor at index 0"))?;
+            let output_tensor = interpreter
+                .output_tensor(0)
+                .ok_or_else(|| anyhow!("model has no output tensor at index 0"))?;
+
+            let input_encoding = match input_tensor.type_() {
+                TfLiteType::Float32 => TensorEncoding::F32,
+                TfLiteType::UInt8 => TensorEncoding::U8,
+                other => {
+                    return Err(anyhow!(
+                        "unsupported v2 input tensor type: {other:?} (expected Float32 or UInt8)"
+                    ));
+                }
+            };
+            let output_encoding = match output_tensor.type_() {
+                TfLiteType::Float32 => TensorEncoding::F32,
+                TfLiteType::UInt8 => TensorEncoding::U8,
+                other => {
+                    return Err(anyhow!(
+                        "unsupported v2 output tensor type: {other:?} (expected Float32 or UInt8)"
+                    ));
+                }
+            };
+
+            let input_len = dyn_tensor_element_count(&input_tensor, input_encoding)?;
+            let output_len = dyn_tensor_element_count(&output_tensor, output_encoding)?;
+
+            let mut labels = labels;
+            if labels.len() < output_len {
+                for idx in labels.len()..output_len {
+                    labels.push(format!("class_{idx}"));
+                }
+            }
+
+            tracing::info!(
+                input_samples = input_len,
+                output_classes = output_len,
+                "v2 runtime ready"
+            );
+
+            Ok(Self {
+                _runtime: runtime,
+                interpreter,
+                labels,
+                input_len,
+                output_len,
+                input_encoding,
+                output_encoding,
+                top_k: top_k.max(1),
+            })
+        }
+
+        pub fn expected_input_samples(&self) -> usize {
+            self.input_len
+        }
+
+        pub fn predict(&mut self, window: &AudioWindow) -> Result<Prediction> {
+            self.write_input(window)?;
+            self.interpreter
+                .invoke()
+                .map_err(|err| anyhow!("failed invoking v2 interpreter: {err:?}"))?;
+            let scores = self.read_scores()?;
+            build_prediction(&self.labels, &scores, self.top_k, self.output_len)
+        }
+
+        fn write_input(&mut self, window: &AudioWindow) -> Result<()> {
+            let mut input_tensor = self
+                .interpreter
+                .input_tensor(0)
+                .ok_or_else(|| anyhow!("failed getting v2 input tensor at index 0"))?;
+            let input = input_tensor
+                .data_mut()
+                .ok_or_else(|| anyhow!("failed getting mutable input bytes from v2 tensor"))?;
+
+            match self.input_encoding {
+                TensorEncoding::F32 => fill_f32_bytes(input, &window.samples, self.input_len),
+                TensorEncoding::U8 => fill_u8_bytes(input, &window.samples, self.input_len),
+            }
+        }
+
+        fn read_scores(&self) -> Result<Vec<f32>> {
+            let output_tensor = self
+                .interpreter
+                .output_tensor(0)
+                .ok_or_else(|| anyhow!("failed getting v2 output tensor at index 0"))?;
+            let output = output_tensor
+                .data()
+                .ok_or_else(|| anyhow!("failed getting output bytes from v2 tensor"))?;
+
+            match self.output_encoding {
+                TensorEncoding::F32 => read_f32_bytes(output, self.output_len),
+                TensorEncoding::U8 => {
+                    let count = self.output_len.min(output.len());
+                    Ok(output[..count].iter().map(|&v| v as f32 / 255.0).collect())
+                }
+            }
+        }
+    }
+
+    #[cfg(not(feature = "tflite-runtime-v2"))]
     pub struct V2Runtime;
 
+    #[cfg(not(feature = "tflite-runtime-v2"))]
     impl V2Runtime {
         pub fn new<P: AsRef<Path>>(
             _model_path: P,
@@ -342,7 +486,7 @@ mod runtime {
             _top_k: usize,
         ) -> Result<Self> {
             Err(anyhow!(
-                "inference backend v2 is not implemented yet (commit 2)"
+                "inference backend v2 is not compiled. rebuild with `--features tflite-runtime-v2`"
             ))
         }
 
@@ -352,11 +496,48 @@ mod runtime {
 
         pub fn predict(&mut self, _window: &AudioWindow) -> Result<Prediction> {
             Err(anyhow!(
-                "inference backend v2 is not implemented yet (commit 2)"
+                "inference backend v2 is not compiled. rebuild with `--features tflite-runtime-v2`"
             ))
         }
     }
 
+    fn build_prediction(
+        labels: &[String],
+        scores: &[f32],
+        top_k: usize,
+        output_len: usize,
+    ) -> Result<Prediction> {
+        let count = scores.len().min(output_len);
+        if count == 0 {
+            return Err(anyhow!("output tensor is empty"));
+        }
+
+        let mut indices: Vec<usize> = (0..count).collect();
+        indices.sort_by(|a, b| {
+            scores[*b]
+                .partial_cmp(&scores[*a])
+                .unwrap_or(Ordering::Equal)
+        });
+
+        let mut top = Vec::new();
+        for idx in indices.into_iter().take(top_k.min(count)) {
+            let label = labels
+                .get(idx)
+                .cloned()
+                .unwrap_or_else(|| format!("class_{idx}"));
+            let category = categorize_label(&label);
+            top.push(ClassifiedLabel {
+                index: idx,
+                label,
+                score: scores[idx],
+                category,
+            });
+        }
+
+        Ok(Prediction { top })
+    }
+
+    #[cfg(feature = "tflite-inference")]
     fn detect_input_encoding(
         interpreter: &mut TfInterpreter,
         index: i32,
@@ -373,6 +554,7 @@ mod runtime {
         ))
     }
 
+    #[cfg(feature = "tflite-inference")]
     fn detect_output_encoding(
         interpreter: &TfInterpreter,
         index: i32,
@@ -404,9 +586,155 @@ mod runtime {
 
         Ok(())
     }
+
+    #[cfg(feature = "tflite-runtime-v2")]
+    fn load_tflite_runtime() -> Result<tflite_dyn::TfLite> {
+        let mut candidates: Vec<String> = Vec::new();
+        if let Ok(path) = std::env::var("TFLITE_C_LIB_PATH") {
+            let trimmed = path.trim();
+            if !trimmed.is_empty() {
+                candidates.push(trimmed.to_string());
+            }
+        }
+
+        if cfg!(target_os = "linux") {
+            candidates.extend([
+                "libtensorflowlite_c.so".to_string(),
+                "libtensorflowlite_c.so.2".to_string(),
+                "/usr/lib/aarch64-linux-gnu/libtensorflowlite_c.so".to_string(),
+                "/usr/local/lib/libtensorflowlite_c.so".to_string(),
+            ]);
+        } else if cfg!(target_os = "macos") {
+            candidates.extend([
+                "libtensorflowlite_c.dylib".to_string(),
+                "/usr/local/lib/libtensorflowlite_c.dylib".to_string(),
+                "/opt/homebrew/lib/libtensorflowlite_c.dylib".to_string(),
+            ]);
+        } else {
+            candidates.push("libtensorflowlite_c.so".to_string());
+        }
+
+        let mut errors: Vec<String> = Vec::new();
+        for candidate in &candidates {
+            match tflite_dyn::TfLite::load(candidate) {
+                Ok(runtime) => return Ok(runtime),
+                Err(err) => errors.push(format!("{candidate}: {err:?}")),
+            }
+        }
+
+        Err(anyhow!(
+            "failed to load TensorFlow Lite C runtime. set TFLITE_C_LIB_PATH or install libtensorflowlite_c. tried: {}. errors: {}",
+            candidates.join(", "),
+            errors.join(" | ")
+        ))
+    }
+
+    #[cfg(feature = "tflite-runtime-v2")]
+    fn dyn_tensor_element_count(
+        tensor: &tflite_dyn::Tensor<'_>,
+        encoding: TensorEncoding,
+    ) -> Result<usize> {
+        let byte_len = tensor
+            .data()
+            .map(|bytes| bytes.len())
+            .ok_or_else(|| anyhow!("tensor data pointer is null"))?;
+
+        let from_bytes = match encoding {
+            TensorEncoding::F32 => {
+                if byte_len % std::mem::size_of::<f32>() != 0 {
+                    return Err(anyhow!(
+                        "tensor byte length {byte_len} is not aligned to f32 size"
+                    ));
+                }
+                byte_len / std::mem::size_of::<f32>()
+            }
+            TensorEncoding::U8 => byte_len,
+        };
+
+        let dims = (0..tensor.num_dims())
+            .map(|idx| tensor.dim(idx))
+            .collect::<Vec<_>>();
+        let from_dims = dims
+            .iter()
+            .try_fold(1usize, |acc, dim| {
+                if *dim <= 0 {
+                    return None;
+                }
+                acc.checked_mul(*dim as usize)
+            })
+            .unwrap_or(from_bytes);
+
+        Ok(from_dims.max(1))
+    }
+
+    #[cfg(feature = "tflite-runtime-v2")]
+    fn fill_f32_bytes(dst: &mut [u8], src: &[f32], required: usize) -> Result<()> {
+        let needed = required
+            .checked_mul(std::mem::size_of::<f32>())
+            .ok_or_else(|| anyhow!("input size overflow while preparing f32 tensor"))?;
+        if dst.len() < needed {
+            return Err(anyhow!(
+                "input tensor too small for f32 data: have {} bytes, need {needed}",
+                dst.len()
+            ));
+        }
+
+        let copy_len = src.len().min(required);
+        for (idx, sample) in src.iter().take(copy_len).enumerate() {
+            let offset = idx * 4;
+            dst[offset..offset + 4].copy_from_slice(&sample.to_ne_bytes());
+        }
+        for idx in copy_len..required {
+            let offset = idx * 4;
+            dst[offset..offset + 4].copy_from_slice(&0.0f32.to_ne_bytes());
+        }
+
+        Ok(())
+    }
+
+    #[cfg(feature = "tflite-runtime-v2")]
+    fn fill_u8_bytes(dst: &mut [u8], src: &[f32], required: usize) -> Result<()> {
+        if dst.len() < required {
+            return Err(anyhow!(
+                "input tensor too small for u8 data: have {} bytes, need {required}",
+                dst.len()
+            ));
+        }
+
+        let copy_len = src.len().min(required);
+        for (idx, sample) in src.iter().take(copy_len).enumerate() {
+            let clamped = sample.clamp(-1.0, 1.0);
+            let normalized = ((clamped + 1.0) * 0.5 * 255.0).round();
+            dst[idx] = normalized.clamp(0.0, 255.0) as u8;
+        }
+        for item in &mut dst[copy_len..required] {
+            *item = 128;
+        }
+
+        Ok(())
+    }
+
+    #[cfg(feature = "tflite-runtime-v2")]
+    fn read_f32_bytes(src: &[u8], expected_len: usize) -> Result<Vec<f32>> {
+        let needed = expected_len
+            .checked_mul(std::mem::size_of::<f32>())
+            .ok_or_else(|| anyhow!("output size overflow while parsing f32 tensor"))?;
+        if src.len() < needed {
+            return Err(anyhow!(
+                "output tensor too small for f32 data: have {} bytes, need {needed}",
+                src.len()
+            ));
+        }
+
+        let mut out = Vec::with_capacity(expected_len);
+        for chunk in src[..needed].chunks_exact(4) {
+            out.push(f32::from_ne_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]));
+        }
+        Ok(out)
+    }
 }
 
-#[cfg(not(feature = "tflite-inference"))]
+#[cfg(not(any(feature = "tflite-inference", feature = "tflite-runtime-v2")))]
 mod runtime {
     use super::*;
 
@@ -420,7 +748,7 @@ mod runtime {
             _backend: BackendKind,
         ) -> Result<Self> {
             Err(anyhow!(
-                "inference support not compiled. rebuild with `--features tflite-inference`"
+                "inference support not compiled. rebuild with `--features tflite-runtime-v2` or `--features tflite-inference`"
             ))
         }
 
@@ -430,7 +758,7 @@ mod runtime {
 
         pub fn predict(&mut self, _window: &AudioWindow) -> Result<Prediction> {
             Err(anyhow!(
-                "inference support not compiled. rebuild with `--features tflite-inference`"
+                "inference support not compiled. rebuild with `--features tflite-runtime-v2` or `--features tflite-inference`"
             ))
         }
     }
@@ -520,7 +848,10 @@ fn select_label_field(record: &csv::StringRecord) -> String {
         .unwrap_or_default()
 }
 
-#[cfg_attr(not(any(feature = "tflite-inference", test)), allow(dead_code))]
+#[cfg_attr(
+    not(any(feature = "tflite-inference", feature = "tflite-runtime-v2", test)),
+    allow(dead_code)
+)]
 pub fn categorize_label(label: &str) -> SoundCategory {
     let lowered = label.to_ascii_lowercase();
 
