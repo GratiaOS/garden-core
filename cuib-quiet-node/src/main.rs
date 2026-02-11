@@ -13,7 +13,7 @@ use clap::Parser;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{Device, SampleFormat, SampleRate, Stream, StreamConfig};
 use fade::{FadeConfig, FadeEngine, FadeState};
-use inference::InferenceEngine;
+use inference::{BackendKind, InferenceEngine};
 use tracing::{info, warn};
 
 #[derive(Debug, Parser)]
@@ -63,6 +63,10 @@ struct Args {
     /// Number of top classes to report.
     #[arg(long, default_value_t = 3)]
     top_k: usize,
+
+    /// Inference backend selection: legacy, v2, auto.
+    #[arg(long, default_value = "legacy")]
+    inference_backend: BackendKind,
 
     /// Fail startup if inference initialization fails.
     #[arg(long, default_value_t = false)]
@@ -413,13 +417,14 @@ fn init_inference_engine(args: &Args) -> Result<Option<InferenceEngine>> {
             "both --model-path and --labels-path are required to enable inference"
         )),
         (Some(model_path), Some(labels_path)) => {
-            match InferenceEngine::new(model_path, labels_path, args.top_k)
+            match InferenceEngine::new(model_path, labels_path, args.top_k, args.inference_backend)
                 .with_context(|| format!("failed initializing inference from model={model_path}"))
             {
                 Ok(engine) => {
                     info!(
                         expected_samples = engine.expected_input_samples(),
                         top_k = args.top_k,
+                        backend = %args.inference_backend,
                         "inference engine ready"
                     );
                     Ok(Some(engine))
@@ -432,6 +437,7 @@ fn init_inference_engine(args: &Args) -> Result<Option<InferenceEngine>> {
                         error = %err,
                         model_path = %model_path,
                         labels_path = %labels_path,
+                        backend = %args.inference_backend,
                         "inference init failed; continuing in audio-only mode (pass --require-inference to fail startup)"
                     );
                     Ok(None)

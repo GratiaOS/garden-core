@@ -52,14 +52,51 @@ impl Prediction {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BackendKind {
+    Legacy,
+    V2,
+    Auto,
+}
+
+impl Display for BackendKind {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            BackendKind::Legacy => write!(f, "legacy"),
+            BackendKind::V2 => write!(f, "v2"),
+            BackendKind::Auto => write!(f, "auto"),
+        }
+    }
+}
+
+impl std::str::FromStr for BackendKind {
+    type Err = anyhow::Error;
+
+    fn from_str(value: &str) -> Result<Self> {
+        match value.trim().to_ascii_lowercase().as_str() {
+            "legacy" => Ok(BackendKind::Legacy),
+            "v2" => Ok(BackendKind::V2),
+            "auto" => Ok(BackendKind::Auto),
+            other => Err(anyhow!(
+                "invalid backend '{other}'. expected one of: legacy, v2, auto"
+            )),
+        }
+    }
+}
+
 pub struct InferenceEngine {
     inner: runtime::EngineRuntime,
 }
 
 impl InferenceEngine {
-    pub fn new<P: AsRef<Path>>(model_path: P, labels_path: P, top_k: usize) -> Result<Self> {
+    pub fn new<P: AsRef<Path>>(
+        model_path: P,
+        labels_path: P,
+        top_k: usize,
+        backend: BackendKind,
+    ) -> Result<Self> {
         let labels = load_labels(labels_path)?;
-        let inner = runtime::EngineRuntime::new(model_path, labels, top_k)?;
+        let inner = runtime::EngineRuntime::new(model_path, labels, top_k, backend)?;
         Ok(Self { inner })
     }
 
@@ -79,6 +116,7 @@ mod runtime {
 
     use tflite::ops::builtin::BuiltinOpResolver;
     use tflite::{FlatBufferModel, Interpreter, InterpreterBuilder};
+    use tracing::warn;
 
     use super::*;
 
@@ -90,7 +128,12 @@ mod runtime {
         U8,
     }
 
-    pub struct EngineRuntime {
+    pub enum EngineRuntime {
+        Legacy(LegacyRuntime),
+        V2(V2Runtime),
+    }
+
+    pub struct LegacyRuntime {
         interpreter: TfInterpreter,
         labels: Vec<String>,
         input_index: i32,
@@ -103,6 +146,48 @@ mod runtime {
     }
 
     impl EngineRuntime {
+        pub fn new<P: AsRef<Path>>(
+            model_path: P,
+            labels: Vec<String>,
+            top_k: usize,
+            backend: BackendKind,
+        ) -> Result<Self> {
+            let model_path = model_path.as_ref();
+
+            match backend {
+                BackendKind::Legacy => {
+                    Ok(Self::Legacy(LegacyRuntime::new(model_path, labels, top_k)?))
+                }
+                BackendKind::V2 => Ok(Self::V2(V2Runtime::new(model_path, labels, top_k)?)),
+                BackendKind::Auto => match V2Runtime::new(model_path, labels.clone(), top_k) {
+                    Ok(v2) => Ok(Self::V2(v2)),
+                    Err(error) => {
+                        warn!(
+                            error = %error,
+                            "inference backend auto: v2 unavailable, falling back to legacy"
+                        );
+                        Ok(Self::Legacy(LegacyRuntime::new(model_path, labels, top_k)?))
+                    }
+                },
+            }
+        }
+
+        pub fn expected_input_samples(&self) -> usize {
+            match self {
+                Self::Legacy(runtime) => runtime.expected_input_samples(),
+                Self::V2(runtime) => runtime.expected_input_samples(),
+            }
+        }
+
+        pub fn predict(&mut self, window: &AudioWindow) -> Result<Prediction> {
+            match self {
+                Self::Legacy(runtime) => runtime.predict(window),
+                Self::V2(runtime) => runtime.predict(window),
+            }
+        }
+    }
+
+    impl LegacyRuntime {
         pub fn new<P: AsRef<Path>>(
             model_path: P,
             labels: Vec<String>,
@@ -153,7 +238,7 @@ mod runtime {
                 }
             }
 
-            Ok(EngineRuntime {
+            Ok(LegacyRuntime {
                 interpreter,
                 labels,
                 input_index,
@@ -248,6 +333,30 @@ mod runtime {
         }
     }
 
+    pub struct V2Runtime;
+
+    impl V2Runtime {
+        pub fn new<P: AsRef<Path>>(
+            _model_path: P,
+            _labels: Vec<String>,
+            _top_k: usize,
+        ) -> Result<Self> {
+            Err(anyhow!(
+                "inference backend v2 is not implemented yet (commit 2)"
+            ))
+        }
+
+        pub fn expected_input_samples(&self) -> usize {
+            0
+        }
+
+        pub fn predict(&mut self, _window: &AudioWindow) -> Result<Prediction> {
+            Err(anyhow!(
+                "inference backend v2 is not implemented yet (commit 2)"
+            ))
+        }
+    }
+
     fn detect_input_encoding(
         interpreter: &mut TfInterpreter,
         index: i32,
@@ -308,6 +417,7 @@ mod runtime {
             _model_path: P,
             _labels: Vec<String>,
             _top_k: usize,
+            _backend: BackendKind,
         ) -> Result<Self> {
             Err(anyhow!(
                 "inference support not compiled. rebuild with `--features tflite-inference`"
@@ -451,6 +561,23 @@ pub fn categorize_label(label: &str) -> SoundCategory {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn parses_backend_kind() {
+        assert_eq!(
+            "legacy".parse::<BackendKind>().expect("legacy backend"),
+            BackendKind::Legacy
+        );
+        assert_eq!(
+            "v2".parse::<BackendKind>().expect("v2 backend"),
+            BackendKind::V2
+        );
+        assert_eq!(
+            "auto".parse::<BackendKind>().expect("auto backend"),
+            BackendKind::Auto
+        );
+        assert!("wat".parse::<BackendKind>().is_err());
+    }
 
     #[test]
     fn categorizes_fade_and_organic_labels() {
