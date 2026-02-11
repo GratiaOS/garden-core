@@ -217,7 +217,7 @@ export default function PresenceFlow({ onSend, onArchive, feed, phase = 'presenc
         {incoming ? (
           <div className="flow-echo__incoming" aria-live="polite">
             <div className="text-xs uppercase tracking-[0.2em] text-subtle/70">Received flow</div>
-            <div className="mt-2 text-sm text-text/90">{incoming.text}</div>
+            <div className="mt-2 text-sm text-text/90 whitespace-pre-wrap break-words">{incoming.text}</div>
             {incoming.tokens.length ? (
               <div className="mt-2 flex flex-wrap gap-2">
                 {incoming.tokens.map((token, index) => (
@@ -255,7 +255,7 @@ export default function PresenceFlow({ onSend, onArchive, feed, phase = 'presenc
           <div className="grid gap-3">
             {feed.map((entry) => (
               <div key={entry.id} className="rounded-2xl border border-border/60 bg-surface/75 p-4 transition-colors hover:border-border/80">
-                <div className="text-sm leading-relaxed text-text/90">{entry.text}</div>
+                <div className="text-sm leading-relaxed text-text/90 whitespace-pre-wrap break-words">{entry.text}</div>
                 {entry.tokens.length > 0 ? (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {entry.tokens.map((token, index) => (
