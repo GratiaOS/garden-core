@@ -2,43 +2,57 @@
 set -euo pipefail
 
 MODE="${1:-auto}"
-TF_VERSION="2.14.0"
+CORAL_KEYRING="/usr/share/keyrings/coral-edgetpu-archive-keyring.gpg"
+CORAL_LIST="/etc/apt/sources.list.d/coral-edgetpu.list"
+
+ensure_coral_repo() {
+  if ! command -v gpg >/dev/null 2>&1; then
+    sudo apt-get update
+    sudo apt-get install -y gnupg
+  fi
+
+  curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+    | gpg --dearmor \
+    | sudo tee "$CORAL_KEYRING" >/dev/null
+
+  echo "deb [signed-by=$CORAL_KEYRING] https://packages.cloud.google.com/apt coral-edgetpu-stable main" \
+    | sudo tee "$CORAL_LIST" >/dev/null
+}
 
 install_via_coral() {
   echo "[tflite] installing runtime via Coral apt repo"
-  echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" \
-    | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list >/dev/null
-
-  curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-    | sudo apt-key add - >/dev/null
-
+  ensure_coral_repo
   sudo apt-get update
   sudo apt-get install -y libedgetpu1-std
 }
 
-install_manual() {
-  echo "[tflite] installing runtime manually from TensorFlow release"
+install_via_apt_candidates() {
+  echo "[tflite] trying distro packages for libtensorflowlite_c"
+  sudo apt-get update
 
-  local tmp_dir
-  tmp_dir="$(mktemp -d)"
-  trap 'rm -rf "$tmp_dir"' RETURN
+  local candidates=(
+    libtensorflowlite0
+    libtensorflowlite2
+    libtensorflowlite2.14
+    libtensorflowlite-dev
+    libtensorflow-lite-dev
+    libtensorflow-lite2
+    python3-tflite-runtime
+  )
 
-  local url="https://github.com/tensorflow/tensorflow/releases/download/v${TF_VERSION}/libtensorflowlite_c-linux-aarch64.tar.gz"
-  local archive="$tmp_dir/libtensorflowlite_c.tar.gz"
+  local pkg
+  for pkg in "${candidates[@]}"; do
+    if apt-cache show "$pkg" >/dev/null 2>&1; then
+      echo "[tflite] installing candidate package: $pkg"
+      sudo apt-get install -y "$pkg" || true
+      sudo ldconfig
+      if ldconfig -p | grep -q 'libtensorflowlite_c'; then
+        return 0
+      fi
+    fi
+  done
 
-  curl -fL "$url" -o "$archive"
-  tar -xzf "$archive" -C "$tmp_dir"
-
-  local so_file
-  so_file="$(find "$tmp_dir" -name 'libtensorflowlite_c.so*' | head -n1 || true)"
-  if [[ -z "$so_file" ]]; then
-    echo "[tflite] libtensorflowlite_c.so not found in downloaded archive" >&2
-    exit 1
-  fi
-
-  sudo cp "$so_file" /usr/local/lib/libtensorflowlite_c.so
-  echo '/usr/local/lib' | sudo tee /etc/ld.so.conf.d/tflite-runtime.conf >/dev/null
-  sudo ldconfig
+  return 1
 }
 
 verify_runtime() {
@@ -66,14 +80,17 @@ case "$MODE" in
     install_via_coral
     ;;
   manual)
-    install_manual
+    install_via_apt_candidates
     ;;
   auto)
     if install_via_coral; then
       :
+    elif install_via_apt_candidates; then
+      :
     else
-      echo "[tflite] coral install failed, falling back to manual"
-      install_manual
+      echo "[tflite] coral + distro fallback both failed" >&2
+      echo "[tflite] please install libtensorflowlite_c manually on this host" >&2
+      exit 1
     fi
     ;;
   *)

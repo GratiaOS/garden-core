@@ -128,6 +128,14 @@ Install `libtensorflowlite_c` on Pi before running `--inference-backend v2`:
 ./scripts/setup-tflite-runtime-pi.sh
 ```
 
+Modes:
+
+```bash
+./scripts/setup-tflite-runtime-pi.sh auto
+./scripts/setup-tflite-runtime-pi.sh coral
+./scripts/setup-tflite-runtime-pi.sh manual
+```
+
 ## Pi Runner Bootstrap (Unattended)
 
 Use this when you want reproducible GitHub Actions self-hosted setup on Pi.
