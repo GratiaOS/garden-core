@@ -9,7 +9,7 @@ use csv::ReaderBuilder;
 use crate::buffer::AudioWindow;
 
 #[cfg_attr(
-    not(any(feature = "tflite-inference", feature = "tflite-runtime-v2", test)),
+    not(any(feature = "tflite-legacy", feature = "tflite-runtime-v2", test)),
     allow(dead_code)
 )]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -112,22 +112,22 @@ impl InferenceEngine {
     }
 }
 
-#[cfg(any(feature = "tflite-inference", feature = "tflite-runtime-v2"))]
+#[cfg(any(feature = "tflite-legacy", feature = "tflite-runtime-v2"))]
 mod runtime {
     use std::cmp::Ordering;
 
     use super::*;
 
-    #[cfg(feature = "tflite-inference")]
+    #[cfg(feature = "tflite-legacy")]
     use std::sync::Arc;
-    #[cfg(feature = "tflite-inference")]
+    #[cfg(feature = "tflite-legacy")]
     use tflite::ops::builtin::BuiltinOpResolver;
-    #[cfg(feature = "tflite-inference")]
+    #[cfg(feature = "tflite-legacy")]
     use tflite::{FlatBufferModel, Interpreter, InterpreterBuilder};
-    #[cfg(feature = "tflite-inference")]
+    #[cfg(feature = "tflite-legacy")]
     use tracing::warn;
 
-    #[cfg(feature = "tflite-inference")]
+    #[cfg(feature = "tflite-legacy")]
     type TfInterpreter = Interpreter<'static, Arc<BuiltinOpResolver>>;
 
     #[derive(Debug, Clone, Copy)]
@@ -137,12 +137,12 @@ mod runtime {
     }
 
     pub enum EngineRuntime {
-        #[cfg(feature = "tflite-inference")]
+        #[cfg(feature = "tflite-legacy")]
         Legacy(LegacyRuntime),
         V2(V2Runtime),
     }
 
-    #[cfg(feature = "tflite-inference")]
+    #[cfg(feature = "tflite-legacy")]
     pub struct LegacyRuntime {
         interpreter: TfInterpreter,
         labels: Vec<String>,
@@ -166,14 +166,14 @@ mod runtime {
 
             match backend {
                 BackendKind::Legacy => {
-                    #[cfg(feature = "tflite-inference")]
+                    #[cfg(feature = "tflite-legacy")]
                     {
                         Ok(Self::Legacy(LegacyRuntime::new(model_path, labels, top_k)?))
                     }
-                    #[cfg(not(feature = "tflite-inference"))]
+                    #[cfg(not(feature = "tflite-legacy"))]
                     {
                         Err(anyhow!(
-                            "legacy inference backend is not compiled. rebuild with `--features tflite-inference`"
+                            "legacy inference backend is not compiled. rebuild with `--features tflite-legacy`"
                         ))
                     }
                 }
@@ -181,7 +181,7 @@ mod runtime {
                 BackendKind::Auto => match V2Runtime::new(model_path, labels.clone(), top_k) {
                     Ok(v2) => Ok(Self::V2(v2)),
                     Err(v2_error) => {
-                        #[cfg(feature = "tflite-inference")]
+                        #[cfg(feature = "tflite-legacy")]
                         {
                             warn!(
                                 error = %v2_error,
@@ -189,7 +189,7 @@ mod runtime {
                             );
                             Ok(Self::Legacy(LegacyRuntime::new(model_path, labels, top_k)?))
                         }
-                        #[cfg(not(feature = "tflite-inference"))]
+                        #[cfg(not(feature = "tflite-legacy"))]
                         {
                             Err(anyhow!(
                                 "inference backend auto failed; v2 unavailable and legacy not compiled: {v2_error}"
@@ -202,7 +202,7 @@ mod runtime {
 
         pub fn expected_input_samples(&self) -> usize {
             match self {
-                #[cfg(feature = "tflite-inference")]
+                #[cfg(feature = "tflite-legacy")]
                 Self::Legacy(runtime) => runtime.expected_input_samples(),
                 Self::V2(runtime) => runtime.expected_input_samples(),
             }
@@ -210,14 +210,14 @@ mod runtime {
 
         pub fn predict(&mut self, window: &AudioWindow) -> Result<Prediction> {
             match self {
-                #[cfg(feature = "tflite-inference")]
+                #[cfg(feature = "tflite-legacy")]
                 Self::Legacy(runtime) => runtime.predict(window),
                 Self::V2(runtime) => runtime.predict(window),
             }
         }
     }
 
-    #[cfg(feature = "tflite-inference")]
+    #[cfg(feature = "tflite-legacy")]
     impl LegacyRuntime {
         pub fn new<P: AsRef<Path>>(
             model_path: P,
@@ -537,7 +537,7 @@ mod runtime {
         Ok(Prediction { top })
     }
 
-    #[cfg(feature = "tflite-inference")]
+    #[cfg(feature = "tflite-legacy")]
     fn detect_input_encoding(
         interpreter: &mut TfInterpreter,
         index: i32,
@@ -554,7 +554,7 @@ mod runtime {
         ))
     }
 
-    #[cfg(feature = "tflite-inference")]
+    #[cfg(feature = "tflite-legacy")]
     fn detect_output_encoding(
         interpreter: &TfInterpreter,
         index: i32,
@@ -734,7 +734,7 @@ mod runtime {
     }
 }
 
-#[cfg(not(any(feature = "tflite-inference", feature = "tflite-runtime-v2")))]
+#[cfg(not(any(feature = "tflite-legacy", feature = "tflite-runtime-v2")))]
 mod runtime {
     use super::*;
 
@@ -748,7 +748,7 @@ mod runtime {
             _backend: BackendKind,
         ) -> Result<Self> {
             Err(anyhow!(
-                "inference support not compiled. rebuild with `--features tflite-runtime-v2` or `--features tflite-inference`"
+                "inference support not compiled. rebuild with `--features tflite-inference` or `--features tflite-legacy`"
             ))
         }
 
@@ -758,13 +758,13 @@ mod runtime {
 
         pub fn predict(&mut self, _window: &AudioWindow) -> Result<Prediction> {
             Err(anyhow!(
-                "inference support not compiled. rebuild with `--features tflite-runtime-v2` or `--features tflite-inference`"
+                "inference support not compiled. rebuild with `--features tflite-inference` or `--features tflite-legacy`"
             ))
         }
     }
 }
 
-#[cfg(feature = "tflite-inference")]
+#[cfg(feature = "tflite-legacy")]
 fn fill_f32_input(dst: &mut [f32], src: &[f32], required: usize) {
     let effective = required.min(dst.len());
     let copy_len = src.len().min(effective);
@@ -774,7 +774,7 @@ fn fill_f32_input(dst: &mut [f32], src: &[f32], required: usize) {
     }
 }
 
-#[cfg(feature = "tflite-inference")]
+#[cfg(feature = "tflite-legacy")]
 fn fill_u8_input(dst: &mut [u8], src: &[f32], required: usize) {
     let effective = required.min(dst.len());
     let copy_len = src.len().min(effective);
@@ -849,7 +849,7 @@ fn select_label_field(record: &csv::StringRecord) -> String {
 }
 
 #[cfg_attr(
-    not(any(feature = "tflite-inference", feature = "tflite-runtime-v2", test)),
+    not(any(feature = "tflite-legacy", feature = "tflite-runtime-v2", test)),
     allow(dead_code)
 )]
 pub fn categorize_label(label: &str) -> SoundCategory {

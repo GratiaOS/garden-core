@@ -5,7 +5,7 @@ edition = "2024"
 
 [features]
 default = []
-tflite-inference = ["dep:tflite"]
+tflite-inference = ["tflite-runtime-v2"]
 tflite-runtime-v2 = ["dep:tflite-dyn"]
 tflite-legacy = ["dep:tflite"]
 
