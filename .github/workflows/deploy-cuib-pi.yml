@@ -74,7 +74,7 @@ jobs:
       - name: Ensure TFLite C runtime (required for v2)
         run: |
           set -euo pipefail
-          TFLITE_RE='libtensorflowlite_c|libtensorflowlite\\.so'
+          TFLITE_RE='libtensorflowlite_c|libtensorflowlite\\.so|libtensorflow-lite\\.so'
 
           if ldconfig -p | grep -Eq "$TFLITE_RE"; then
             echo "TensorFlow Lite runtime already available."
@@ -95,7 +95,7 @@ jobs:
             echo "::warning::Run once on Pi with interactive sudo:"
             echo "::warning::  cd /opt/actions-runner/_work/garden-core/garden-core/cuib-quiet-node"
             echo "::warning::  ./scripts/setup-tflite-runtime-pi.sh auto"
-            find /usr/lib /usr/local/lib -maxdepth 3 -type f \( -name 'libtensorflowlite*.so*' -o -name 'libedgetpu*.so*' \) 2>/dev/null | head -n 20 || true
+            find /usr/lib /usr/local/lib -maxdepth 3 -type f \( -name 'libtensorflowlite*.so*' -o -name 'libtensorflow-lite*.so*' -o -name 'libedgetpu*.so*' \) 2>/dev/null | head -n 20 || true
             exit 0
           fi
           ldconfig -p | grep -E "$TFLITE_RE"

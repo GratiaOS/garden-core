@@ -602,7 +602,7 @@ mod runtime {
             // Prefer absolute paths discovered by ldconfig to avoid fragile soname lookups.
             if let Ok(output) = std::process::Command::new("sh")
                 .arg("-c")
-                .arg("ldconfig -p 2>/dev/null | awk '/libtensorflowlite_c\\.so|libtensorflowlite\\.so|libedgetpu\\.so/{print $NF}'")
+                .arg("ldconfig -p 2>/dev/null | awk '/libtensorflowlite_c\\.so|libtensorflowlite\\.so|libtensorflow-lite\\.so|libedgetpu\\.so/{print $NF}'")
                 .output()
             {
                 if output.status.success() {
@@ -623,12 +623,19 @@ mod runtime {
                 "libtensorflowlite_c.so.2".to_string(),
                 "libtensorflowlite.so".to_string(),
                 "libtensorflowlite.so.2".to_string(),
+                "libtensorflow-lite.so".to_string(),
+                "libtensorflow-lite.so.2".to_string(),
+                "libtensorflow-lite.so.2.14.1".to_string(),
                 "libedgetpu.so.1".to_string(),
                 "/usr/lib/aarch64-linux-gnu/libtensorflowlite_c.so".to_string(),
                 "/usr/lib/aarch64-linux-gnu/libtensorflowlite.so".to_string(),
+                "/usr/lib/aarch64-linux-gnu/libtensorflow-lite.so".to_string(),
+                "/usr/lib/aarch64-linux-gnu/libtensorflow-lite.so.2".to_string(),
+                "/usr/lib/aarch64-linux-gnu/libtensorflow-lite.so.2.14.1".to_string(),
                 "/usr/lib/aarch64-linux-gnu/libedgetpu.so.1".to_string(),
                 "/usr/local/lib/libtensorflowlite_c.so".to_string(),
                 "/usr/local/lib/libtensorflowlite.so".to_string(),
+                "/usr/local/lib/libtensorflow-lite.so".to_string(),
             ]);
         } else if cfg!(target_os = "macos") {
             candidates.extend([
@@ -664,7 +671,7 @@ mod runtime {
         }
 
         Err(anyhow!(
-            "failed to load TensorFlow Lite runtime. set TFLITE_C_LIB_PATH or install libtensorflowlite_c/libtensorflowlite. tried: {}. errors: {}",
+            "failed to load TensorFlow Lite runtime. set TFLITE_C_LIB_PATH or install libtensorflowlite_c/libtensorflowlite/libtensorflow-lite. tried: {}. errors: {}",
             candidates.join(", "),
             errors.join(" | ")
         ))
