@@ -74,28 +74,29 @@ jobs:
       - name: Ensure TFLite C runtime (required for v2)
         run: |
           set -euo pipefail
+          TFLITE_RE='libtensorflowlite_c|libtensorflowlite\\.so'
 
-          if ldconfig -p | grep -q 'libtensorflowlite_c'; then
-            echo "libtensorflowlite_c already available."
-            ldconfig -p | grep 'libtensorflowlite_c'
+          if ldconfig -p | grep -Eq "$TFLITE_RE"; then
+            echo "TensorFlow Lite runtime already available."
+            ldconfig -p | grep -E "$TFLITE_RE"
             exit 0
           fi
 
-          echo "libtensorflowlite_c missing. attempting auto-setup..."
+          echo "TensorFlow Lite runtime missing. attempting auto-setup..."
           if [[ -x ./scripts/setup-tflite-runtime-pi.sh ]]; then
             ./scripts/setup-tflite-runtime-pi.sh auto || true
           else
             echo "setup script not found at ./scripts/setup-tflite-runtime-pi.sh"
           fi
 
-          if ! ldconfig -p | grep -q 'libtensorflowlite_c'; then
-            echo "libtensorflowlite_c still missing after auto-setup."
+          if ! ldconfig -p | grep -Eq "$TFLITE_RE"; then
+            echo "TensorFlow Lite runtime still missing after auto-setup."
             echo "Run once on Pi with interactive sudo:"
             echo "  cd /opt/actions-runner/_work/garden-core/garden-core/cuib-quiet-node"
             echo "  ./scripts/setup-tflite-runtime-pi.sh auto"
             exit 1
           fi
-          ldconfig -p | grep 'libtensorflowlite_c'
+          ldconfig -p | grep -E "$TFLITE_RE"
 
       - name: Build release (TFLite v2 runtime path)
         run: cargo build --release --features tflite-runtime-v2

@@ -56,9 +56,9 @@ install_via_apt_candidates() {
 }
 
 verify_runtime() {
-  if ldconfig -p | grep -q 'libtensorflowlite_c'; then
+  if ldconfig -p | grep -Eq 'libtensorflowlite_c|libtensorflowlite\.so'; then
     echo "[tflite] runtime available"
-    ldconfig -p | grep 'libtensorflowlite_c'
+    ldconfig -p | grep -E 'libtensorflowlite_c|libtensorflowlite\.so'
   else
     echo "[tflite] runtime missing after installation" >&2
     exit 1
@@ -69,7 +69,7 @@ if [[ "$(uname -m)" != "aarch64" ]]; then
   echo "[tflite] warning: expected aarch64 host, got $(uname -m)"
 fi
 
-if ldconfig -p | grep -q 'libtensorflowlite_c'; then
+if ldconfig -p | grep -Eq 'libtensorflowlite_c|libtensorflowlite\.so'; then
   echo "[tflite] runtime already present"
   verify_runtime
   exit 0

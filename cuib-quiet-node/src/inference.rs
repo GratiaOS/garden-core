@@ -601,17 +601,25 @@ mod runtime {
             candidates.extend([
                 "libtensorflowlite_c.so".to_string(),
                 "libtensorflowlite_c.so.2".to_string(),
+                "libtensorflowlite.so".to_string(),
+                "libtensorflowlite.so.2".to_string(),
                 "/usr/lib/aarch64-linux-gnu/libtensorflowlite_c.so".to_string(),
+                "/usr/lib/aarch64-linux-gnu/libtensorflowlite.so".to_string(),
                 "/usr/local/lib/libtensorflowlite_c.so".to_string(),
+                "/usr/local/lib/libtensorflowlite.so".to_string(),
             ]);
         } else if cfg!(target_os = "macos") {
             candidates.extend([
                 "libtensorflowlite_c.dylib".to_string(),
+                "libtensorflowlite.dylib".to_string(),
                 "/usr/local/lib/libtensorflowlite_c.dylib".to_string(),
+                "/usr/local/lib/libtensorflowlite.dylib".to_string(),
                 "/opt/homebrew/lib/libtensorflowlite_c.dylib".to_string(),
+                "/opt/homebrew/lib/libtensorflowlite.dylib".to_string(),
             ]);
         } else {
             candidates.push("libtensorflowlite_c.so".to_string());
+            candidates.push("libtensorflowlite.so".to_string());
         }
 
         let mut errors: Vec<String> = Vec::new();
@@ -623,7 +631,7 @@ mod runtime {
         }
 
         Err(anyhow!(
-            "failed to load TensorFlow Lite C runtime. set TFLITE_C_LIB_PATH or install libtensorflowlite_c. tried: {}. errors: {}",
+            "failed to load TensorFlow Lite runtime. set TFLITE_C_LIB_PATH or install libtensorflowlite_c/libtensorflowlite. tried: {}. errors: {}",
             candidates.join(", "),
             errors.join(" | ")
         ))
