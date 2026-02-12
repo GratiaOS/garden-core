@@ -59,9 +59,10 @@ verify_runtime() {
   if ldconfig -p | grep -Eq 'libtensorflowlite_c|libtensorflowlite\.so'; then
     echo "[tflite] runtime available"
     ldconfig -p | grep -E 'libtensorflowlite_c|libtensorflowlite\.so'
+    return 0
   else
     echo "[tflite] runtime missing after installation" >&2
-    exit 1
+    return 1
   fi
 }
 
@@ -83,15 +84,21 @@ case "$MODE" in
     install_via_apt_candidates
     ;;
   auto)
-    if install_via_coral; then
-      :
-    elif install_via_apt_candidates; then
-      :
-    else
-      echo "[tflite] coral + distro fallback both failed" >&2
-      echo "[tflite] please install libtensorflowlite_c manually on this host" >&2
-      exit 1
+    install_via_coral || true
+    if verify_runtime; then
+      exit 0
     fi
+
+    echo "[tflite] coral path did not expose runtime, trying distro fallback"
+    install_via_apt_candidates || true
+
+    if verify_runtime; then
+      exit 0
+    fi
+
+    echo "[tflite] coral + distro fallback both failed" >&2
+    echo "[tflite] please install libtensorflowlite_c/libtensorflowlite manually on this host" >&2
+    exit 1
     ;;
   *)
     echo "usage: $0 [auto|coral|manual]" >&2

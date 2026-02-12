@@ -603,8 +603,10 @@ mod runtime {
                 "libtensorflowlite_c.so.2".to_string(),
                 "libtensorflowlite.so".to_string(),
                 "libtensorflowlite.so.2".to_string(),
+                "libedgetpu.so.1".to_string(),
                 "/usr/lib/aarch64-linux-gnu/libtensorflowlite_c.so".to_string(),
                 "/usr/lib/aarch64-linux-gnu/libtensorflowlite.so".to_string(),
+                "/usr/lib/aarch64-linux-gnu/libedgetpu.so.1".to_string(),
                 "/usr/local/lib/libtensorflowlite_c.so".to_string(),
                 "/usr/local/lib/libtensorflowlite.so".to_string(),
             ]);
