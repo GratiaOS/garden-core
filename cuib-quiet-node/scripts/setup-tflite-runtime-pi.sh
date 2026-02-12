@@ -5,6 +5,7 @@ MODE="${1:-auto}"
 CORAL_KEYRING="/usr/share/keyrings/coral-edgetpu-archive-keyring.gpg"
 CORAL_LIST="/etc/apt/sources.list.d/coral-edgetpu.list"
 TFLITE_RE='libtensorflowlite_c|libtensorflowlite\.so|libtensorflow-lite\.so'
+TFLITE_DEB_URL_ARM64="http://ftp.debian.org/debian/pool/main/t/tensorflow/libtensorflow-lite2.14.1_2.14.1+dfsg-3+b1_arm64.deb"
 
 ensure_coral_repo() {
   if ! command -v gpg >/dev/null 2>&1; then
@@ -58,6 +59,30 @@ install_via_apt_candidates() {
   return 1
 }
 
+install_via_debian_deb() {
+  if [[ "$(uname -m)" != "aarch64" ]]; then
+    echo "[tflite] skipping direct deb install: unsupported arch $(uname -m)"
+    return 1
+  fi
+
+  echo "[tflite] trying direct Debian runtime package download"
+  local tmp_dir=""
+  local deb_path=""
+  tmp_dir="$(mktemp -d)"
+  deb_path="$tmp_dir/libtensorflow-lite2.14.1_arm64.deb"
+
+  if ! curl -fL "$TFLITE_DEB_URL_ARM64" -o "$deb_path"; then
+    echo "[tflite] failed to download $TFLITE_DEB_URL_ARM64" >&2
+    rm -rf "$tmp_dir"
+    return 1
+  fi
+
+  sudo dpkg -i "$deb_path" || sudo apt-get install -f -y
+  rm -rf "$tmp_dir"
+  sudo ldconfig
+  ensure_compat_symlinks
+}
+
 ensure_compat_symlinks() {
   local hyphen_path=""
   hyphen_path="$(ldconfig -p | awk '/libtensorflow-lite\.so/{print $NF; exit}')"
@@ -97,6 +122,9 @@ case "$MODE" in
   manual)
     install_via_apt_candidates
     ensure_compat_symlinks
+    if ! verify_runtime; then
+      install_via_debian_deb || true
+    fi
     ;;
   auto)
     install_via_coral || true
@@ -113,7 +141,15 @@ case "$MODE" in
       exit 0
     fi
 
-    echo "[tflite] coral + distro fallback both failed" >&2
+    echo "[tflite] distro fallback did not expose runtime, trying direct deb fallback"
+    install_via_debian_deb || true
+    ensure_compat_symlinks
+
+    if verify_runtime; then
+      exit 0
+    fi
+
+    echo "[tflite] coral + distro + direct-deb fallback all failed" >&2
     echo "[tflite] please install libtensorflowlite_c/libtensorflowlite/libtensorflow-lite manually on this host" >&2
     exit 1
     ;;
