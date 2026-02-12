@@ -6,6 +6,10 @@ CORAL_KEYRING="/usr/share/keyrings/coral-edgetpu-archive-keyring.gpg"
 CORAL_LIST="/etc/apt/sources.list.d/coral-edgetpu.list"
 TFLITE_RE='libtensorflowlite_c|libtensorflowlite\.so|libtensorflow-lite\.so'
 TFLITE_DEB_URL_ARM64="http://ftp.debian.org/debian/pool/main/t/tensorflow/libtensorflow-lite2.14.1_2.14.1+dfsg-3+b1_arm64.deb"
+LDCONFIG="$(command -v ldconfig || true)"
+if [[ -z "$LDCONFIG" && -x /sbin/ldconfig ]]; then
+  LDCONFIG="/sbin/ldconfig"
+fi
 
 ensure_coral_repo() {
   if ! command -v gpg >/dev/null 2>&1; then
@@ -49,8 +53,8 @@ install_via_apt_candidates() {
     if apt-cache show "$pkg" >/dev/null 2>&1; then
       echo "[tflite] installing candidate package: $pkg"
       sudo apt-get install -y "$pkg" || true
-      sudo ldconfig
-      if ldconfig -p | grep -Eq "$TFLITE_RE"; then
+      sudo "$LDCONFIG"
+      if "$LDCONFIG" -p | grep -Eq "$TFLITE_RE"; then
         return 0
       fi
     fi
@@ -79,25 +83,25 @@ install_via_debian_deb() {
 
   sudo dpkg -i "$deb_path" || sudo apt-get install -f -y
   rm -rf "$tmp_dir"
-  sudo ldconfig
+  sudo "$LDCONFIG"
   ensure_compat_symlinks
 }
 
 ensure_compat_symlinks() {
   local hyphen_path=""
-  hyphen_path="$(ldconfig -p | awk '/libtensorflow-lite\.so/{print $NF; exit}')"
+  hyphen_path="$("$LDCONFIG" -p | awk '/libtensorflow-lite\.so/{print $NF; exit}')"
 
   if [[ -n "$hyphen_path" && -f "$hyphen_path" ]]; then
     sudo ln -sf "$hyphen_path" /usr/local/lib/libtensorflowlite.so
     sudo ln -sf "$hyphen_path" /usr/local/lib/libtensorflowlite.so.2
-    sudo ldconfig
+    sudo "$LDCONFIG"
   fi
 }
 
 verify_runtime() {
-  if ldconfig -p | grep -Eq "$TFLITE_RE"; then
+  if "$LDCONFIG" -p | grep -Eq "$TFLITE_RE"; then
     echo "[tflite] runtime available"
-    ldconfig -p | grep -E "$TFLITE_RE"
+    "$LDCONFIG" -p | grep -E "$TFLITE_RE"
     return 0
   else
     echo "[tflite] runtime missing after installation" >&2
@@ -109,7 +113,12 @@ if [[ "$(uname -m)" != "aarch64" ]]; then
   echo "[tflite] warning: expected aarch64 host, got $(uname -m)"
 fi
 
-if ldconfig -p | grep -Eq "$TFLITE_RE"; then
+if [[ -z "$LDCONFIG" ]]; then
+  echo "[tflite] ldconfig not found in PATH and /sbin/ldconfig missing" >&2
+  exit 1
+fi
+
+if "$LDCONFIG" -p | grep -Eq "$TFLITE_RE"; then
   echo "[tflite] runtime already present"
   verify_runtime
   exit 0

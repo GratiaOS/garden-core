@@ -75,10 +75,18 @@ jobs:
         run: |
           set -euo pipefail
           TFLITE_RE='libtensorflowlite_c|libtensorflowlite\\.so|libtensorflow-lite\\.so'
+          LDCONFIG="$(command -v ldconfig || true)"
+          if [[ -z "$LDCONFIG" && -x /sbin/ldconfig ]]; then
+            LDCONFIG="/sbin/ldconfig"
+          fi
+          if [[ -z "$LDCONFIG" ]]; then
+            echo "::warning::ldconfig not found; skipping runtime probe step."
+            exit 0
+          fi
 
-          if ldconfig -p | grep -Eq "$TFLITE_RE"; then
+          if "$LDCONFIG" -p | grep -Eq "$TFLITE_RE"; then
             echo "TensorFlow Lite runtime already available."
-            ldconfig -p | grep -E "$TFLITE_RE"
+            "$LDCONFIG" -p | grep -E "$TFLITE_RE"
             exit 0
           fi
 
@@ -89,7 +97,7 @@ jobs:
             echo "setup script not found at ./scripts/setup-tflite-runtime-pi.sh"
           fi
 
-          if ! ldconfig -p | grep -Eq "$TFLITE_RE"; then
+          if ! "$LDCONFIG" -p | grep -Eq "$TFLITE_RE"; then
             echo "::warning::TensorFlow Lite runtime still missing after auto-setup."
             echo "::warning::Build will continue (runtime is needed when executing inference, not for compiling)."
             echo "::warning::Run once on Pi with interactive sudo:"
@@ -98,7 +106,7 @@ jobs:
             find /usr/lib /usr/local/lib -maxdepth 3 -type f \( -name 'libtensorflowlite*.so*' -o -name 'libtensorflow-lite*.so*' -o -name 'libedgetpu*.so*' \) 2>/dev/null | head -n 20 || true
             exit 0
           fi
-          ldconfig -p | grep -E "$TFLITE_RE"
+          "$LDCONFIG" -p | grep -E "$TFLITE_RE"
 
       - name: Build release (TFLite v2 runtime path)
         run: cargo build --release --features tflite-runtime-v2
