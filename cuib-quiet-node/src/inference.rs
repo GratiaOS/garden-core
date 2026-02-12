@@ -597,6 +597,26 @@ mod runtime {
             }
         }
 
+        #[cfg(target_os = "linux")]
+        {
+            // Prefer absolute paths discovered by ldconfig to avoid fragile soname lookups.
+            if let Ok(output) = std::process::Command::new("sh")
+                .arg("-c")
+                .arg("ldconfig -p 2>/dev/null | awk '/libtensorflowlite_c\\.so|libtensorflowlite\\.so|libedgetpu\\.so/{print $NF}'")
+                .output()
+            {
+                if output.status.success() {
+                    let discovered = String::from_utf8_lossy(&output.stdout);
+                    for line in discovered.lines() {
+                        let path = line.trim();
+                        if !path.is_empty() {
+                            candidates.push(path.to_string());
+                        }
+                    }
+                }
+            }
+        }
+
         if cfg!(target_os = "linux") {
             candidates.extend([
                 "libtensorflowlite_c.so".to_string(),
@@ -624,11 +644,22 @@ mod runtime {
             candidates.push("libtensorflowlite.so".to_string());
         }
 
+        // De-duplicate while preserving first-hit preference.
+        {
+            let mut seen = std::collections::HashSet::<String>::new();
+            candidates.retain(|entry| seen.insert(entry.clone()));
+        }
+
         let mut errors: Vec<String> = Vec::new();
         for candidate in &candidates {
-            match tflite_dyn::TfLite::load(candidate) {
-                Ok(runtime) => return Ok(runtime),
-                Err(err) => errors.push(format!("{candidate}: {err:?}")),
+            // tflite-dyn currently unwraps internally on some load paths; guard it.
+            let attempt = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                tflite_dyn::TfLite::load(candidate)
+            }));
+            match attempt {
+                Ok(Ok(runtime)) => return Ok(runtime),
+                Ok(Err(err)) => errors.push(format!("{candidate}: {err:?}")),
+                Err(_) => errors.push(format!("{candidate}: panic while loading runtime")),
             }
         }
 
