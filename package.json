@@ -15,7 +15,7 @@
     "release": "changeset version && pnpm -r build && pnpm -r publish --access public"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.7",
+    "@changesets/cli": "^2.29.8",
     "cross-env": "^7.0.3",
     "dotenv-cli": "^7.4.1",
     "tailwindcss": "^4.1.16",
