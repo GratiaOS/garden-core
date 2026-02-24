@@ -1,0 +1,90 @@
+version: 2
+updates:
+  # Root package.json
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      # Group TypeScript & build tools
+      typescript-ecosystem:
+        patterns:
+          - "typescript*"
+          - "@types/*"
+          - "vite"
+          - "tsx"
+      # Group React ecosystem
+      react-ecosystem:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react*"
+          - "framer-motion"
+      # Group Tailwind ecosystem  
+      tailwind-ecosystem:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+
+  # Playground workspace
+  - package-ecosystem: "npm"
+    directory: "/playground"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Server workspace
+  - package-ecosystem: "npm"
+    directory: "/server"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # UI package
+  - package-ecosystem: "npm"
+    directory: "/packages/ui"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Presence kernel
+  - package-ecosystem: "npm"
+    directory: "/packages/presence-kernel"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Pad core
+  - package-ecosystem: "npm"
+    directory: "/packages/pad-core"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Tokens
+  - package-ecosystem: "npm"
+    directory: "/packages/tokens"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Icons
+  - package-ecosystem: "npm"
+    directory: "/packages/icons"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Signal
+  - package-ecosystem: "npm"
+    directory: "/packages/signal"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
