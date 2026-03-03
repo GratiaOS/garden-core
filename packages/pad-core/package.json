@@ -45,8 +45,8 @@
     "clean": "rimraf dist"
   },
   "devDependencies": {
-    "@types/react": "^19.2.2",
-    "react": "^19.2.0",
+    "@types/react": "^19.2.14",
+    "react": "^19.2.4",
     "typescript": "^5.9.3",
     "rimraf": "^6.0.1"
   }
