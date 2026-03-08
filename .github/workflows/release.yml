@@ -15,14 +15,43 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
       - uses: actions/setup-node@v6
         with:
-          node-version: 20
-      - run: corepack enable
-      - run: corepack prepare pnpm@10.17.1 --activate
-      - run: pnpm install --frozen-lockfile
-      - uses: changesets/action@v1
+          node-version: 22
+
+      - uses: pnpm/action-setup@v4
         with:
-          version: pnpm changeset version
+          version: 10.17.1
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Check for changesets
+        id: has_changesets
+        run: |
+          if ls .changeset/*.md 2>/dev/null | grep -v README | grep -q .; then
+            echo "pending=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "pending=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create or update release PR
+        if: steps.has_changesets.outputs.pending == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pnpm changeset version
+          git checkout -B changeset-release/main
+          git add -A
+          git commit -m "chore: version packages"
+          git push origin changeset-release/main --force
+          gh pr create \
+            --base main \
+            --head changeset-release/main \
+            --title "chore: version packages" \
+            --body "Automated release PR from changesets." \
+            || gh pr edit changeset-release/main \
+              --title "chore: version packages" \
+              --body "Automated release PR from changesets." 2>/dev/null || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
