@@ -1,5 +1,13 @@
 # @gratiaos/presence-kernel
 
+## 1.1.6
+
+### Patch Changes
+
+- 65b7759: chore: update all dependencies, fix 13 security vulnerabilities
+- Updated dependencies [65b7759]
+  - @gratiaos/signal@1.0.4
+
 ## 1.1.5
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @gratiaos/pad-core
 
+## 1.1.3
+
+### Patch Changes
+
+- 65b7759: chore: update all dependencies, fix 13 security vulnerabilities
+- Updated dependencies [65b7759]
+  - @gratiaos/presence-kernel@1.1.6
+
 ## 1.1.2
 
 ### Patch Changes

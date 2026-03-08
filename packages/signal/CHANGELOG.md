@@ -1,5 +1,11 @@
 # @gratiaos/signal
 
+## 1.0.4
+
+### Patch Changes
+
+- 65b7759: chore: update all dependencies, fix 13 security vulnerabilities
+
 ## 1.0.3
 
 ### Patch Changes

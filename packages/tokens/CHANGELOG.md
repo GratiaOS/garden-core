@@ -1,5 +1,11 @@
 # @gratiaos/tokens
 
+## 1.0.8
+
+### Patch Changes
+
+- 65b7759: chore: update all dependencies, fix 13 security vulnerabilities
+
 ## 1.0.7
 
 ### Patch Changes
