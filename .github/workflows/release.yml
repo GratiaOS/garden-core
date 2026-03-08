@@ -41,6 +41,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           pnpm changeset version
+          pnpm install --no-frozen-lockfile
           git checkout -B changeset-release/main
           git add -A
           git commit -m "chore: version packages"
