@@ -8,13 +8,10 @@ on:
 
 permissions:
   contents: write
-  id-token: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    env:
-      NODE_AUTH_TOKEN: ''
     steps:
       - name: Checkout repository (full history for tagging)
         uses: actions/checkout@v6
@@ -82,26 +79,7 @@ jobs:
           npm view @gratiaos/presence-kernel versions --json || true
           npm view @gratiaos/signal versions --json || true
 
-      - name: Sanitize npmrc for OIDC (remove token auth)
-        run: |
-          echo "Using userconfig: $NPM_CONFIG_USERCONFIG"
-          if test -f "$NPM_CONFIG_USERCONFIG"; then
-            echo "--- before" && cat "$NPM_CONFIG_USERCONFIG" || true
-            sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG" || true
-            sed -i '/always-auth/d' "$NPM_CONFIG_USERCONFIG" || true
-          fi
-          echo "@gratiaos:registry=https://registry.npmjs.org/" >> "$NPM_CONFIG_USERCONFIG"
-          echo "--- after" && cat "$NPM_CONFIG_USERCONFIG" || true
-        env:
-          NODE_AUTH_TOKEN: ''
-
-      - name: Enable provenance
-        # With Trusted Publishing, provenance is automatic; we set this explicitly for clarity.
-        run: npm config set provenance true
-        env:
-          NODE_AUTH_TOKEN: ''
-
-      - name: Publish each package if this version is missing (icons, core libs, kernels, ui)
+      - name: Publish each package if this version is missing
         run: |
           set -euo pipefail
           for pkg in packages/icons packages/pad-core packages/tokens packages/ui packages/presence-kernel packages/signal; do
@@ -112,11 +90,10 @@ jobs:
             if npm view "$NAME@$VER" version >/dev/null 2>&1; then
               echo "🟡 skip $NAME@$VER (already on registry)"
             else
-              echo "🟢 publish $NAME@$VER (OIDC + provenance)"
-              npm publish --access public --provenance --registry https://registry.npmjs.org/
+              echo "🟢 publish $NAME@$VER"
+              npm publish --access public
             fi
             popd >/dev/null
           done
         env:
-          NODE_AUTH_TOKEN: ''
-          NPM_CONFIG_PROVENANCE: true
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
