@@ -1,6 +1,6 @@
 {
   "name": "@gratiaos/presence-kernel",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "funding": "https://github.com/sponsors/GratiaOS",
   "type": "module",
   "license": "AGPL-3.0-only",
@@ -36,7 +36,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@gratiaos/signal": "^1.0.3"
+    "@gratiaos/signal": "^1.0.4"
   },
   "keywords": [
     "presence",
