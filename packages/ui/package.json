@@ -100,11 +100,11 @@
     "react": "^18 || ^19"
   },
   "dependencies": {
-    "@gratiaos/presence-kernel": "^1.1.5"
+    "@gratiaos/presence-kernel": "workspace:^"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "react": "^19.2.0",
-    "@types/react": "^19.2.2"
+    "@types/react": "^19.2.14",
+    "react": "^19.2.4",
+    "typescript": "^5.9.3"
   }
 }
