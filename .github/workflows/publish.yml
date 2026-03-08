@@ -44,7 +44,6 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
           scope: '@gratiaos'
-          always-auth: false
 
       - name: Ensure npm 11.5.1+
         run: |
